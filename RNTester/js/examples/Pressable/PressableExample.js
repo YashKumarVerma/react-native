@@ -188,7 +188,9 @@ function PressableHitSlop() {
 
   return (
     <View testID="pressable_hit_slop">
-      <View style={[styles.row, styles.centered]}>
+      <View
+        testID="pressable_hit_slop_extended_touch"
+        style={[styles.row, styles.centered]}>
         <Pressable
           onPress={() => setTimesPressed(num => num + 1)}
           style={styles.hitSlopWrapper}
@@ -198,7 +200,7 @@ function PressableHitSlop() {
         </Pressable>
       </View>
       <View style={styles.logBox}>
-        <Text>{log}</Text>
+        <Text testID="pressable_hit_slop_console">{log}</Text>
       </View>
     </View>
   );
