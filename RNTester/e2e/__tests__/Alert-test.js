@@ -40,12 +40,4 @@ describe('Alert', () => {
     await expect(element(by.text('Baz'))).toBeVisible();
     await element(by.text('Foo')).tap();
   });
-
-  // it('Alert that cannot be dismissed', async () => {
-  //   await openExampleWithTitle('Alerts');
-  //   await element(by.id('alert-with-that-cannot-be-dismissed')).tap();
-  //   await expect(element(by.text('Alert Title'))).toBeVisible();
-  //   await element(by.text('OK')).tap();
-  //   await expect(element(by.text('Alert Title'))).toBeVisible();
-  // });
 });

@@ -96,7 +96,6 @@ class SimpleAlertExampleBlock extends React.Component<Props> {
           </View>
         </TouchableHighlight>
         <TouchableHighlight
-          testID="alert-with-that-cannot-be-dismissed"
           style={styles.wrapper}
           onPress={() =>
             Alert.alert(
