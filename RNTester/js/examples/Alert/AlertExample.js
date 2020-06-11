@@ -35,6 +35,7 @@ class SimpleAlertExampleBlock extends React.Component<Props> {
     return (
       <View>
         <TouchableHighlight
+          testID="alert-with-message-and-default-button"
           style={styles.wrapper}
           onPress={() => Alert.alert('Alert Title', alertMessage)}>
           <View style={styles.button}>
@@ -65,6 +66,7 @@ class SimpleAlertExampleBlock extends React.Component<Props> {
           </View>
         </TouchableHighlight>
         <TouchableHighlight
+          testID="alert-with-three-buttons"
           style={styles.wrapper}
           onPress={() =>
             Alert.alert('Alert Title', null, [
@@ -94,6 +96,7 @@ class SimpleAlertExampleBlock extends React.Component<Props> {
           </View>
         </TouchableHighlight>
         <TouchableHighlight
+          testID="alert-with-that-cannot-be-dismissed"
           style={styles.wrapper}
           onPress={() =>
             Alert.alert(
