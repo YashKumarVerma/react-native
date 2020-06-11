@@ -53,6 +53,7 @@ class TextInputBar extends React.PureComponent<TextInputProps, TextInputState> {
           onPress={() => {
             Alert.alert('You tapped the button!');
           }}
+          testID="input-accessory-send-button"
           title="Send"
         />
       </View>
