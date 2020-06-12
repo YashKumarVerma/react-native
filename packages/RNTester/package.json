@@ -1,0 +1,11 @@
+{
+  "name": "rntester",
+  "version": "1.0.0",
+  "description": "The RNTester showcases React Native views and modules.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}
