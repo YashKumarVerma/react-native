@@ -23,42 +23,45 @@ describe('ActionSheetIOS', () => {
     );
   });
 
-  it(
-    'Should load the correct options for a simple action sheet and behave ' +
-      'correctly for all options and clicks outside the frame of the action sheet',
-    async () => {
-      await openExampleWithTitle('Show Standard Action Sheet');
-      await element(by.id('normal-action-sheet')).tap();
+  it('should load the correct options for a simple action sheet', async () => {
+    await openExampleWithTitle('Show Standard Action Sheet');
+    await element(by.id('normal-action-sheet')).tap();
 
-      // ensure all items are visible and not covered
-      await expect(element(by.text('Option 0'))).toBeVisible();
-      await expect(element(by.text('Option 1'))).toBeVisible();
-      await expect(element(by.text('Option 2'))).toBeVisible();
-      await expect(element(by.text('Delete'))).toBeVisible();
+    // ensure all items are visible and not covered
+    await expect(element(by.text('Option 0'))).toBeVisible();
+    await expect(element(by.text('Option 1'))).toBeVisible();
+    await expect(element(by.text('Option 2'))).toBeVisible();
+    await expect(element(by.text('Delete'))).toBeVisible();
+  });
 
-      await element(by.text('Option 0')).tap();
+  it('should record the event linked to a specific option', async () => {
+    await element(by.text('Option 0')).tap();
 
-      // ensure all items are hidden when the action sheet is dismissed
-      await expect(element(by.text('Option 0'))).toBeNotVisible();
-      await expect(element(by.text('Option 1'))).toBeNotVisible();
-      await expect(element(by.text('Option 2'))).toBeNotVisible();
-      await expect(element(by.text('Delete'))).toBeNotVisible();
+    // ensure all items are hidden when the action sheet is dismissed
+    await expect(element(by.text('Option 0'))).toBeNotVisible();
+    await expect(element(by.text('Option 1'))).toBeNotVisible();
+    await expect(element(by.text('Option 2'))).toBeNotVisible();
+    await expect(element(by.text('Delete'))).toBeNotVisible();
 
-      await expect(
-        element(by.id('normal-action-sheet-button-status')),
-      ).toHaveText('Clicked button: Option 0');
+    await expect(
+      element(by.id('normal-action-sheet-button-status')),
+    ).toHaveText('Clicked button: Option 0');
 
-      await element(by.id('normal-action-sheet')).tap();
-      await element(by.text('Click to show the ActionSheet')).tap(); //click outside
-      await expect(
-        element(by.id('normal-action-sheet-button-status')),
-      ).toHaveText('Clicked button: Cancel');
+    await element(by.id('normal-action-sheet')).tap();
+    await element(by.text('Delete')).tap();
+    await expect(
+      element(by.id('normal-action-sheet-button-status')),
+    ).toHaveText('Clicked button: Delete');
+  });
 
-      await element(by.id('normal-action-sheet')).tap();
-      await element(by.text('Delete')).tap();
-      await expect(
-        element(by.id('normal-action-sheet-button-status')),
-      ).toHaveText('Clicked button: Delete');
-    },
-  );
+  it('should dismiss the action sheet on a tap outside the action sheet', async () => {
+    await openExampleWithTitle('Show Standard Action Sheet');
+    await element(by.id('normal-action-sheet')).tap();
+
+    await element(by.id('normal-action-sheet')).tap();
+    await element(by.text('Click to show the ActionSheet')).tap(); //click outside
+    await expect(
+      element(by.id('normal-action-sheet-button-status')),
+    ).toHaveText('Clicked button: Cancel');
+  });
 });
