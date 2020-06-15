@@ -13,15 +13,13 @@
 
 @end
 
-@implementation RCTBlobManagerTests
-{
+@implementation RCTBlobManagerTests {
   RCTBlobManager *_module;
   NSMutableData *_data;
   NSString *_blobId;
 }
 
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
 
   _module = [RCTBlobManager new];
@@ -36,56 +34,51 @@
   [_module store:_data withId:_blobId];
 }
 
-- (void)testResolve
-{
+- (void)testResolve {
   XCTAssertTrue([_data isEqualToData:[_module resolve:_blobId offset:0 size:_data.length]]);
   NSData *rangeData = [_data subdataWithRange:NSMakeRange(30, _data.length - 30)];
   XCTAssertTrue([rangeData isEqualToData:[_module resolve:_blobId offset:30 size:_data.length - 30]]);
 }
 
-- (void)testResolveMap
-{
+- (void)testResolveMap {
   NSDictionary<NSString *, id> *map = @{
-    @"blobId": _blobId,
-    @"size": @(_data.length),
-    @"offset": @0,
+    @"blobId" : _blobId,
+    @"size" : @(_data.length),
+    @"offset" : @0,
   };
   XCTAssertTrue([_data isEqualToData:[_module resolve:map]]);
 }
 
-- (void)testResolveURL
-{
+- (void)testResolveURL {
   NSURLComponents *components = [NSURLComponents new];
   [components setPath:_blobId];
   [components setQuery:[NSString stringWithFormat:@"offset=0&size=%lu", (unsigned long)_data.length]];
   XCTAssertTrue([_data isEqualToData:[_module resolveURL:[components URL]]]);
 }
 
-- (void)testRemove
-{
+- (void)testRemove {
   XCTAssertNotNil([_module resolve:_blobId offset:0 size:_data.length]);
   [_module remove:_blobId];
   XCTAssertNil([_module resolve:_blobId offset:0 size:_data.length]);
 }
 
-- (void)testCreateFromParts
-{
+- (void)testCreateFromParts {
   NSDictionary<NSString *, id> *blobData = @{
-    @"blobId": _blobId,
-    @"offset": @0,
-    @"size": @(_data.length),
+    @"blobId" : _blobId,
+    @"offset" : @0,
+    @"size" : @(_data.length),
   };
   NSDictionary<NSString *, id> *blob = @{
-   @"data": blobData,
-   @"type": @"blob",
+    @"data" : blobData,
+    @"type" : @"blob",
   };
   NSString *stringData = @"i \u2665 dogs";
   NSDictionary<NSString *, id> *string = @{
-    @"data": stringData,
-    @"type": @"string",
+    @"data" : stringData,
+    @"type" : @"string",
   };
   NSString *resultId = [NSUUID UUID].UUIDString;
-  NSArray<id> *parts = @[blob, string];
+  NSArray<id> *parts = @[ blob, string ];
 
   [_module createFromParts:parts withId:resultId];
 

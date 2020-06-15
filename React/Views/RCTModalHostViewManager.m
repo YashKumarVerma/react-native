@@ -36,8 +36,7 @@ RCT_ENUM_CONVERTER(
 
 @implementation RCTModalHostShadowView
 
-- (void)insertReactSubview:(id<RCTComponent>)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(id<RCTComponent>)subview atIndex:(NSInteger)atIndex {
   [super insertReactSubview:subview atIndex:atIndex];
   if ([subview isKindOfClass:[RCTShadowView class]]) {
     ((RCTShadowView *)subview).size = RCTScreenSize();
@@ -56,8 +55,7 @@ RCT_ENUM_CONVERTER(
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
+- (UIView *)view {
   RCTModalHostView *view = [[RCTModalHostView alloc] initWithBridge:self.bridge];
   view.delegate = self;
   if (!_hostViews) {
@@ -69,8 +67,7 @@ RCT_EXPORT_MODULE()
 
 - (void)presentModalHostView:(RCTModalHostView *)modalHostView
           withViewController:(RCTModalHostViewController *)viewController
-                    animated:(BOOL)animated
-{
+                    animated:(BOOL)animated {
   dispatch_block_t completionBlock = ^{
     if (modalHostView.onShow) {
       modalHostView.onShow(nil);
@@ -87,8 +84,7 @@ RCT_EXPORT_MODULE()
 
 - (void)dismissModalHostView:(RCTModalHostView *)modalHostView
           withViewController:(RCTModalHostViewController *)viewController
-                    animated:(BOOL)animated
-{
+                    animated:(BOOL)animated {
   if (_dismissalBlock) {
     _dismissalBlock([modalHostView reactViewController], viewController, animated, nil);
   } else {
@@ -96,13 +92,11 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (RCTShadowView *)shadowView
-{
+- (RCTShadowView *)shadowView {
   return [RCTModalHostShadowView new];
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   for (RCTModalHostView *hostView in _hostViews) {
     [hostView invalidate];
   }

@@ -16,10 +16,11 @@
 #import <string>
 #import <unordered_map>
 
-Class RCTBlobClassProvider(const char *name) {
+Class RCTBlobClassProvider(const char *name)
+{
   static std::unordered_map<std::string, Class (*)(void)> sCoreModuleClassMap = {
-    {"FileReaderModule", RCTFileReaderModuleCls},
-    {"BlobModule", RCTBlobManagerCls},
+      {"FileReaderModule", RCTFileReaderModuleCls},
+      {"BlobModule", RCTBlobManagerCls},
   };
 
   auto p = sCoreModuleClassMap.find(name);

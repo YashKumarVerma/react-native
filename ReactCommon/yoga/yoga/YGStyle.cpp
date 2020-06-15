@@ -9,7 +9,7 @@
 #include "Utils.h"
 
 // Yoga specific properties, not compatible with flexbox specification
-bool operator==(const YGStyle& lhs, const YGStyle& rhs) {
+bool operator==(const YGStyle &lhs, const YGStyle &rhs) {
   bool areNonFloatValuesEqual = lhs.direction() == rhs.direction() &&
       lhs.flexDirection() == rhs.flexDirection() &&
       lhs.justifyContent() == rhs.justifyContent() &&

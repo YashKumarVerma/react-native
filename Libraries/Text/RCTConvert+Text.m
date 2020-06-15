@@ -9,27 +9,25 @@
 
 @implementation RCTConvert (Text)
 
-+ (UITextAutocorrectionType)UITextAutocorrectionType:(id)json
-{
-  return
-    json == nil ? UITextAutocorrectionTypeDefault :
-    [RCTConvert BOOL:json] ? UITextAutocorrectionTypeYes :
-    UITextAutocorrectionTypeNo;
++ (UITextAutocorrectionType)UITextAutocorrectionType:(id)json {
+  return json == nil ? UITextAutocorrectionTypeDefault
+                     : [RCTConvert BOOL:json] ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
 }
 
-+ (UITextSpellCheckingType)UITextSpellCheckingType:(id)json
-{
-  return
-    json == nil ? UITextSpellCheckingTypeDefault :
-    [RCTConvert BOOL:json] ? UITextSpellCheckingTypeYes :
-    UITextSpellCheckingTypeNo;
++ (UITextSpellCheckingType)UITextSpellCheckingType:(id)json {
+  return json == nil ? UITextSpellCheckingTypeDefault
+                     : [RCTConvert BOOL:json] ? UITextSpellCheckingTypeYes : UITextSpellCheckingTypeNo;
 }
 
-RCT_ENUM_CONVERTER(RCTTextTransform, (@{
-  @"none": @(RCTTextTransformNone),
-  @"capitalize": @(RCTTextTransformCapitalize),
-  @"uppercase": @(RCTTextTransformUppercase),
-  @"lowercase": @(RCTTextTransformLowercase),
-}), RCTTextTransformUndefined, integerValue)
+RCT_ENUM_CONVERTER(
+    RCTTextTransform,
+    (@{
+      @"none" : @(RCTTextTransformNone),
+      @"capitalize" : @(RCTTextTransformCapitalize),
+      @"uppercase" : @(RCTTextTransformUppercase),
+      @"lowercase" : @(RCTTextTransformLowercase),
+    }),
+    RCTTextTransformUndefined,
+    integerValue)
 
 @end

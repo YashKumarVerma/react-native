@@ -51,8 +51,7 @@ static uint16_t RCTUniqueCoalescingKeyGenerator = 0;
 
 RCT_EXPORT_MODULE()
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
   _events = [NSMutableDictionary new];
   _eventQueue = [NSMutableArray new];
@@ -62,16 +61,14 @@ RCT_EXPORT_MODULE()
   _observersLock = [NSLock new];
 }
 
-- (void)sendAppEventWithName:(NSString *)name body:(id)body
-{
+- (void)sendAppEventWithName:(NSString *)name body:(id)body {
   [_bridge enqueueJSCall:@"RCTNativeAppEventEmitter"
                   method:@"emit"
                     args:body ? @[ name, body ] : @[ name ]
               completion:NULL];
 }
 
-- (void)sendDeviceEventWithName:(NSString *)name body:(id)body
-{
+- (void)sendDeviceEventWithName:(NSString *)name body:(id)body {
   [_bridge enqueueJSCall:@"RCTDeviceEventEmitter"
                   method:@"emit"
                     args:body ? @[ name, body ] : @[ name ]
@@ -82,8 +79,7 @@ RCT_EXPORT_MODULE()
                      reactTag:(NSNumber *)reactTag
                          text:(NSString *)text
                           key:(NSString *)key
-                   eventCount:(NSInteger)eventCount
-{
+                   eventCount:(NSInteger)eventCount {
   static NSString *events[] = {@"focus", @"blur", @"change", @"submitEditing", @"endEditing", @"keyPress"};
 
   NSMutableDictionary *body = [[NSMutableDictionary alloc] initWithDictionary:@{
@@ -115,8 +111,7 @@ RCT_EXPORT_MODULE()
   [self sendEvent:event];
 }
 
-- (void)sendEvent:(id<RCTEvent>)event
-{
+- (void)sendEvent:(id<RCTEvent>)event {
   [_observersLock lock];
 
   for (id<RCTEventDispatcherObserver> observer in _observers) {
@@ -170,33 +165,28 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)addDispatchObserver:(id<RCTEventDispatcherObserver>)observer
-{
+- (void)addDispatchObserver:(id<RCTEventDispatcherObserver>)observer {
   [_observersLock lock];
   [_observers addObject:observer];
   [_observersLock unlock];
 }
 
-- (void)removeDispatchObserver:(id<RCTEventDispatcherObserver>)observer
-{
+- (void)removeDispatchObserver:(id<RCTEventDispatcherObserver>)observer {
   [_observersLock lock];
   [_observers removeObject:observer];
   [_observersLock unlock];
 }
 
-- (void)dispatchEvent:(id<RCTEvent>)event
-{
+- (void)dispatchEvent:(id<RCTEvent>)event {
   [_bridge enqueueJSCall:[[event class] moduleDotMethod] args:[event arguments]];
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return RCTJSThread;
 }
 
 // js thread only (which surprisingly can be the main thread, depends on used JS executor)
-- (void)flushEventsQueue
-{
+- (void)flushEventsQueue {
   [_eventQueueLock lock];
   NSDictionary *events = _events;
   _events = [NSMutableDictionary new];
@@ -214,8 +204,7 @@ RCT_EXPORT_MODULE()
 
 @implementation RCTBridge (RCTEventDispatcher)
 
-- (RCTEventDispatcher *)eventDispatcher
-{
+- (RCTEventDispatcher *)eventDispatcher {
   return [self moduleForClass:[RCTEventDispatcher class]];
 }
 

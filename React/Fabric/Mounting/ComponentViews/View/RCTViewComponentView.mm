@@ -25,8 +25,7 @@ using namespace facebook::react;
   BOOL _needsInvalidateLayer;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static auto const defaultProps = std::make_shared<ViewProps const>();
     _props = defaultProps;
@@ -34,13 +33,11 @@ using namespace facebook::react;
   return self;
 }
 
-- (facebook::react::SharedProps)props
-{
+- (facebook::react::SharedProps)props {
   return _props;
 }
 
-- (void)setContentView:(UIView *)contentView
-{
+- (void)setContentView:(UIView *)contentView {
   if (_contentView) {
     [_contentView removeFromSuperview];
   }
@@ -53,8 +50,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   [super layoutSubviews];
   // Consider whether using `updateLayoutMetrics:oldLayoutMetrics`
   // isn't more appropriate for your use case. `layoutSubviews` is called
@@ -65,8 +61,7 @@ using namespace facebook::react;
   // frames might get out of sync with `self.bounds`.
 }
 
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
   if (UIEdgeInsetsEqualToEdgeInsets(self.hitTestEdgeInsets, UIEdgeInsetsZero)) {
     return [super pointInside:point withEvent:event];
   }
@@ -74,20 +69,17 @@ using namespace facebook::react;
   return CGRectContainsPoint(hitFrame, point);
 }
 
-- (UIColor *)backgroundColor
-{
+- (UIColor *)backgroundColor {
   return _backgroundColor;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
   _backgroundColor = backgroundColor;
 }
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   RCTAssert(
       self == [RCTViewComponentView class],
       @"`+[RCTComponentViewProtocol componentDescriptorProvider]` must be implemented for all subclasses (and `%@` particularly).",
@@ -95,8 +87,7 @@ using namespace facebook::react;
   return concreteComponentDescriptorProvider<ViewComponentDescriptor>();
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
 #ifndef NS_BLOCK_ASSERTIONS
   auto propsRawPtr = _props.get();
   RCTAssert(
@@ -247,15 +238,13 @@ using namespace facebook::react;
   _props = std::static_pointer_cast<ViewProps const>(props);
 }
 
-- (void)updateEventEmitter:(EventEmitter::Shared const &)eventEmitter
-{
+- (void)updateEventEmitter:(EventEmitter::Shared const &)eventEmitter {
   assert(std::dynamic_pointer_cast<ViewEventEmitter const>(eventEmitter));
   _eventEmitter = std::static_pointer_cast<ViewEventEmitter const>(eventEmitter);
 }
 
 - (void)updateLayoutMetrics:(LayoutMetrics const &)layoutMetrics
-           oldLayoutMetrics:(LayoutMetrics const &)oldLayoutMetrics
-{
+           oldLayoutMetrics:(LayoutMetrics const &)oldLayoutMetrics {
   // Using stored `_layoutMetrics` as `oldLayoutMetrics` here to avoid
   // re-applying individual sub-values which weren't changed.
   [super updateLayoutMetrics:layoutMetrics oldLayoutMetrics:_layoutMetrics];
@@ -272,8 +261,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)finalizeUpdates:(RNComponentViewUpdateMask)updateMask
-{
+- (void)finalizeUpdates:(RNComponentViewUpdateMask)updateMask {
   [super finalizeUpdates:updateMask];
   if (!_needsInvalidateLayer) {
     return;
@@ -283,14 +271,12 @@ using namespace facebook::react;
   [self invalidateLayer];
 }
 
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
   _eventEmitter.reset();
 }
 
-- (UIView *)betterHitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)betterHitTest:(CGPoint)point withEvent:(UIEvent *)event {
   // This is a classic textbook implementation of `hitTest:` with a couple of improvements:
   //   * It does not stop algorithm if some touch is outside the view
   //     which does not have `clipToBounds` enabled.
@@ -317,8 +303,7 @@ using namespace facebook::react;
   return isPointInside ? self : nil;
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
   switch (_props->pointerEvents) {
     case PointerEventsMode::Auto:
       return [self betterHitTest:point withEvent:event];
@@ -360,8 +345,7 @@ static RCTBorderStyle RCTBorderStyleFromBorderStyle(BorderStyle borderStyle)
   }
 }
 
-- (void)invalidateLayer
-{
+- (void)invalidateLayer {
   CALayer *layer = self.layer;
 
   if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
@@ -483,8 +467,7 @@ static RCTBorderStyle RCTBorderStyleFromBorderStyle(BorderStyle borderStyle)
 
 #pragma mark - Accessibility
 
-- (NSObject *)accessibilityElement
-{
+- (NSObject *)accessibilityElement {
   return self;
 }
 
@@ -506,8 +489,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   return result;
 }
 
-- (NSString *)accessibilityLabel
-{
+- (NSString *)accessibilityLabel {
   NSString *label = super.accessibilityLabel;
   if (label) {
     return label;
@@ -518,8 +500,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
 
 #pragma mark - Accessibility Events
 
-- (NSArray<UIAccessibilityCustomAction *> *)accessibilityCustomActions
-{
+- (NSArray<UIAccessibilityCustomAction *> *)accessibilityCustomActions {
   auto const &accessibilityActions = _props->accessibilityActions;
 
   if (accessibilityActions.empty()) {
@@ -537,8 +518,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   return [customActions copy];
 }
 
-- (BOOL)accessibilityActivate
-{
+- (BOOL)accessibilityActivate {
   if (_eventEmitter && _props->onAccessibilityTap) {
     _eventEmitter->onAccessibilityTap();
     return YES;
@@ -547,8 +527,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   }
 }
 
-- (BOOL)accessibilityPerformMagicTap
-{
+- (BOOL)accessibilityPerformMagicTap {
   if (_eventEmitter && _props->onAccessibilityMagicTap) {
     _eventEmitter->onAccessibilityMagicTap();
     return YES;
@@ -557,8 +536,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   }
 }
 
-- (BOOL)accessibilityPerformEscape
-{
+- (BOOL)accessibilityPerformEscape {
   if (_eventEmitter && _props->onAccessibilityEscape) {
     _eventEmitter->onAccessibilityEscape();
     return YES;
@@ -567,8 +545,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   }
 }
 
-- (BOOL)didActivateAccessibilityCustomAction:(UIAccessibilityCustomAction *)action
-{
+- (BOOL)didActivateAccessibilityCustomAction:(UIAccessibilityCustomAction *)action {
   if (_eventEmitter && _props->onAccessibilityAction) {
     _eventEmitter->onAccessibilityAction(RCTStringFromNSString(action.name));
     return YES;
@@ -577,13 +554,11 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   }
 }
 
-- (SharedTouchEventEmitter)touchEventEmitterAtPoint:(CGPoint)point
-{
+- (SharedTouchEventEmitter)touchEventEmitterAtPoint:(CGPoint)point {
   return _eventEmitter;
 }
 
-- (NSString *)componentViewName_DO_NOT_USE_THIS_IS_BROKEN
-{
+- (NSString *)componentViewName_DO_NOT_USE_THIS_IS_BROKEN {
   return RCTNSStringFromString([[self class] componentDescriptorProvider].name);
 }
 

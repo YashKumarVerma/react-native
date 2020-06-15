@@ -20,22 +20,19 @@
 
 RCT_EXPORT_MODULE();
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [UpdatePropertiesExampleView new];
 }
 
 @end
 
-@implementation UpdatePropertiesExampleView
-{
+@implementation UpdatePropertiesExampleView {
   RCTRootView *_rootView;
   UIButton *_button;
   BOOL _beige;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   self = [super initWithFrame:frame];
   if (self) {
     _beige = YES;
@@ -44,16 +41,14 @@ RCT_EXPORT_MODULE();
 
     _rootView = [[RCTRootView alloc] initWithBridge:appDelegate.bridge
                                          moduleName:@"SetPropertiesExampleApp"
-                                  initialProperties:@{@"color":@"beige"}];
+                                  initialProperties:@{@"color" : @"beige"}];
 
     _button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_button setTitle:@"Native Button" forState:UIControlStateNormal];
     [_button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_button setBackgroundColor:[UIColor grayColor]];
 
-    [_button addTarget:self
-                action:@selector(changeColor)
-      forControlEvents:UIControlEventTouchUpInside];
+    [_button addTarget:self action:@selector(changeColor) forControlEvents:UIControlEventTouchUpInside];
 
     [self addSubview:_button];
     [self addSubview:_rootView];
@@ -61,8 +56,7 @@ RCT_EXPORT_MODULE();
   return self;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   float spaceHeight = 20;
   float buttonHeight = 40;
   float rootViewWidth = self.bounds.size.width;
@@ -72,14 +66,12 @@ RCT_EXPORT_MODULE();
   [_button setFrame:CGRectMake(0, rootViewHeight + spaceHeight, rootViewWidth, buttonHeight)];
 }
 
-- (void)changeColor
-{
+- (void)changeColor {
   _beige = !_beige;
-  [_rootView setAppProperties:@{@"color":_beige ? @"beige" : @"purple"}];
+  [_rootView setAppProperties:@{@"color" : _beige ? @"beige" : @"purple"}];
 }
 
-- (NSArray<UIView<RCTComponent> *> *)reactSubviews
-{
+- (NSArray<UIView<RCTComponent> *> *)reactSubviews {
   // this is to avoid unregistering our RCTRootView when the component is removed from RN hierarchy
   (void)[super reactSubviews];
   return @[];

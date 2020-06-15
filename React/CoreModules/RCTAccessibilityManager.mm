@@ -33,13 +33,11 @@ NSString *const RCTAccessibilityManagerDidUpdateMultiplierNotification =
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _multiplier = 1.0;
 
@@ -95,13 +93,11 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
-- (void)didReceiveNewContentSizeCategory:(NSNotification *)note
-{
+- (void)didReceiveNewContentSizeCategory:(NSNotification *)note {
   self.contentSizeCategory = note.userInfo[UIContentSizeCategoryNewValueKey];
 }
 
-- (void)accessibilityAnnouncementDidFinish:(__unused NSNotification *)notification
-{
+- (void)accessibilityAnnouncementDidFinish:(__unused NSNotification *)notification {
   NSDictionary *userInfo = notification.userInfo;
   // Response dictionary to populate the event with.
   NSDictionary *response = @{
@@ -115,8 +111,7 @@ RCT_EXPORT_MODULE()
 #pragma clang diagnostic pop
 }
 
-- (void)boldTextStatusDidChange:(__unused NSNotification *)notification
-{
+- (void)boldTextStatusDidChange:(__unused NSNotification *)notification {
   BOOL newBoldTextEnabled = UIAccessibilityIsBoldTextEnabled();
   if (_isBoldTextEnabled != newBoldTextEnabled) {
     _isBoldTextEnabled = newBoldTextEnabled;
@@ -127,8 +122,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)grayscaleStatusDidChange:(__unused NSNotification *)notification
-{
+- (void)grayscaleStatusDidChange:(__unused NSNotification *)notification {
   BOOL newGrayscaleEnabled = UIAccessibilityIsGrayscaleEnabled();
   if (_isGrayscaleEnabled != newGrayscaleEnabled) {
     _isGrayscaleEnabled = newGrayscaleEnabled;
@@ -139,8 +133,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)invertColorsStatusDidChange:(__unused NSNotification *)notification
-{
+- (void)invertColorsStatusDidChange:(__unused NSNotification *)notification {
   BOOL newInvertColorsEnabled = UIAccessibilityIsInvertColorsEnabled();
   if (_isInvertColorsEnabled != newInvertColorsEnabled) {
     _isInvertColorsEnabled = newInvertColorsEnabled;
@@ -151,8 +144,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)reduceMotionStatusDidChange:(__unused NSNotification *)notification
-{
+- (void)reduceMotionStatusDidChange:(__unused NSNotification *)notification {
   BOOL newReduceMotionEnabled = UIAccessibilityIsReduceMotionEnabled();
   if (_isReduceMotionEnabled != newReduceMotionEnabled) {
     _isReduceMotionEnabled = newReduceMotionEnabled;
@@ -163,8 +155,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)reduceTransparencyStatusDidChange:(__unused NSNotification *)notification
-{
+- (void)reduceTransparencyStatusDidChange:(__unused NSNotification *)notification {
   BOOL newReduceTransparencyEnabled = UIAccessibilityIsReduceTransparencyEnabled();
   if (_isReduceTransparencyEnabled != newReduceTransparencyEnabled) {
     _isReduceTransparencyEnabled = newReduceTransparencyEnabled;
@@ -175,8 +166,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)voiceVoiceOverStatusDidChange:(__unused NSNotification *)notification
-{
+- (void)voiceVoiceOverStatusDidChange:(__unused NSNotification *)notification {
   BOOL newIsVoiceOverEnabled = UIAccessibilityIsVoiceOverRunning();
   if (_isVoiceOverEnabled != newIsVoiceOverEnabled) {
     _isVoiceOverEnabled = newIsVoiceOverEnabled;
@@ -187,23 +177,20 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)setContentSizeCategory:(NSString *)contentSizeCategory
-{
+- (void)setContentSizeCategory:(NSString *)contentSizeCategory {
   if (_contentSizeCategory != contentSizeCategory) {
     _contentSizeCategory = [contentSizeCategory copy];
     [self invalidateMultiplier];
   }
 }
 
-- (void)invalidateMultiplier
-{
+- (void)invalidateMultiplier {
   self.multiplier = [self multiplierForContentSizeCategory:_contentSizeCategory];
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTAccessibilityManagerDidUpdateMultiplierNotification
                                                       object:self];
 }
 
-- (CGFloat)multiplierForContentSizeCategory:(NSString *)category
-{
+- (CGFloat)multiplierForContentSizeCategory:(NSString *)category {
   NSNumber *m = self.multipliers[category];
   if (m.doubleValue <= 0.0) {
     RCTLogError(@"Can't determine multiplier for category %@. Using 1.0.", category);
@@ -212,16 +199,14 @@ RCT_EXPORT_MODULE()
   return m.doubleValue;
 }
 
-- (void)setMultipliers:(NSDictionary<NSString *, NSNumber *> *)multipliers
-{
+- (void)setMultipliers:(NSDictionary<NSString *, NSNumber *> *)multipliers {
   if (_multipliers != multipliers) {
     _multipliers = [multipliers copy];
     [self invalidateMultiplier];
   }
 }
 
-- (NSDictionary<NSString *, NSNumber *> *)multipliers
-{
+- (NSDictionary<NSString *, NSNumber *> *)multipliers {
   if (_multipliers == nil) {
     _multipliers = @{
       UIContentSizeCategoryExtraSmall : @0.823,
@@ -338,8 +323,7 @@ RCT_EXPORT_METHOD(getCurrentVoiceOverState
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeAccessibilityManagerSpecJSI>(params);
 }
 
@@ -347,8 +331,7 @@ RCT_EXPORT_METHOD(getCurrentVoiceOverState
 
 @implementation RCTBridge (RCTAccessibilityManager)
 
-- (RCTAccessibilityManager *)accessibilityManager
-{
+- (RCTAccessibilityManager *)accessibilityManager {
   return [self moduleForClass:[RCTAccessibilityManager class]];
 }
 

@@ -28,8 +28,7 @@ using namespace facebook::react;
   ParagraphAttributes _paragraphAttributes;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const ParagraphProps>();
     _props = defaultProps;
@@ -43,8 +42,7 @@ using namespace facebook::react;
   return self;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   NSString *superDescription = [super description];
 
   // Cutting the last `>` character.
@@ -55,8 +53,7 @@ using namespace facebook::react;
   return [NSString stringWithFormat:@"%@; attributedText = %@>", superDescription, self.attributedText];
 }
 
-- (NSAttributedString *_Nullable)attributedText
-{
+- (NSAttributedString *_Nullable)attributedText {
   if (!_state) {
     return nil;
   }
@@ -66,19 +63,16 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<ParagraphComponentDescriptor>();
 }
 
-+ (std::vector<facebook::react::ComponentDescriptorProvider>)supplementalComponentDescriptorProviders
-{
++ (std::vector<facebook::react::ComponentDescriptorProvider>)supplementalComponentDescriptorProviders {
   return {concreteComponentDescriptorProvider<RawTextComponentDescriptor>(),
           concreteComponentDescriptorProvider<TextComponentDescriptor>()};
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   const auto &paragraphProps = std::static_pointer_cast<const ParagraphProps>(props);
 
   assert(paragraphProps);
@@ -87,20 +81,17 @@ using namespace facebook::react;
   [super updateProps:props oldProps:oldProps];
 }
 
-- (void)updateState:(State::Shared const &)state oldState:(State::Shared const &)oldState
-{
+- (void)updateState:(State::Shared const &)state oldState:(State::Shared const &)oldState {
   _state = std::static_pointer_cast<ParagraphShadowNode::ConcreteState const>(state);
   [self setNeedsDisplay];
 }
 
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
   _state.reset();
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
   if (!_state) {
     return;
   }
@@ -124,8 +115,7 @@ using namespace facebook::react;
 
 #pragma mark - Accessibility
 
-- (NSString *)accessibilityLabel
-{
+- (NSString *)accessibilityLabel {
   NSString *superAccessibilityLabel = RCTNSStringFromStringNilIfEmpty(_props->accessibilityLabel);
   if (superAccessibilityLabel) {
     return superAccessibilityLabel;
@@ -138,8 +128,7 @@ using namespace facebook::react;
   return RCTNSStringFromString(_state->getData().attributedString.getString());
 }
 
-- (SharedTouchEventEmitter)touchEventEmitterAtPoint:(CGPoint)point
-{
+- (SharedTouchEventEmitter)touchEventEmitterAtPoint:(CGPoint)point {
   if (!_state) {
     return _eventEmitter;
   }

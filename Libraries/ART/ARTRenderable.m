@@ -9,14 +9,12 @@
 
 @implementation ARTRenderable
 
-- (void)setFill:(ARTBrush *)fill
-{
+- (void)setFill:(ARTBrush *)fill {
   [self invalidate];
   _fill = fill;
 }
 
-- (void)setStroke:(CGColorRef)stroke
-{
+- (void)setStroke:(CGColorRef)stroke {
   if (stroke == _stroke) {
     return;
   }
@@ -25,26 +23,22 @@
   _stroke = CGColorRetain(stroke);
 }
 
-- (void)setStrokeWidth:(CGFloat)strokeWidth
-{
+- (void)setStrokeWidth:(CGFloat)strokeWidth {
   [self invalidate];
   _strokeWidth = strokeWidth;
 }
 
-- (void)setStrokeCap:(CGLineCap)strokeCap
-{
+- (void)setStrokeCap:(CGLineCap)strokeCap {
   [self invalidate];
   _strokeCap = strokeCap;
 }
 
-- (void)setStrokeJoin:(CGLineJoin)strokeJoin
-{
+- (void)setStrokeJoin:(CGLineJoin)strokeJoin {
   [self invalidate];
   _strokeJoin = strokeJoin;
 }
 
-- (void)setStrokeDash:(ARTCGFloatArray)strokeDash
-{
+- (void)setStrokeDash:(ARTCGFloatArray)strokeDash {
   if (strokeDash.array == _strokeDash.array) {
     return;
   }
@@ -55,19 +49,17 @@
   _strokeDash = strokeDash;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   CGColorRelease(_stroke);
   if (_strokeDash.array) {
     free(_strokeDash.array);
   }
 }
 
-- (void)renderTo:(CGContextRef)context
-{
+- (void)renderTo:(CGContextRef)context {
   if (self.opacity <= 0 || self.opacity >= 1 || (self.fill && self.stroke)) {
     // If we have both fill and stroke, we will need to paint this using normal compositing
-    [super renderTo: context];
+    [super renderTo:context];
     return;
   }
   // This is a terminal with only one painting. Therefore we don't need to paint this
@@ -79,8 +71,7 @@
   CGContextRestoreGState(context);
 }
 
-- (void)renderLayerTo:(CGContextRef)context
-{
+- (void)renderLayerTo:(CGContextRef)context {
   // abstract
 }
 

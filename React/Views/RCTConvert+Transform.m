@@ -11,8 +11,7 @@ static const NSUInteger kMatrixArrayLength = 4 * 4;
 
 @implementation RCTConvert (Transform)
 
-+ (CGFloat)convertToRadians:(id)json
-{
++ (CGFloat)convertToRadians:(id)json {
   if ([json isKindOfClass:[NSString class]]) {
     NSString *stringValue = (NSString *)json;
     if ([stringValue hasSuffix:@"deg"]) {
@@ -26,8 +25,7 @@ static const NSUInteger kMatrixArrayLength = 4 * 4;
   return [json floatValue];
 }
 
-+ (CATransform3D)CATransform3DFromMatrix:(id)json
-{
++ (CATransform3D)CATransform3DFromMatrix:(id)json {
   CATransform3D transform = CATransform3DIdentity;
   if (!json) {
     return transform;
@@ -46,8 +44,7 @@ static const NSUInteger kMatrixArrayLength = 4 * 4;
   return transform;
 }
 
-+ (CATransform3D)CATransform3D:(id)json
-{
++ (CATransform3D)CATransform3D:(id)json {
   CATransform3D transform = CATransform3DIdentity;
   if (!json) {
     return transform;

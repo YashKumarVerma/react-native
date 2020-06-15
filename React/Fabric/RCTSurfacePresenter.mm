@@ -75,8 +75,7 @@ static inline LayoutContext RCTGetLayoutContext()
 }
 
 - (instancetype)initWithContextContainer:(ContextContainer::Shared)contextContainer
-                         runtimeExecutor:(RuntimeExecutor)runtimeExecutor
-{
+                         runtimeExecutor:(RuntimeExecutor)runtimeExecutor {
   if (self = [super init]) {
     assert(contextContainer && "RuntimeExecutor must be not null.");
 
@@ -95,40 +94,34 @@ static inline LayoutContext RCTGetLayoutContext()
   return self;
 }
 
-- (RCTScheduler *_Nullable)_scheduler
-{
+- (RCTScheduler *_Nullable)_scheduler {
   std::lock_guard<std::mutex> lock(_schedulerAccessMutex);
   return _scheduler;
 }
 
-- (ContextContainer::Shared)contextContainer
-{
+- (ContextContainer::Shared)contextContainer {
   std::lock_guard<std::mutex> lock(_schedulerLifeCycleMutex);
   return _contextContainer;
 }
 
-- (void)setContextContainer:(ContextContainer::Shared)contextContainer
-{
+- (void)setContextContainer:(ContextContainer::Shared)contextContainer {
   std::lock_guard<std::mutex> lock(_schedulerLifeCycleMutex);
   _contextContainer = contextContainer;
 }
 
-- (RuntimeExecutor)runtimeExecutor
-{
+- (RuntimeExecutor)runtimeExecutor {
   std::lock_guard<std::mutex> lock(_schedulerLifeCycleMutex);
   return _runtimeExecutor;
 }
 
-- (void)setRuntimeExecutor:(RuntimeExecutor)runtimeExecutor
-{
+- (void)setRuntimeExecutor:(RuntimeExecutor)runtimeExecutor {
   std::lock_guard<std::mutex> lock(_schedulerLifeCycleMutex);
   _runtimeExecutor = runtimeExecutor;
 }
 
 #pragma mark - Internal Surface-dedicated Interface
 
-- (void)registerSurface:(RCTFabricSurface *)surface
-{
+- (void)registerSurface:(RCTFabricSurface *)surface {
   RCTScheduler *scheduler = [self _scheduler];
   [_surfaceRegistry registerSurface:surface];
   if (scheduler) {
@@ -136,8 +129,7 @@ static inline LayoutContext RCTGetLayoutContext()
   }
 }
 
-- (void)unregisterSurface:(RCTFabricSurface *)surface
-{
+- (void)unregisterSurface:(RCTFabricSurface *)surface {
   RCTScheduler *scheduler = [self _scheduler];
   if (scheduler) {
     [self _stopSurface:surface scheduler:scheduler];
@@ -145,8 +137,7 @@ static inline LayoutContext RCTGetLayoutContext()
   [_surfaceRegistry unregisterSurface:surface];
 }
 
-- (void)setProps:(NSDictionary *)props surface:(RCTFabricSurface *)surface
-{
+- (void)setProps:(NSDictionary *)props surface:(RCTFabricSurface *)surface {
   RCTScheduler *scheduler = [self _scheduler];
   if (scheduler) {
     [self _stopSurface:surface scheduler:scheduler];
@@ -154,15 +145,13 @@ static inline LayoutContext RCTGetLayoutContext()
   }
 }
 
-- (RCTFabricSurface *)surfaceForRootTag:(ReactTag)rootTag
-{
+- (RCTFabricSurface *)surfaceForRootTag:(ReactTag)rootTag {
   return [_surfaceRegistry surfaceForRootTag:rootTag];
 }
 
 - (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize
                       maximumSize:(CGSize)maximumSize
-                          surface:(RCTFabricSurface *)surface
-{
+                          surface:(RCTFabricSurface *)surface {
   RCTScheduler *scheduler = [self _scheduler];
   if (!scheduler) {
     return minimumSize;
@@ -174,8 +163,7 @@ static inline LayoutContext RCTGetLayoutContext()
                                               surfaceId:surface.rootTag];
 }
 
-- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize surface:(RCTFabricSurface *)surface
-{
+- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize surface:(RCTFabricSurface *)surface {
   RCTScheduler *scheduler = [self _scheduler];
   if (!scheduler) {
     return;
@@ -188,8 +176,7 @@ static inline LayoutContext RCTGetLayoutContext()
                                                 surfaceId:surface.rootTag];
 }
 
-- (BOOL)synchronouslyUpdateViewOnUIThread:(NSNumber *)reactTag props:(NSDictionary *)props
-{
+- (BOOL)synchronouslyUpdateViewOnUIThread:(NSNumber *)reactTag props:(NSDictionary *)props {
   RCTScheduler *scheduler = [self _scheduler];
   if (!scheduler) {
     return NO;
@@ -212,8 +199,7 @@ static inline LayoutContext RCTGetLayoutContext()
   return YES;
 }
 
-- (BOOL)synchronouslyWaitSurface:(RCTFabricSurface *)surface timeout:(NSTimeInterval)timeout
-{
+- (BOOL)synchronouslyWaitSurface:(RCTFabricSurface *)surface timeout:(NSTimeInterval)timeout {
   RCTScheduler *scheduler = [self _scheduler];
   if (!scheduler) {
     return NO;
@@ -230,8 +216,7 @@ static inline LayoutContext RCTGetLayoutContext()
   return YES;
 }
 
-- (BOOL)suspend
-{
+- (BOOL)suspend {
   std::lock_guard<std::mutex> lock(_schedulerLifeCycleMutex);
 
   RCTScheduler *scheduler;
@@ -250,8 +235,7 @@ static inline LayoutContext RCTGetLayoutContext()
   return YES;
 }
 
-- (BOOL)resume
-{
+- (BOOL)resume {
   std::lock_guard<std::mutex> lock(_schedulerLifeCycleMutex);
 
   RCTScheduler *scheduler;
@@ -276,8 +260,7 @@ static inline LayoutContext RCTGetLayoutContext()
 
 #pragma mark - Private
 
-- (RCTScheduler *)_createScheduler
-{
+- (RCTScheduler *)_createScheduler {
   auto reactNativeConfig = _contextContainer->at<std::shared_ptr<ReactNativeConfig const>>("ReactNativeConfig");
 
   auto componentRegistryFactory =
@@ -326,8 +309,7 @@ static inline LayoutContext RCTGetLayoutContext()
   return scheduler;
 }
 
-- (void)_startSurface:(RCTFabricSurface *)surface scheduler:(RCTScheduler *)scheduler
-{
+- (void)_startSurface:(RCTFabricSurface *)surface scheduler:(RCTScheduler *)scheduler {
   RCTMountingManager *mountingManager = _mountingManager;
   RCTExecuteOnMainQueue(^{
     [mountingManager.componentViewRegistry dequeueComponentViewWithComponentHandle:RootShadowNode::Handle()
@@ -345,8 +327,7 @@ static inline LayoutContext RCTGetLayoutContext()
                          layoutContext:layoutContext];
 }
 
-- (void)_stopSurface:(RCTFabricSurface *)surface scheduler:(RCTScheduler *)scheduler
-{
+- (void)_stopSurface:(RCTFabricSurface *)surface scheduler:(RCTScheduler *)scheduler {
   [scheduler stopSurfaceWithSurfaceId:surface.rootTag];
 
   RCTMountingManager *mountingManager = _mountingManager;
@@ -361,8 +342,7 @@ static inline LayoutContext RCTGetLayoutContext()
   [surface _unsetStage:(RCTSurfaceStagePrepared | RCTSurfaceStageMounted)];
 }
 
-- (void)_startAllSurfacesWithScheduler:(RCTScheduler *)scheduler
-{
+- (void)_startAllSurfacesWithScheduler:(RCTScheduler *)scheduler {
   [_surfaceRegistry enumerateWithBlock:^(NSEnumerator<RCTFabricSurface *> *enumerator) {
     for (RCTFabricSurface *surface in enumerator) {
       [self _startSurface:surface scheduler:scheduler];
@@ -370,8 +350,7 @@ static inline LayoutContext RCTGetLayoutContext()
   }];
 }
 
-- (void)_stopAllSurfacesWithScheduler:(RCTScheduler *)scheduler
-{
+- (void)_stopAllSurfacesWithScheduler:(RCTScheduler *)scheduler {
   [_surfaceRegistry enumerateWithBlock:^(NSEnumerator<RCTFabricSurface *> *enumerator) {
     for (RCTFabricSurface *surface in enumerator) {
       [self _stopSurface:surface scheduler:scheduler];
@@ -381,8 +360,7 @@ static inline LayoutContext RCTGetLayoutContext()
 
 #pragma mark - RCTSchedulerDelegate
 
-- (void)schedulerDidFinishTransaction:(MountingCoordinator::Shared const &)mountingCoordinator
-{
+- (void)schedulerDidFinishTransaction:(MountingCoordinator::Shared const &)mountingCoordinator {
   RCTFabricSurface *surface = [_surfaceRegistry surfaceForRootTag:mountingCoordinator->getSurfaceId()];
 
   [surface _setStage:RCTSurfaceStagePrepared];
@@ -392,8 +370,7 @@ static inline LayoutContext RCTGetLayoutContext()
 
 - (void)schedulerDidDispatchCommand:(ShadowView const &)shadowView
                         commandName:(std::string const &)commandName
-                               args:(folly::dynamic const)args
-{
+                               args:(folly::dynamic const)args {
   ReactTag tag = shadowView.tag;
   NSString *commandStr = [[NSString alloc] initWithUTF8String:commandName.c_str()];
   NSArray *argsArray = convertFollyDynamicToId(args);
@@ -401,22 +378,19 @@ static inline LayoutContext RCTGetLayoutContext()
   [self->_mountingManager dispatchCommand:tag commandName:commandStr args:argsArray];
 }
 
-- (void)addObserver:(id<RCTSurfacePresenterObserver>)observer
-{
+- (void)addObserver:(id<RCTSurfacePresenterObserver>)observer {
   std::unique_lock<better::shared_mutex> lock(_observerListMutex);
   [self->_observers addObject:observer];
 }
 
-- (void)removeObserver:(id<RCTSurfacePresenterObserver>)observer
-{
+- (void)removeObserver:(id<RCTSurfacePresenterObserver>)observer {
   std::unique_lock<better::shared_mutex> lock(_observerListMutex);
   [self->_observers removeObject:observer];
 }
 
 #pragma mark - RCTMountingManagerDelegate
 
-- (void)mountingManager:(RCTMountingManager *)mountingManager willMountComponentsWithRootTag:(ReactTag)rootTag
-{
+- (void)mountingManager:(RCTMountingManager *)mountingManager willMountComponentsWithRootTag:(ReactTag)rootTag {
   RCTAssertMainQueue();
 
   std::shared_lock<better::shared_mutex> lock(_observerListMutex);
@@ -427,8 +401,7 @@ static inline LayoutContext RCTGetLayoutContext()
   }
 }
 
-- (void)mountingManager:(RCTMountingManager *)mountingManager didMountComponentsWithRootTag:(ReactTag)rootTag
-{
+- (void)mountingManager:(RCTMountingManager *)mountingManager didMountComponentsWithRootTag:(ReactTag)rootTag {
   RCTAssertMainQueue();
 
   RCTFabricSurface *surface = [_surfaceRegistry surfaceForRootTag:rootTag];

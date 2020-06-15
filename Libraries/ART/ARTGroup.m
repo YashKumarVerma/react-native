@@ -9,8 +9,7 @@
 
 @implementation ARTGroup
 
-- (void)renderLayerTo:(CGContextRef)context
-{
+- (void)renderLayerTo:(CGContextRef)context {
   if (!CGRectIsEmpty(self.clipping)) {
     CGContextClipToRect(context, self.clipping);
   }

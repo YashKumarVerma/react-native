@@ -23,8 +23,7 @@ using namespace facebook::react;
   UISwitch *_switchView;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     _switchView = [[UISwitch alloc] initWithFrame:self.bounds];
 
@@ -38,8 +37,7 @@ using namespace facebook::react;
   return self;
 }
 
-- (void)setPropsToDefault
-{
+- (void)setPropsToDefault {
   static const auto defaultProps = std::make_shared<const SwitchProps>();
   _props = defaultProps;
   _switchView.on = defaultProps->value;
@@ -47,19 +45,16 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
   [self setPropsToDefault];
 }
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<SwitchComponentDescriptor>();
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   const auto &oldSwitchProps = *std::static_pointer_cast<const SwitchProps>(_props);
   const auto &newSwitchProps = *std::static_pointer_cast<const SwitchProps>(props);
 
@@ -91,8 +86,7 @@ using namespace facebook::react;
   [super updateProps:props oldProps:oldProps];
 }
 
-- (void)onChange:(UISwitch *)sender
-{
+- (void)onChange:(UISwitch *)sender {
   const auto &props = *std::static_pointer_cast<const SwitchProps>(_props);
   if (props.value == sender.on) {
     return;
@@ -104,13 +98,11 @@ using namespace facebook::react;
 
 #pragma mark - Native Commands
 
-- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args
-{
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
   RCTSwitchHandleCommand(self, commandName, args);
 }
 
-- (void)setValue:(BOOL)value
-{
+- (void)setValue:(BOOL)value {
   [_switchView setOn:value animated:YES];
 }
 

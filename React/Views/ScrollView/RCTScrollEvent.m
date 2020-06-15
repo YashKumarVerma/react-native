@@ -29,8 +29,7 @@
                   scrollViewFrame:(CGRect)scrollViewFrame
               scrollViewZoomScale:(CGFloat)scrollViewZoomScale
                          userData:(NSDictionary *)userData
-                    coalescingKey:(uint16_t)coalescingKey
-{
+                    coalescingKey:(uint16_t)coalescingKey {
   RCTAssertParam(reactTag);
 
   if ((self = [super init])) {
@@ -49,13 +48,11 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (uint16_t)coalescingKey
-{
+- (uint16_t)coalescingKey {
   return _coalescingKey;
 }
 
-- (NSDictionary *)body
-{
+- (NSDictionary *)body {
   NSDictionary *body = @{
     @"contentOffset" : @{@"x" : @(_scrollViewContentOffset.x), @"y" : @(_scrollViewContentOffset.y)},
     @"contentInset" : @{
@@ -78,13 +75,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return body;
 }
 
-- (BOOL)canCoalesce
-{
+- (BOOL)canCoalesce {
   return YES;
 }
 
-- (RCTScrollEvent *)coalesceWithEvent:(RCTScrollEvent *)newEvent
-{
+- (RCTScrollEvent *)coalesceWithEvent:(RCTScrollEvent *)newEvent {
   NSArray<NSDictionary *> *updatedChildFrames =
       [_userData[@"updatedChildFrames"] arrayByAddingObjectsFromArray:newEvent->_userData[@"updatedChildFrames"]];
   if (updatedChildFrames) {
@@ -96,13 +91,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return newEvent;
 }
 
-+ (NSString *)moduleDotMethod
-{
++ (NSString *)moduleDotMethod {
   return @"RCTEventEmitter.receiveEvent";
 }
 
-- (NSArray *)arguments
-{
+- (NSArray *)arguments {
   return @[ self.viewTag, RCTNormalizeInputEventName(self.eventName), [self body] ];
 }
 

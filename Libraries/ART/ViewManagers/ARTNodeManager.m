@@ -13,18 +13,15 @@
 
 RCT_EXPORT_MODULE()
 
-- (ARTNode *)node
-{
+- (ARTNode *)node {
   return [ARTNode new];
 }
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [self node];
 }
 
-- (RCTShadowView *)shadowView
-{
+- (RCTShadowView *)shadowView {
   return nil;
 }
 

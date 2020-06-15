@@ -9,8 +9,7 @@
 
 @implementation RCTModuloAnimatedNode
 
-- (void)performUpdate
-{
+- (void)performUpdate {
   [super performUpdate];
   NSNumber *inputNode = self.config[@"input"];
   NSNumber *modulus = self.config[@"modulus"];

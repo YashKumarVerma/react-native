@@ -19,32 +19,27 @@
 
 @implementation RCTSurfaceHostingComponent
 
-+ (Class<CKComponentControllerProtocol>)controllerClass
-{
++ (Class<CKComponentControllerProtocol>)controllerClass {
   return [RCTSurfaceHostingComponentController class];
 }
 
-+ (id)initialState
-{
++ (id)initialState {
   return [RCTSurfaceHostingComponentState new];
 }
 
-+ (instancetype)newWithSurface:(RCTSurface *)surface options:(RCTSurfaceHostingComponentOptions)options
-{
++ (instancetype)newWithSurface:(RCTSurface *)surface options:(RCTSurfaceHostingComponentOptions)options {
   CKComponentScope scope(self, surface);
 
   RCTSurfaceHostingComponentState *const state = scope.state();
 
   RCTSurfaceHostingComponentState *const newState =
-    [RCTSurfaceHostingComponentState newWithStage:surface.stage
-                                     intrinsicSize:surface.intrinsicSize];
+      [RCTSurfaceHostingComponentState newWithStage:surface.stage intrinsicSize:surface.intrinsicSize];
 
   if (![state isEqual:newState]) {
     CKComponentScope::replaceState(scope, newState);
   }
 
-  RCTSurfaceHostingComponent *const component =
-    [super newWithView:{[UIView class]} size:{}];
+  RCTSurfaceHostingComponent *const component = [super newWithView:{[UIView class]} size:{}];
 
   if (component) {
     component->_state = scope.state();
@@ -55,8 +50,7 @@
   return component;
 }
 
-- (CKComponentLayout)computeLayoutThatFits:(CKSizeRange)constrainedSize
-{
+- (CKComponentLayout)computeLayoutThatFits:(CKSizeRange)constrainedSize {
   // Optimistically communicating layout constraints to the `_surface`,
   // just to provide layout constraints to React Native as early as possible.
   // React Native *may* use this info later during applying the own state and
@@ -71,8 +65,7 @@
   // interop compatibilities of React Native which will enable us granularly
   // control React Native mounting blocks and, as a result, implement
   // truly synchronous mounting stage between React Native and ComponentKit.
-  [_surface setMinimumSize:constrainedSize.min
-               maximumSize:constrainedSize.max];
+  [_surface setMinimumSize:constrainedSize.min maximumSize:constrainedSize.max];
 
   // Just in case of the very first building pass, we give React Native a chance
   // to prepare its internals for coming synchronous measuring.
@@ -81,10 +74,8 @@
 
   CGSize fittingSize = CGSizeZero;
   if (_surface.stage & RCTSurfaceStageSurfaceDidInitialLayout) {
-    fittingSize = [_surface sizeThatFitsMinimumSize:constrainedSize.min
-                                        maximumSize:constrainedSize.max];
-  }
-  else {
+    fittingSize = [_surface sizeThatFitsMinimumSize:constrainedSize.min maximumSize:constrainedSize.max];
+  } else {
     fittingSize = _options.activityIndicatorSize;
   }
 
@@ -92,13 +83,12 @@
   return {self, fittingSize};
 }
 
-- (CKComponentBoundsAnimation)boundsAnimationFromPreviousComponent:(RCTSurfaceHostingComponent *)previousComponent
-{
+- (CKComponentBoundsAnimation)boundsAnimationFromPreviousComponent:(RCTSurfaceHostingComponent *)previousComponent {
   if (_options.boundsAnimations && (previousComponent->_state.stage != _state.stage)) {
     return {
-      .mode = CKComponentBoundsAnimationModeDefault,
-      .duration = 0.25,
-      .options = UIViewAnimationOptionCurveEaseInOut,
+        .mode = CKComponentBoundsAnimationModeDefault,
+        .duration = 0.25,
+        .options = UIViewAnimationOptionCurveEaseInOut,
     };
   }
 

@@ -46,8 +46,7 @@ using namespace facebook::react;
 
 @implementation RCTUIManager (Hack)
 
-+ (void)registerView:(UIView *)view
-{
++ (void)registerView:(UIView *)view {
   if (!view) {
     return;
   }
@@ -57,8 +56,7 @@ using namespace facebook::react;
   [uiManager.viewRegistry setObject:view forKey:@(view.tag)];
 }
 
-+ (void)unregisterView:(UIView *)view
-{
++ (void)unregisterView:(UIView *)view {
   if (!view) {
     return;
   }
@@ -79,8 +77,7 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
   better::map<ComponentHandle, std::vector<RCTComponentViewDescriptor>> _recyclePool;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _componentViewFactory = [RCTComponentViewFactory standardComponentViewFactory];
 
@@ -98,8 +95,7 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
   return self;
 }
 
-- (void)preallocateViewComponents
-{
+- (void)preallocateViewComponents {
   // This data is based on empirical evidence which should represent the reality pretty well.
   // Regular `<View>` has magnitude equals to `1` by definition.
   std::vector<std::pair<ComponentHandle, float>> componentMagnitudes = {
@@ -120,8 +116,7 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
   }
 }
 
-- (RCTComponentViewDescriptor)dequeueComponentViewWithComponentHandle:(ComponentHandle)componentHandle tag:(Tag)tag
-{
+- (RCTComponentViewDescriptor)dequeueComponentViewWithComponentHandle:(ComponentHandle)componentHandle tag:(Tag)tag {
   RCTAssertMainQueue();
 
   RCTAssert(
@@ -142,8 +137,7 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
 
 - (void)enqueueComponentViewWithComponentHandle:(ComponentHandle)componentHandle
                                             tag:(Tag)tag
-                        componentViewDescriptor:(RCTComponentViewDescriptor)componentViewDescriptor
-{
+                        componentViewDescriptor:(RCTComponentViewDescriptor)componentViewDescriptor {
   RCTAssertMainQueue();
 
   RCTAssert(
@@ -158,24 +152,21 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
   [self _enqueueComponentViewWithComponentHandle:componentHandle componentViewDescriptor:componentViewDescriptor];
 }
 
-- (void)optimisticallyCreateComponentViewWithComponentHandle:(ComponentHandle)componentHandle
-{
+- (void)optimisticallyCreateComponentViewWithComponentHandle:(ComponentHandle)componentHandle {
   RCTAssertMainQueue();
   [self _enqueueComponentViewWithComponentHandle:componentHandle
                          componentViewDescriptor:[self.componentViewFactory
                                                      createComponentViewWithComponentHandle:componentHandle]];
 }
 
-- (RCTComponentViewDescriptor const &)componentViewDescriptorWithTag:(Tag)tag
-{
+- (RCTComponentViewDescriptor const &)componentViewDescriptorWithTag:(Tag)tag {
   RCTAssertMainQueue();
   auto iterator = _registry.find(tag);
   RCTAssert(iterator != _registry.end(), @"RCTComponentViewRegistry: Attempt to query unregistered component.");
   return iterator->second;
 }
 
-- (nullable UIView<RCTComponentViewProtocol> *)findComponentViewWithTag:(Tag)tag
-{
+- (nullable UIView<RCTComponentViewProtocol> *)findComponentViewWithTag:(Tag)tag {
   RCTAssertMainQueue();
   auto iterator = _registry.find(tag);
   if (iterator == _registry.end()) {
@@ -184,8 +175,7 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
   return iterator->second.view;
 }
 
-- (RCTComponentViewDescriptor)_dequeueComponentViewWithComponentHandle:(ComponentHandle)componentHandle
-{
+- (RCTComponentViewDescriptor)_dequeueComponentViewWithComponentHandle:(ComponentHandle)componentHandle {
   RCTAssertMainQueue();
   auto &recycledViews = _recyclePool[componentHandle];
 
@@ -199,8 +189,7 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
 }
 
 - (void)_enqueueComponentViewWithComponentHandle:(ComponentHandle)componentHandle
-                         componentViewDescriptor:(RCTComponentViewDescriptor)componentViewDescriptor
-{
+                         componentViewDescriptor:(RCTComponentViewDescriptor)componentViewDescriptor {
   RCTAssertMainQueue();
   auto &recycledViews = _recyclePool[componentHandle];
 
@@ -213,8 +202,7 @@ const NSInteger RCTComponentViewRegistryRecyclePoolMaxSize = 1024;
   recycledViews.push_back(componentViewDescriptor);
 }
 
-- (void)handleApplicationDidReceiveMemoryWarningNotification
-{
+- (void)handleApplicationDidReceiveMemoryWarningNotification {
   _recyclePool.clear();
 }
 

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/components/art/ARTShapeProps.h>
 #include <Glog/logging.h>
+#include <react/components/art/ARTShapeProps.h>
 #include <react/core/propsConversions.h>
 
 namespace facebook {

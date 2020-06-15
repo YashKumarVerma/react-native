@@ -16,8 +16,7 @@
 
 @implementation RCTRedBoxExtraDataCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
   if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
     self.backgroundColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1];
     UILayoutGuide *contentLayout = self.contentView.layoutMarginsGuide;
@@ -70,8 +69,7 @@
 
 @synthesize actionDelegate = _actionDelegate;
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _extraData = [NSMutableArray new];
     _extraDataTitle = [NSMutableArray new];
@@ -145,24 +143,20 @@
   return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
   [_tableView reloadData];
 }
 
-- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   return [[_extraData objectAtIndex:section] count];
 }
 
-- (CGFloat)tableView:(__unused UITableView *)tableView heightForHeaderInSection:(__unused NSInteger)section
-{
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForHeaderInSection:(__unused NSInteger)section {
   return 40;
 }
 
-- (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
+- (UIView *)tableView:(__unused UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
   UIView *view = [UIView new];
   view.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:1];
 
@@ -182,8 +176,7 @@
   return view;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   static NSString *reuseIdentifier = @"RedBoxExtraData";
 
   RCTRedBoxExtraDataCell *cell =
@@ -200,13 +193,11 @@
   return cell;
 }
 
-- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView {
   return _extraDataTitle.count;
 }
 
-- (void)addExtraData:(NSDictionary *)data forIdentifier:(NSString *)identifier
-{
+- (void)addExtraData:(NSDictionary *)data forIdentifier:(NSString *)identifier {
   dispatch_async(dispatch_get_main_queue(), ^{
     NSMutableArray *newData = [NSMutableArray new];
     for (id key in data) {
@@ -228,20 +219,17 @@
   });
 }
 
-- (void)dismiss
-{
+- (void)dismiss {
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)reload
-{
+- (void)reload {
   [_actionDelegate reload];
 }
 
 #pragma mark - Key commands
 
-- (NSArray<UIKeyCommand *> *)keyCommands
-{
+- (NSArray<UIKeyCommand *> *)keyCommands {
   return @[
     // Dismiss
     [UIKeyCommand keyCommandWithInput:UIKeyInputEscape modifierFlags:0 action:@selector(dismiss)],

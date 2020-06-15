@@ -8,27 +8,27 @@
 #ifdef DEBUG
 #include "YGNodePrint.h"
 #include <stdarg.h>
+#include "Utils.h"
 #include "YGEnums.h"
 #include "YGNode.h"
 #include "Yoga-internal.h"
-#include "Utils.h"
 
 namespace facebook {
 namespace yoga {
 typedef std::string string;
 
-static void indent(string& base, uint32_t level) {
+static void indent(string &base, uint32_t level) {
   for (uint32_t i = 0; i < level; ++i) {
     base.append("  ");
   }
 }
 
-static bool areFourValuesEqual(const YGStyle::Edges& four) {
+static bool areFourValuesEqual(const YGStyle::Edges &four) {
   return YGValueEqual(four[0], four[1]) && YGValueEqual(four[0], four[2]) &&
       YGValueEqual(four[0], four[3]);
 }
 
-static void appendFormatedString(string& str, const char* fmt, ...) {
+static void appendFormatedString(string &str, const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
   va_list argsCopy;
@@ -42,7 +42,7 @@ static void appendFormatedString(string& str, const char* fmt, ...) {
 }
 
 static void appendFloatOptionalIfDefined(
-    string& base,
+    string &base,
     const string key,
     const YGFloatOptional num) {
   if (!num.isUndefined()) {
@@ -51,7 +51,7 @@ static void appendFloatOptionalIfDefined(
 }
 
 static void appendNumberIfNotUndefined(
-    string& base,
+    string &base,
     const string key,
     const YGValue number) {
   if (number.unit != YGUnitUndefined) {
@@ -65,19 +65,15 @@ static void appendNumberIfNotUndefined(
   }
 }
 
-static void appendNumberIfNotAuto(
-    string& base,
-    const string& key,
-    const YGValue number) {
+static void
+appendNumberIfNotAuto(string &base, const string &key, const YGValue number) {
   if (number.unit != YGUnitAuto) {
     appendNumberIfNotUndefined(base, key, number);
   }
 }
 
-static void appendNumberIfNotZero(
-    string& base,
-    const string& str,
-    const YGValue number) {
+static void
+appendNumberIfNotZero(string &base, const string &str, const YGValue number) {
   if (number.unit == YGUnitAuto) {
     base.append(str + ": auto; ");
   } else if (!YGFloatsEqual(number.value, 0)) {
@@ -85,10 +81,8 @@ static void appendNumberIfNotZero(
   }
 }
 
-static void appendEdges(
-    string& base,
-    const string& key,
-    const YGStyle::Edges& edges) {
+static void
+appendEdges(string &base, const string &key, const YGStyle::Edges &edges) {
   if (areFourValuesEqual(edges)) {
     appendNumberIfNotZero(base, key, edges[YGEdgeLeft]);
   } else {
@@ -100,9 +94,9 @@ static void appendEdges(
 }
 
 static void appendEdgeIfNotUndefined(
-    string& base,
-    const string& str,
-    const YGStyle::Edges& edges,
+    string &base,
+    const string &str,
+    const YGStyle::Edges &edges,
     const YGEdge edge) {
   appendNumberIfNotUndefined(
       base,
@@ -111,7 +105,7 @@ static void appendEdgeIfNotUndefined(
 }
 
 void YGNodeToString(
-    std::string& str,
+    std::string &str,
     YGNodeRef node,
     YGPrintOptions options,
     uint32_t level) {
@@ -133,7 +127,7 @@ void YGNodeToString(
 
   if (options & YGPrintOptionsStyle) {
     appendFormatedString(str, "style=\"");
-    const auto& style = node->getStyle();
+    const auto &style = node->getStyle();
     if (style.flexDirection() != YGNode().getStyle().flexDirection()) {
       appendFormatedString(
           str,

@@ -45,8 +45,7 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
   NSMutableDictionary<NSString *, UIGestureRecognizer *> *_tvRemoteGestureRecognizers;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if ((self = [super init])) {
     _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
 
@@ -124,23 +123,19 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
   return self;
 }
 
-- (void)playPausePressed:(UIGestureRecognizer *)r
-{
+- (void)playPausePressed:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventPlayPause toView:r.view];
 }
 
-- (void)menuPressed:(UIGestureRecognizer *)r
-{
+- (void)menuPressed:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventMenu toView:r.view];
 }
 
-- (void)selectPressed:(UIGestureRecognizer *)r
-{
+- (void)selectPressed:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventSelect toView:r.view];
 }
 
-- (void)longPlayPausePressed:(UIGestureRecognizer *)r
-{
+- (void)longPlayPausePressed:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventLongPlayPause toView:r.view];
 
 #if __has_include("RCTDevMenu.h") && RCT_DEV
@@ -149,48 +144,39 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 #endif
 }
 
-- (void)longSelectPressed:(UIGestureRecognizer *)r
-{
+- (void)longSelectPressed:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventLongSelect toView:r.view];
 }
 
-- (void)swipedUp:(UIGestureRecognizer *)r
-{
+- (void)swipedUp:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventSwipeUp toView:r.view];
 }
 
-- (void)swipedDown:(UIGestureRecognizer *)r
-{
+- (void)swipedDown:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventSwipeDown toView:r.view];
 }
 
-- (void)swipedLeft:(UIGestureRecognizer *)r
-{
+- (void)swipedLeft:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventSwipeLeft toView:r.view];
 }
 
-- (void)swipedRight:(UIGestureRecognizer *)r
-{
+- (void)swipedRight:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventSwipeRight toView:r.view];
 }
 
-- (void)tappedUp:(UIGestureRecognizer *)r
-{
+- (void)tappedUp:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventUp toView:r.view];
 }
 
-- (void)tappedDown:(UIGestureRecognizer *)r
-{
+- (void)tappedDown:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventDown toView:r.view];
 }
 
-- (void)tappedLeft:(UIGestureRecognizer *)r
-{
+- (void)tappedLeft:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventLeft toView:r.view];
 }
 
-- (void)tappedRight:(UIGestureRecognizer *)r
-{
+- (void)tappedRight:(UIGestureRecognizer *)r {
   [self sendAppleTVEvent:RCTTVRemoteEventRight toView:r.view];
 }
 
@@ -198,16 +184,16 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 
 - (void)addLongPressGestureRecognizerWithSelector:(nonnull SEL)selector
                                         pressType:(UIPressType)pressType
-                                             name:(NSString *)name
-{
+                                             name:(NSString *)name {
   UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:selector];
   recognizer.allowedPressTypes = @[ @(pressType) ];
 
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
 
-- (void)addTapGestureRecognizerWithSelector:(nonnull SEL)selector pressType:(UIPressType)pressType name:(NSString *)name
-{
+- (void)addTapGestureRecognizerWithSelector:(nonnull SEL)selector
+                                  pressType:(UIPressType)pressType
+                                       name:(NSString *)name {
   UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:selector];
   recognizer.allowedPressTypes = @[ @(pressType) ];
 
@@ -216,16 +202,14 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 
 - (void)addSwipeGestureRecognizerWithSelector:(nonnull SEL)selector
                                     direction:(UISwipeGestureRecognizerDirection)direction
-                                         name:(NSString *)name
-{
+                                         name:(NSString *)name {
   UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:selector];
   recognizer.direction = direction;
 
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
 
-- (void)sendAppleTVEvent:(NSString *)eventType toView:(__unused UIView *)v
-{
+- (void)sendAppleTVEvent:(NSString *)eventType toView:(__unused UIView *)v {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
                                                       object:@{@"eventType" : eventType}];
 }

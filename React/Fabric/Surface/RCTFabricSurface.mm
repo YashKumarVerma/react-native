@@ -42,8 +42,7 @@ using namespace facebook::react;
 
 - (instancetype)initWithSurfacePresenter:(RCTSurfacePresenter *)surfacePresenter
                               moduleName:(NSString *)moduleName
-                       initialProperties:(NSDictionary *)initialProperties
-{
+                       initialProperties:(NSDictionary *)initialProperties {
   if (self = [super init]) {
     _surfacePresenter = surfacePresenter;
     _moduleName = moduleName;
@@ -62,8 +61,7 @@ using namespace facebook::react;
   return self;
 }
 
-- (BOOL)start
-{
+- (BOOL)start {
   if (![self _setStage:RCTSurfaceStageStarted]) {
     return NO;
   }
@@ -72,8 +70,7 @@ using namespace facebook::react;
   return YES;
 }
 
-- (BOOL)stop
-{
+- (BOOL)stop {
   if (![self _unsetStage:RCTSurfaceStageStarted]) {
     return NO;
   }
@@ -82,22 +79,19 @@ using namespace facebook::react;
   return YES;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [self stop];
 }
 
 #pragma mark - Immutable Properties (no need to enforce synchronization)
 
-- (NSString *)moduleName
-{
+- (NSString *)moduleName {
   return _moduleName;
 }
 
 #pragma mark - Main-Threaded Routines
 
-- (RCTSurfaceView *)view
-{
+- (RCTSurfaceView *)view {
   RCTAssertMainQueue();
 
   if (!_view) {
@@ -110,24 +104,20 @@ using namespace facebook::react;
 
 #pragma mark - Stage management
 
-- (RCTSurfaceStage)stage
-{
+- (RCTSurfaceStage)stage {
   std::lock_guard<std::mutex> lock(_mutex);
   return _stage;
 }
 
-- (BOOL)_setStage:(RCTSurfaceStage)stage
-{
+- (BOOL)_setStage:(RCTSurfaceStage)stage {
   return [self _setStage:stage setOrUnset:YES];
 }
 
-- (BOOL)_unsetStage:(RCTSurfaceStage)stage
-{
+- (BOOL)_unsetStage:(RCTSurfaceStage)stage {
   return [self _setStage:stage setOrUnset:NO];
 }
 
-- (BOOL)_setStage:(RCTSurfaceStage)stage setOrUnset:(BOOL)setOrUnset
-{
+- (BOOL)_setStage:(RCTSurfaceStage)stage setOrUnset:(BOOL)setOrUnset {
   RCTSurfaceStage updatedStage;
   {
     std::lock_guard<std::mutex> lock(_mutex);
@@ -149,8 +139,7 @@ using namespace facebook::react;
   return YES;
 }
 
-- (void)_propagateStageChange:(RCTSurfaceStage)stage
-{
+- (void)_propagateStageChange:(RCTSurfaceStage)stage {
   // Updating the `view`
   RCTExecuteOnMainQueue(^{
     self->_view.stage = stage;
@@ -165,14 +154,12 @@ using namespace facebook::react;
 
 #pragma mark - Properties Management
 
-- (NSDictionary *)properties
-{
+- (NSDictionary *)properties {
   std::lock_guard<std::mutex> lock(_mutex);
   return _properties;
 }
 
-- (void)setProperties:(NSDictionary *)properties
-{
+- (void)setProperties:(NSDictionary *)properties {
   {
     std::lock_guard<std::mutex> lock(_mutex);
 
@@ -188,20 +175,17 @@ using namespace facebook::react;
 
 #pragma mark - Layout
 
-- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   return [_surfacePresenter sizeThatFitsMinimumSize:minimumSize maximumSize:maximumSize surface:self];
 }
 
 #pragma mark - Size Constraints
 
-- (void)setSize:(CGSize)size
-{
+- (void)setSize:(CGSize)size {
   [self setMinimumSize:size maximumSize:size];
 }
 
-- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   {
     std::lock_guard<std::mutex> lock(_mutex);
     if (CGSizeEqualToSize(minimumSize, _minimumSize) && CGSizeEqualToSize(maximumSize, _maximumSize)) {
@@ -215,22 +199,19 @@ using namespace facebook::react;
   [_surfacePresenter setMinimumSize:minimumSize maximumSize:maximumSize surface:self];
 }
 
-- (CGSize)minimumSize
-{
+- (CGSize)minimumSize {
   std::lock_guard<std::mutex> lock(_mutex);
   return _minimumSize;
 }
 
-- (CGSize)maximumSize
-{
+- (CGSize)maximumSize {
   std::lock_guard<std::mutex> lock(_mutex);
   return _maximumSize;
 }
 
 #pragma mark - intrinsicSize
 
-- (void)setIntrinsicSize:(CGSize)intrinsicSize
-{
+- (void)setIntrinsicSize:(CGSize)intrinsicSize {
   {
     std::lock_guard<std::mutex> lock(_mutex);
     if (CGSizeEqualToSize(intrinsicSize, _intrinsicSize)) {
@@ -247,16 +228,14 @@ using namespace facebook::react;
   }
 }
 
-- (CGSize)intrinsicSize
-{
+- (CGSize)intrinsicSize {
   std::lock_guard<std::mutex> lock(_mutex);
   return _intrinsicSize;
 }
 
 #pragma mark - Synchronous Waiting
 
-- (BOOL)synchronouslyWaitFor:(NSTimeInterval)timeout
-{
+- (BOOL)synchronouslyWaitFor:(NSTimeInterval)timeout {
   return [_surfacePresenter synchronouslyWaitSurface:self timeout:timeout];
 }
 
@@ -264,15 +243,13 @@ using namespace facebook::react;
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
                     moduleName:(NSString *)moduleName
-             initialProperties:(NSDictionary *)initialProperties
-{
+             initialProperties:(NSDictionary *)initialProperties {
   return [self initWithSurfacePresenter:bridge.surfacePresenter
                              moduleName:moduleName
                       initialProperties:initialProperties];
 }
 
-- (NSNumber *)rootViewTag
-{
+- (NSNumber *)rootViewTag {
   return @(_rootTag);
 }
 

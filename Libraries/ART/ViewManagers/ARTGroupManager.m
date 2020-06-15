@@ -14,8 +14,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (ARTNode *)node
-{
+- (ARTNode *)node {
   return [ARTGroup new];
 }
 

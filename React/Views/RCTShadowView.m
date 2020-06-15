@@ -43,8 +43,7 @@ typedef NS_ENUM(unsigned int, meta_prop_t) {
   YGValue _borderMetaProps[META_PROP_COUNT];
 }
 
-+ (YGConfigRef)yogaConfig
-{
++ (YGConfigRef)yogaConfig {
   static YGConfigRef yogaConfig;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -162,8 +161,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   YGNodeStyleSetBorder(node, YGEdgeAll, metaProps[META_PROP_ALL].value);
 }
 
-- (CGRect)measureLayoutRelativeToAncestor:(RCTShadowView *)ancestor
-{
+- (CGRect)measureLayoutRelativeToAncestor:(RCTShadowView *)ancestor {
   CGPoint offset = CGPointZero;
   RCTShadowView *shadowView = self;
   while (shadowView && shadowView != ancestor) {
@@ -177,8 +175,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   return (CGRect){offset, self.layoutMetrics.frame.size};
 }
 
-- (BOOL)viewIsDescendantOf:(RCTShadowView *)ancestor
-{
+- (BOOL)viewIsDescendantOf:(RCTShadowView *)ancestor {
   RCTShadowView *shadowView = self;
   while (shadowView && shadowView != ancestor) {
     shadowView = shadowView->_superview;
@@ -186,8 +183,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   return ancestor == shadowView;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     for (unsigned int ii = 0; ii < META_PROP_COUNT; ii++) {
       _paddingMetaProps[ii] = YGValueUndefined;
@@ -208,28 +204,23 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   return self;
 }
 
-- (BOOL)isReactRootView
-{
+- (BOOL)isReactRootView {
   return RCTIsReactRootView(self.reactTag);
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   YGNodeFree(_yogaNode);
 }
 
-- (BOOL)canHaveSubviews
-{
+- (BOOL)canHaveSubviews {
   return YES;
 }
 
-- (BOOL)isYogaLeafNode
-{
+- (BOOL)isYogaLeafNode {
   return NO;
 }
 
-- (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)atIndex {
   RCTAssert(self.canHaveSubviews, @"Attempt to insert subview inside leaf view.");
 
   [_reactSubviews insertObject:subview atIndex:atIndex];
@@ -239,8 +230,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   subview->_superview = self;
 }
 
-- (void)removeReactSubview:(RCTShadowView *)subview
-{
+- (void)removeReactSubview:(RCTShadowView *)subview {
   subview->_superview = nil;
   [_reactSubviews removeObject:subview];
   if (![self isYogaLeafNode]) {
@@ -248,13 +238,11 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   }
 }
 
-- (NSArray<RCTShadowView *> *)reactSubviews
-{
+- (NSArray<RCTShadowView *> *)reactSubviews {
   return _reactSubviews;
 }
 
-- (RCTShadowView *)reactSuperview
-{
+- (RCTShadowView *)reactSuperview {
   return _superview;
 }
 
@@ -263,8 +251,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
 - (void)layoutWithMinimumSize:(CGSize)minimumSize
                   maximumSize:(CGSize)maximumSize
               layoutDirection:(UIUserInterfaceLayoutDirection)layoutDirection
-                layoutContext:(RCTLayoutContext)layoutContext
-{
+                layoutContext:(RCTLayoutContext)layoutContext {
   YGNodeRef yogaNode = _yogaNode;
 
   CGSize oldMinimumSize = (CGSize){RCTCoreGraphicsFloatFromYogaValue(YGNodeStyleGetMinWidth(yogaNode), 0.0),
@@ -299,16 +286,14 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   [self layoutSubviewsWithContext:layoutContext];
 }
 
-- (void)layoutWithMetrics:(RCTLayoutMetrics)layoutMetrics layoutContext:(RCTLayoutContext)layoutContext
-{
+- (void)layoutWithMetrics:(RCTLayoutMetrics)layoutMetrics layoutContext:(RCTLayoutContext)layoutContext {
   if (!RCTLayoutMetricsEqualToLayoutMetrics(self.layoutMetrics, layoutMetrics)) {
     self.layoutMetrics = layoutMetrics;
     [layoutContext.affectedShadowViews addObject:self];
   }
 }
 
-- (void)layoutSubviewsWithContext:(RCTLayoutContext)layoutContext
-{
+- (void)layoutSubviewsWithContext:(RCTLayoutContext)layoutContext {
   RCTLayoutMetrics layoutMetrics = self.layoutMetrics;
 
   if (layoutMetrics.displayType == RCTDisplayTypeNone) {
@@ -338,8 +323,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   }
 }
 
-- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   YGNodeRef clonedYogaNode = YGNodeClone(self.yogaNode);
   YGNodeRef constraintYogaNode = YGNodeNewWithConfig([[self class] yogaConfig]);
 
@@ -368,8 +352,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   return measuredSize;
 }
 
-- (NSNumber *)reactTagAtPoint:(CGPoint)point
-{
+- (NSNumber *)reactTagAtPoint:(CGPoint)point {
   for (RCTShadowView *shadowView in _reactSubviews) {
     if (CGRectContainsPoint(shadowView.layoutMetrics.frame, point)) {
       CGPoint relativePoint = point;
@@ -382,8 +365,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   return self.reactTag;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   NSString *description = super.description;
   description = [[description substringToIndex:description.length - 1]
       stringByAppendingFormat:@"; viewName: %@; reactTag: %@; frame: %@>",
@@ -393,8 +375,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   return description;
 }
 
-- (void)addRecursiveDescriptionToString:(NSMutableString *)string atLevel:(NSUInteger)level
-{
+- (void)addRecursiveDescriptionToString:(NSMutableString *)string atLevel:(NSUInteger)level {
   for (NSUInteger i = 0; i < level; i++) {
     [string appendString:@"  | "];
   }
@@ -407,8 +388,7 @@ static void RCTProcessMetaPropsBorder(const YGValue metaProps[META_PROP_COUNT], 
   }
 }
 
-- (NSString *)recursiveDescription
-{
+- (NSString *)recursiveDescription {
   NSMutableString *description = [NSMutableString string];
   [self addRecursiveDescriptionToString:description atLevel:0];
   return description;
@@ -526,40 +506,34 @@ RCT_POSITION_PROPERTY(Bottom, bottom, YGEdgeBottom)
 RCT_POSITION_PROPERTY(Start, start, YGEdgeStart)
 RCT_POSITION_PROPERTY(End, end, YGEdgeEnd)
 
-- (void)setLeft:(YGValue)value
-{
+- (void)setLeft:(YGValue)value {
   YGEdge edge = [[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL] ? YGEdgeStart : YGEdgeLeft;
   RCT_SET_YGVALUE(value, YGNodeStyleSetPosition, _yogaNode, edge);
 }
-- (YGValue)left
-{
+- (YGValue)left {
   YGEdge edge = [[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL] ? YGEdgeStart : YGEdgeLeft;
   return YGNodeStyleGetPosition(_yogaNode, edge);
 }
 
-- (void)setRight:(YGValue)value
-{
+- (void)setRight:(YGValue)value {
   YGEdge edge = [[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL] ? YGEdgeEnd : YGEdgeRight;
   RCT_SET_YGVALUE(value, YGNodeStyleSetPosition, _yogaNode, edge);
 }
-- (YGValue)right
-{
+- (YGValue)right {
   YGEdge edge = [[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL] ? YGEdgeEnd : YGEdgeRight;
   return YGNodeStyleGetPosition(_yogaNode, edge);
 }
 
 // Size
 
-- (CGSize)size
-{
+- (CGSize)size {
   YGValue width = YGNodeStyleGetWidth(_yogaNode);
   YGValue height = YGNodeStyleGetHeight(_yogaNode);
 
   return CGSizeMake(width.unit == YGUnitPoint ? width.value : NAN, height.unit == YGUnitPoint ? height.value : NAN);
 }
 
-- (void)setSize:(CGSize)size
-{
+- (void)setSize:(CGSize)size {
   YGNodeStyleSetWidth(_yogaNode, size.width);
   YGNodeStyleSetHeight(_yogaNode, size.height);
 }
@@ -605,8 +579,7 @@ RCTShadowViewMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float
   return result;
 }
 
-- (void)setIntrinsicContentSize:(CGSize)intrinsicContentSize
-{
+- (void)setIntrinsicContentSize:(CGSize)intrinsicContentSize {
   if (CGSizeEqualToSize(_intrinsicContentSize, intrinsicContentSize)) {
     return;
   }
@@ -624,20 +597,17 @@ RCTShadowViewMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float
 
 // Local Data
 
-- (void)setLocalData:(__unused NSObject *)localData
-{
+- (void)setLocalData:(__unused NSObject *)localData {
   // Do nothing by default.
 }
 
 // Flex
 
-- (void)setFlexBasis:(YGValue)value
-{
+- (void)setFlexBasis:(YGValue)value {
   RCT_SET_YGVALUE_AUTO(value, YGNodeStyleSetFlexBasis, _yogaNode);
 }
 
-- (YGValue)flexBasis
-{
+- (YGValue)flexBasis {
   return YGNodeStyleGetFlexBasis(_yogaNode);
 }
 
@@ -666,13 +636,11 @@ RCT_STYLE_PROPERTY(Display, display, Display, YGDisplay)
 RCT_STYLE_PROPERTY(Direction, direction, Direction, YGDirection)
 RCT_STYLE_PROPERTY(AspectRatio, aspectRatio, AspectRatio, float)
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   // Does nothing by default
 }
 
-- (void)didSetProps:(__unused NSArray<NSString *> *)changedProps
-{
+- (void)didSetProps:(__unused NSArray<NSString *> *)changedProps {
   if (_recomputePadding) {
     RCTProcessMetaPropsPadding(_paddingMetaProps, _yogaNode);
   }

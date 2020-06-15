@@ -11,13 +11,11 @@
 
 @implementation RCTSurfaceBackedComponentState
 
-+ (instancetype)newWithSurface:(RCTSurface *)surface
-{
++ (instancetype)newWithSurface:(RCTSurface *)surface {
   return [[self alloc] initWithSurface:surface];
 }
 
-- (instancetype)initWithSurface:(RCTSurface *)surface
-{
+- (instancetype)initWithSurface:(RCTSurface *)surface {
   if (self = [super init]) {
     _surface = surface;
   }

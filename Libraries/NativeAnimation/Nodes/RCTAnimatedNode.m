@@ -9,15 +9,12 @@
 
 #import <React/RCTDefines.h>
 
-@implementation RCTAnimatedNode
-{
+@implementation RCTAnimatedNode {
   NSMapTable<NSNumber *, RCTAnimatedNode *> *_childNodes;
   NSMapTable<NSNumber *, RCTAnimatedNode *> *_parentNodes;
 }
 
-- (instancetype)initWithTag:(NSNumber *)tag
-                     config:(NSDictionary<NSString *, id> *)config
-{
+- (instancetype)initWithTag:(NSNumber *)tag config:(NSDictionary<NSString *, id> *)config {
   if ((self = [super init])) {
     _nodeTag = tag;
     _config = [config copy];
@@ -25,20 +22,17 @@
   return self;
 }
 
-RCT_NOT_IMPLEMENTED(- (instancetype)init)
+RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (NSMapTable<NSNumber *, RCTAnimatedNode *> *)childNodes
-{
+- (NSMapTable<NSNumber *, RCTAnimatedNode *> *)childNodes {
   return _childNodes;
 }
 
-- (NSMapTable<NSNumber *, RCTAnimatedNode *> *)parentNodes
-{
+- (NSMapTable<NSNumber *, RCTAnimatedNode *> *)parentNodes {
   return _parentNodes;
 }
 
-- (void)addChild:(RCTAnimatedNode *)child
-{
+- (void)addChild:(RCTAnimatedNode *)child {
   if (!_childNodes) {
     _childNodes = [NSMapTable strongToWeakObjectsMapTable];
   }
@@ -48,8 +42,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)removeChild:(RCTAnimatedNode *)child
-{
+- (void)removeChild:(RCTAnimatedNode *)child {
   if (!_childNodes) {
     return;
   }
@@ -59,8 +52,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)onAttachedToNode:(RCTAnimatedNode *)parent
-{
+- (void)onAttachedToNode:(RCTAnimatedNode *)parent {
   if (!_parentNodes) {
     _parentNodes = [NSMapTable strongToWeakObjectsMapTable];
   }
@@ -69,8 +61,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)onDetachedFromNode:(RCTAnimatedNode *)parent
-{
+- (void)onDetachedFromNode:(RCTAnimatedNode *)parent {
   if (!_parentNodes) {
     return;
   }
@@ -79,8 +70,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)detachNode
-{
+- (void)detachNode {
   for (RCTAnimatedNode *parent in _parentNodes.objectEnumerator) {
     [parent removeChild:self];
   }
@@ -89,16 +79,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)setNeedsUpdate
-{
+- (void)setNeedsUpdate {
   _needsUpdate = YES;
   for (RCTAnimatedNode *child in _childNodes.objectEnumerator) {
     [child setNeedsUpdate];
   }
 }
 
-- (void)updateNodeIfNecessary
-{
+- (void)updateNodeIfNecessary {
   if (_needsUpdate) {
     for (RCTAnimatedNode *parent in _parentNodes.objectEnumerator) {
       [parent updateNodeIfNecessary];
@@ -107,16 +95,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)performUpdate
-{
+- (void)performUpdate {
   _needsUpdate = NO;
   // To be overridden by subclasses
   // This method is called on a node only if it has been marked for update
   // during the current update loop
 }
 
-- (BOOL)isManagedByFabric
-{
+- (BOOL)isManagedByFabric {
   for (RCTAnimatedNode *child in _childNodes.objectEnumerator) {
     if ([child isManagedByFabric]) {
       return YES;

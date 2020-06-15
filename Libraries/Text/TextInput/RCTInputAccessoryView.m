@@ -13,20 +13,18 @@
 
 #import <React/RCTInputAccessoryViewContent.h>
 
-@interface RCTInputAccessoryView()
+@interface RCTInputAccessoryView ()
 
 // Overriding `inputAccessoryView` to `readwrite`.
 @property (nonatomic, readwrite, retain) UIView *inputAccessoryView;
 
 @end
 
-@implementation RCTInputAccessoryView
-{
+@implementation RCTInputAccessoryView {
   BOOL _shouldBecomeFirstResponder;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if (self = [super init]) {
     _inputAccessoryView = [RCTInputAccessoryViewContent new];
     RCTTouchHandler *const touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
@@ -35,13 +33,11 @@
   return self;
 }
 
-- (BOOL)canBecomeFirstResponder
-{
+- (BOOL)canBecomeFirstResponder {
   return true;
 }
 
-- (void)reactSetFrame:(CGRect)frame
-{
+- (void)reactSetFrame:(CGRect)frame {
   [_inputAccessoryView reactSetFrame:frame];
 
   if (_shouldBecomeFirstResponder) {
@@ -50,25 +46,21 @@
   }
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)index
-{
+- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)index {
   [super insertReactSubview:subview atIndex:index];
   [_inputAccessoryView insertReactSubview:subview atIndex:index];
 }
 
-- (void)removeReactSubview:(UIView *)subview
-{
+- (void)removeReactSubview:(UIView *)subview {
   [super removeReactSubview:subview];
   [_inputAccessoryView removeReactSubview:subview];
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   // Do nothing, as subviews are managed by `insertReactSubview:atIndex:`.
 }
 
-- (void)didSetProps:(NSArray<NSString *> *)changedProps
-{
+- (void)didSetProps:(NSArray<NSString *> *)changedProps {
   // If the accessory view is not linked to a text input via nativeID, assume it is
   // a standalone component that should get focus whenever it is rendered.
   if (![changedProps containsObject:@"nativeID"] && !self.nativeID) {

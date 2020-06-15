@@ -16,12 +16,13 @@
 #import <string>
 #import <unordered_map>
 
-Class RCTCameraRollClassProvider(const char *name) {
+Class RCTCameraRollClassProvider(const char *name)
+{
   static std::unordered_map<std::string, Class (*)(void)> sCoreModuleClassMap = {
-    {"AssetsLibraryRequestHandler", RCTAssetsLibraryRequestHandlerCls},
-    {"CameraRollManager", RCTCameraRollManagerCls},
-    {"ImagePickerIOS", RCTImagePickerManagerCls},
-    {"PhotoLibraryImageLoader", RCTPhotoLibraryImageLoaderCls},
+      {"AssetsLibraryRequestHandler", RCTAssetsLibraryRequestHandlerCls},
+      {"CameraRollManager", RCTCameraRollManagerCls},
+      {"ImagePickerIOS", RCTImagePickerManagerCls},
+      {"PhotoLibraryImageLoader", RCTPhotoLibraryImageLoaderCls},
   };
 
   auto p = sCoreModuleClassMap.find(name);

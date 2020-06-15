@@ -16,9 +16,10 @@
 #import <string>
 #import <unordered_map>
 
-Class RCTPushNotificationClassProvider(const char *name) {
+Class RCTPushNotificationClassProvider(const char *name)
+{
   static std::unordered_map<std::string, Class (*)(void)> sCoreModuleClassMap = {
-    {"PushNotificationManager", RCTPushNotificationManagerCls},
+      {"PushNotificationManager", RCTPushNotificationManagerCls},
   };
 
   auto p = sCoreModuleClassMap.find(name);

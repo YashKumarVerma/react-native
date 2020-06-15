@@ -14,8 +14,7 @@
   return [CADisplayLink displayLinkWithTarget:target selector:@selector(displayDidRefresh:)];
 }
 
-- (instancetype)initWithRefreshable:(id<RCTDisplayRefreshable>)refreshable
-{
+- (instancetype)initWithRefreshable:(id<RCTDisplayRefreshable>)refreshable {
   if (self = [super init]) {
     _refreshable = refreshable;
   }

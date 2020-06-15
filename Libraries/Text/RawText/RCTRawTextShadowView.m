@@ -11,23 +11,21 @@
 
 @implementation RCTRawTextShadowView
 
-- (void)setText:(NSString *)text
-{
+- (void)setText:(NSString *)text {
   if (_text != text && ![_text isEqualToString:text]) {
     _text = [text copy];
     [self dirtyLayout];
   }
 }
 
-- (void)dirtyLayout
-{
+- (void)dirtyLayout {
   [self.superview dirtyLayout];
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   NSString *superDescription = super.description;
-  return [[superDescription substringToIndex:superDescription.length - 1] stringByAppendingFormat:@"; text: %@>", self.text];
+  return [[superDescription substringToIndex:superDescription.length - 1]
+      stringByAppendingFormat:@"; text: %@>", self.text];
 }
 
 @end

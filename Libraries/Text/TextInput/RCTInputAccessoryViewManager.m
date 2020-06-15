@@ -14,18 +14,15 @@
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [[RCTInputAccessoryView alloc] initWithBridge:self.bridge];
 }
 
-- (RCTShadowView *)shadowView
-{
+- (RCTShadowView *)shadowView {
   return [RCTInputAccessoryShadowView new];
 }
 

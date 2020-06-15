@@ -18,8 +18,7 @@
 
 @end
 
-@implementation RCTHTTPRequestHandler
-{
+@implementation RCTHTTPRequestHandler {
   NSMapTable *_delegates;
   NSURLSession *_session;
   std::mutex _mutex;
@@ -30,24 +29,21 @@
 
 RCT_EXPORT_MODULE()
 
-- (void)invalidate
-{
+- (void)invalidate {
   std::lock_guard<std::mutex> lock(_mutex);
   [self->_session invalidateAndCancel];
   self->_session = nil;
 }
 
 // Needs to lock before call this method.
-- (BOOL)isValid
-{
+- (BOOL)isValid {
   // if session == nil and delegates != nil, we've been invalidated
   return _session || !_delegates;
 }
 
 #pragma mark - NSURLRequestHandler
 
-- (BOOL)canHandleRequest:(NSURLRequest *)request
-{
+- (BOOL)canHandleRequest:(NSURLRequest *)request {
   static NSSet<NSString *> *schemes = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -58,9 +54,7 @@ RCT_EXPORT_MODULE()
   return [schemes containsObject:request.URL.scheme.lowercaseString];
 }
 
-- (NSURLSessionDataTask *)sendRequest:(NSURLRequest *)request
-                         withDelegate:(id<RCTURLRequestDelegate>)delegate
-{
+- (NSURLSessionDataTask *)sendRequest:(NSURLRequest *)request withDelegate:(id<RCTURLRequestDelegate>)delegate {
   std::lock_guard<std::mutex> lock(_mutex);
   // Lazy setup
   if (!_session && [self isValid]) {
@@ -83,9 +77,7 @@ RCT_EXPORT_MODULE()
     [configuration setHTTPShouldSetCookies:YES];
     [configuration setHTTPCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
     [configuration setHTTPCookieStorage:[NSHTTPCookieStorage sharedHTTPCookieStorage]];
-    _session = [NSURLSession sessionWithConfiguration:configuration
-                                             delegate:self
-                                        delegateQueue:callbackQueue];
+    _session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:callbackQueue];
 
     _delegates = [[NSMapTable alloc] initWithKeyOptions:NSPointerFunctionsStrongMemory
                                            valueOptions:NSPointerFunctionsStrongMemory
@@ -97,8 +89,7 @@ RCT_EXPORT_MODULE()
   return task;
 }
 
-- (void)cancelRequest:(NSURLSessionDataTask *)task
-{
+- (void)cancelRequest:(NSURLSessionDataTask *)task {
   {
     std::lock_guard<std::mutex> lock(_mutex);
     [_delegates removeObjectForKey:task];
@@ -109,11 +100,10 @@ RCT_EXPORT_MODULE()
 #pragma mark - NSURLSession delegate
 
 - (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-   didSendBodyData:(int64_t)bytesSent
-    totalBytesSent:(int64_t)totalBytesSent
-totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
-{
+                        task:(NSURLSessionTask *)task
+             didSendBodyData:(int64_t)bytesSent
+              totalBytesSent:(int64_t)totalBytesSent
+    totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
   id<RCTURLRequestDelegate> delegate;
   {
     std::lock_guard<std::mutex> lock(_mutex);
@@ -123,11 +113,10 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 }
 
 - (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-willPerformHTTPRedirection:(NSHTTPURLResponse *)response
-        newRequest:(NSURLRequest *)request
- completionHandler:(void (^)(NSURLRequest *))completionHandler
-{
+                          task:(NSURLSessionTask *)task
+    willPerformHTTPRedirection:(NSHTTPURLResponse *)response
+                    newRequest:(NSURLRequest *)request
+             completionHandler:(void (^)(NSURLRequest *))completionHandler {
   // Reset the cookies on redirect.
   // This is necessary because we're not letting iOS handle cookies by itself
   NSMutableURLRequest *nextRequest = [request mutableCopy];
@@ -138,10 +127,9 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
 }
 
 - (void)URLSession:(NSURLSession *)session
-          dataTask:(NSURLSessionDataTask *)task
-didReceiveResponse:(NSURLResponse *)response
- completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
-{
+              dataTask:(NSURLSessionDataTask *)task
+    didReceiveResponse:(NSURLResponse *)response
+     completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
   id<RCTURLRequestDelegate> delegate;
   {
     std::lock_guard<std::mutex> lock(_mutex);
@@ -151,10 +139,7 @@ didReceiveResponse:(NSURLResponse *)response
   completionHandler(NSURLSessionResponseAllow);
 }
 
-- (void)URLSession:(NSURLSession *)session
-          dataTask:(NSURLSessionDataTask *)task
-    didReceiveData:(NSData *)data
-{
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)task didReceiveData:(NSData *)data {
   id<RCTURLRequestDelegate> delegate;
   {
     std::lock_guard<std::mutex> lock(_mutex);
@@ -163,8 +148,7 @@ didReceiveResponse:(NSURLResponse *)response
   [delegate URLRequest:task didReceiveData:data];
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
-{
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
   id<RCTURLRequestDelegate> delegate;
   {
     std::lock_guard<std::mutex> lock(_mutex);
@@ -176,6 +160,7 @@ didReceiveResponse:(NSURLResponse *)response
 
 @end
 
-Class RCTHTTPRequestHandlerCls(void) {
+Class RCTHTTPRequestHandlerCls(void)
+{
   return RCTHTTPRequestHandler.class;
 }

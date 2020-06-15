@@ -14,7 +14,7 @@
 using namespace facebook;
 using facebook::yoga::detail::CompactValue;
 
-YGNode::YGNode(YGNode&& node) {
+YGNode::YGNode(YGNode &&node) {
   context_ = node.context_;
   flags = node.flags;
   measure_ = node.measure_;
@@ -33,14 +33,14 @@ YGNode::YGNode(YGNode&& node) {
   }
 }
 
-YGNode::YGNode(const YGNode& node, YGConfigRef config) : YGNode{node} {
+YGNode::YGNode(const YGNode &node, YGConfigRef config) : YGNode{node} {
   config_ = config;
   if (config->useWebDefaults) {
     useWebDefaults();
   }
 }
 
-void YGNode::print(void* printContext) {
+void YGNode::print(void *printContext) {
   if (print_.noContext != nullptr) {
     if (facebook::yoga::detail::getBooleanData(flags, printUsesContext_)) {
       print_.withContext(this, printContext);
@@ -146,15 +146,14 @@ YGSize YGNode::measure(
     YGMeasureMode widthMode,
     float height,
     YGMeasureMode heightMode,
-    void* layoutContext) {
-
+    void *layoutContext) {
   return facebook::yoga::detail::getBooleanData(flags, measureUsesContext_)
       ? measure_.withContext(
             this, width, widthMode, height, heightMode, layoutContext)
       : measure_.noContext(this, width, widthMode, height, heightMode);
 }
 
-float YGNode::baseline(float width, float height, void* layoutContext) {
+float YGNode::baseline(float width, float height, void *layoutContext) {
   return facebook::yoga::detail::getBooleanData(flags, baselineUsesContext_)
       ? baseline_.withContext(this, width, height, layoutContext)
       : baseline_.noContext(this, width, height);
@@ -360,7 +359,7 @@ YGValue YGNode::resolveFlexBasisPtr() const {
 
 void YGNode::resolveDimension() {
   using namespace yoga;
-  const YGStyle& style = getStyle();
+  const YGStyle &style = getStyle();
   for (auto dim : {YGDimensionWidth, YGDimensionHeight}) {
     if (!style.maxDimensions()[dim].isUndefined() &&
         YGValueEqual(style.maxDimensions()[dim], style.minDimensions()[dim])) {
@@ -387,8 +386,8 @@ YOGA_EXPORT void YGNode::clearChildren() {
 
 // Other Methods
 
-void YGNode::cloneChildrenIfNeeded(void* cloneContext) {
-  iterChildrenAfterCloningIfNeeded([](YGNodeRef, void*) {}, cloneContext);
+void YGNode::cloneChildrenIfNeeded(void *cloneContext) {
+  iterChildrenAfterCloningIfNeeded([](YGNodeRef, void *) {}, cloneContext);
 }
 
 void YGNode::markDirtyAndPropogate() {
@@ -528,7 +527,7 @@ bool YGNode::didUseLegacyFlag() {
   if (didUseLegacyFlag) {
     return true;
   }
-  for (const auto& child : children_) {
+  for (const auto &child : children_) {
     if (child->layout_.didUseLegacyFlag()) {
       didUseLegacyFlag = true;
       break;
@@ -546,7 +545,7 @@ void YGNode::setLayoutDidUseLegacyFlag(bool didUseLegacyFlag) {
   layout_.setDidUseLegacyFlag(didUseLegacyFlag);
 }
 
-bool YGNode::isLayoutTreeEqualToNode(const YGNode& node) const {
+bool YGNode::isLayoutTreeEqualToNode(const YGNode &node) const {
   if (children_.size() != node.children_.size()) {
     return false;
   }

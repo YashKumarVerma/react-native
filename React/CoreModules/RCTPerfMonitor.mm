@@ -139,18 +139,15 @@ static vm_size_t RCTGetResidentMemorySize(void)
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
 
 #if __has_include(<React/RCTDevMenu.h>)
@@ -158,14 +155,12 @@ RCT_EXPORT_MODULE()
 #endif
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   [self hide];
 }
 
 #if __has_include(<React/RCTDevMenu.h>)
-- (RCTDevMenuItem *)devMenuItem
-{
+- (RCTDevMenuItem *)devMenuItem {
   if (!_devMenuItem) {
     __weak __typeof__(self) weakSelf = self;
     __weak RCTDevSettings *devSettings = self.bridge.devSettings;
@@ -191,8 +186,7 @@ RCT_EXPORT_MODULE()
 }
 #endif
 
-- (UIPanGestureRecognizer *)gestureRecognizer
-{
+- (UIPanGestureRecognizer *)gestureRecognizer {
   if (!_gestureRecognizer) {
     _gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gesture:)];
   }
@@ -200,8 +194,7 @@ RCT_EXPORT_MODULE()
   return _gestureRecognizer;
 }
 
-- (UIView *)container
-{
+- (UIView *)container {
   if (!_container) {
     _container = [[UIView alloc] initWithFrame:CGRectMake(10, 25, 180, RCTPerfMonitorBarHeight)];
     _container.layer.borderWidth = 2;
@@ -221,8 +214,7 @@ RCT_EXPORT_MODULE()
   return _container;
 }
 
-- (UILabel *)memory
-{
+- (UILabel *)memory {
   if (!_memory) {
     _memory = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 44, RCTPerfMonitorBarHeight)];
     _memory.font = [UIFont systemFontOfSize:12];
@@ -233,8 +225,7 @@ RCT_EXPORT_MODULE()
   return _memory;
 }
 
-- (UILabel *)heap
-{
+- (UILabel *)heap {
   if (!_heap) {
     _heap = [[UILabel alloc] initWithFrame:CGRectMake(44, 0, 44, RCTPerfMonitorBarHeight)];
     _heap.font = [UIFont systemFontOfSize:12];
@@ -245,8 +236,7 @@ RCT_EXPORT_MODULE()
   return _heap;
 }
 
-- (UILabel *)views
-{
+- (UILabel *)views {
   if (!_views) {
     _views = [[UILabel alloc] initWithFrame:CGRectMake(88, 0, 44, RCTPerfMonitorBarHeight)];
     _views.font = [UIFont systemFontOfSize:12];
@@ -257,24 +247,21 @@ RCT_EXPORT_MODULE()
   return _views;
 }
 
-- (RCTFPSGraph *)uiGraph
-{
+- (RCTFPSGraph *)uiGraph {
   if (!_uiGraph) {
     _uiGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(134, 14, 40, 30) color:[UIColor lightGrayColor]];
   }
   return _uiGraph;
 }
 
-- (RCTFPSGraph *)jsGraph
-{
+- (RCTFPSGraph *)jsGraph {
   if (!_jsGraph) {
     _jsGraph = [[RCTFPSGraph alloc] initWithFrame:CGRectMake(178, 14, 40, 30) color:[UIColor lightGrayColor]];
   }
   return _jsGraph;
 }
 
-- (UILabel *)uiGraphLabel
-{
+- (UILabel *)uiGraphLabel {
   if (!_uiGraphLabel) {
     _uiGraphLabel = [[UILabel alloc] initWithFrame:CGRectMake(134, 3, 40, 10)];
     _uiGraphLabel.font = [UIFont systemFontOfSize:11];
@@ -285,8 +272,7 @@ RCT_EXPORT_MODULE()
   return _uiGraphLabel;
 }
 
-- (UILabel *)jsGraphLabel
-{
+- (UILabel *)jsGraphLabel {
   if (!_jsGraphLabel) {
     _jsGraphLabel = [[UILabel alloc] initWithFrame:CGRectMake(178, 3, 38, 10)];
     _jsGraphLabel.font = [UIFont systemFontOfSize:11];
@@ -297,8 +283,7 @@ RCT_EXPORT_MODULE()
   return _jsGraphLabel;
 }
 
-- (UITableView *)metrics
-{
+- (UITableView *)metrics {
   if (!_metrics) {
     _metrics = [[UITableView alloc] initWithFrame:CGRectMake(
                                                       0,
@@ -314,8 +299,7 @@ RCT_EXPORT_MODULE()
   return _metrics;
 }
 
-- (void)show
-{
+- (void)show {
   if (_container) {
     return;
   }
@@ -351,8 +335,7 @@ RCT_EXPORT_MODULE()
               queue:RCTJSThread];
 }
 
-- (void)hide
-{
+- (void)hide {
   if (!_container) {
     return;
   }
@@ -373,8 +356,7 @@ RCT_EXPORT_MODULE()
   _jsDisplayLink = nil;
 }
 
-- (void)redirectLogs
-{
+- (void)redirectLogs {
   _stderr = dup(STDERR_FILENO);
 
   if (pipe(_pipe) != 0) {
@@ -411,14 +393,12 @@ RCT_EXPORT_MODULE()
   });
 }
 
-- (void)stopLogs
-{
+- (void)stopLogs {
   dup2(_stderr, STDERR_FILENO);
   dispatch_io_close(_io, 0);
 }
 
-- (void)parse:(NSString *)log
-{
+- (void)parse:(NSString *)log {
   static NSRegularExpression *GCRegex;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -447,8 +427,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)updateStats
-{
+- (void)updateStats {
   NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
   NSUInteger viewCount = views.count;
   NSUInteger visibleViewCount = 0;
@@ -473,15 +452,13 @@ RCT_EXPORT_MODULE()
   });
 }
 
-- (void)gesture:(UIPanGestureRecognizer *)gestureRecognizer
-{
+- (void)gesture:(UIPanGestureRecognizer *)gestureRecognizer {
   CGPoint translation = [gestureRecognizer translationInView:self.container.superview];
   self.container.center = CGPointMake(self.container.center.x + translation.x, self.container.center.y + translation.y);
   [gestureRecognizer setTranslation:CGPointMake(0, 0) inView:self.container.superview];
 }
 
-- (void)tap
-{
+- (void)tap {
   [self loadPerformanceLoggerData];
   if (CGRectIsEmpty(_storedMonitorFrame)) {
     _storedMonitorFrame = CGRectMake(0, 20, self.container.window.frame.size.width, RCTPerfMonitorExpandHeight);
@@ -498,14 +475,12 @@ RCT_EXPORT_MODULE()
                    }];
 }
 
-- (void)threadUpdate:(CADisplayLink *)displayLink
-{
+- (void)threadUpdate:(CADisplayLink *)displayLink {
   RCTFPSGraph *graph = displayLink == _jsDisplayLink ? _jsGraph : _uiGraph;
   [graph onTick:displayLink.timestamp];
 }
 
-- (void)loadPerformanceLoggerData
-{
+- (void)loadPerformanceLoggerData {
   NSUInteger i = 0;
   NSMutableArray<NSString *> *data = [NSMutableArray new];
   RCTPerformanceLogger *performanceLogger = [_bridge performanceLogger];
@@ -526,18 +501,15 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView {
   return 1;
 }
 
-- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(__unused NSInteger)section
-{
+- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(__unused NSInteger)section {
   return _perfLoggerMarks.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:RCTPerfMonitorCellIdentifier
                                                           forIndexPath:indexPath];
 
@@ -554,8 +526,7 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(__unused NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(__unused UITableView *)tableView heightForRowAtIndexPath:(__unused NSIndexPath *)indexPath {
   return 20;
 }
 

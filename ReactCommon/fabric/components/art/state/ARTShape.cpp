@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/components/art/ARTShape.h>
 #include <react/components/art/ARTElement.h>
+#include <react/components/art/ARTShape.h>
 #include <react/components/art/conversions.h>
 
 namespace facebook {

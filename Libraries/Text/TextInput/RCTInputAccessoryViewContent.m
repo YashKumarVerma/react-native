@@ -9,14 +9,12 @@
 
 #import <React/UIView+React.h>
 
-@implementation RCTInputAccessoryViewContent
-{
+@implementation RCTInputAccessoryViewContent {
   UIView *_safeAreaContainer;
   NSLayoutConstraint *_heightConstraint;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _safeAreaContainer = [UIView new];
     [self addSubview:_safeAreaContainer];
@@ -45,14 +43,12 @@
   return self;
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   // This is needed so the view size is based on autolayout constraints.
   return CGSizeZero;
 }
 
-- (void)reactSetFrame:(CGRect)frame
-{
+- (void)reactSetFrame:(CGRect)frame {
   // We still need to set the frame here, otherwise it won't be
   // measured until moved to the window during the keyboard opening
   // animation. If this happens, the height will be animated from 0 to
@@ -64,14 +60,12 @@
   [self layoutIfNeeded];
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)index
-{
+- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)index {
   [super insertReactSubview:subview atIndex:index];
   [_safeAreaContainer insertSubview:subview atIndex:index];
 }
 
-- (void)removeReactSubview:(UIView *)subview
-{
+- (void)removeReactSubview:(UIView *)subview {
   [super removeReactSubview:subview];
   [subview removeFromSuperview];
   if ([[_safeAreaContainer subviews] count] == 0 && [self isFirstResponder]) {

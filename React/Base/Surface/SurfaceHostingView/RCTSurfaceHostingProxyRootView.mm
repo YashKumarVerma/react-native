@@ -52,8 +52,7 @@ static RCTRootViewSizeFlexibility convertToRootViewSizeFlexibility(RCTSurfaceSiz
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
                     moduleName:(NSString *)moduleName
-             initialProperties:(NSDictionary *)initialProperties
-{
+             initialProperties:(NSDictionary *)initialProperties {
   RCTAssertMainQueue();
   RCTAssert(bridge, @"A bridge instance is required to create an RCTSurfaceHostingProxyRootView");
   RCTAssert(moduleName, @"A moduleName is required to create an RCTSurfaceHostingProxyRootView");
@@ -85,8 +84,7 @@ static RCTRootViewSizeFlexibility convertToRootViewSizeFlexibility(RCTSurfaceSiz
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
                        moduleName:(NSString *)moduleName
                 initialProperties:(NSDictionary *)initialProperties
-                    launchOptions:(NSDictionary *)launchOptions
-{
+                    launchOptions:(NSDictionary *)launchOptions {
   RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:bundleURL moduleProvider:nil launchOptions:launchOptions];
 
   return [self initWithBridge:bridge moduleName:moduleName initialProperties:initialProperties];
@@ -97,48 +95,39 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark proxy methods to RCTSurfaceHostingView
 
-- (NSString *)moduleName
-{
+- (NSString *)moduleName {
   return super.surface.moduleName;
 }
 
-- (UIView *)contentView
-{
+- (UIView *)contentView {
   return self;
 }
 
-- (NSNumber *)reactTag
-{
+- (NSNumber *)reactTag {
   return super.surface.rootViewTag;
 }
 
-- (RCTRootViewSizeFlexibility)sizeFlexibility
-{
+- (RCTRootViewSizeFlexibility)sizeFlexibility {
   return convertToRootViewSizeFlexibility(super.sizeMeasureMode);
 }
 
-- (void)setSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility
-{
+- (void)setSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility {
   super.sizeMeasureMode = convertToSurfaceSizeMeasureMode(sizeFlexibility);
 }
 
-- (NSDictionary *)appProperties
-{
+- (NSDictionary *)appProperties {
   return super.surface.properties;
 }
 
-- (void)setAppProperties:(NSDictionary *)appProperties
-{
+- (void)setAppProperties:(NSDictionary *)appProperties {
   [super.surface setProperties:appProperties];
 }
 
-- (UIView *)loadingView
-{
+- (UIView *)loadingView {
   return super.activityIndicatorViewFactory ? super.activityIndicatorViewFactory() : nil;
 }
 
-- (void)setLoadingView:(UIView *)loadingView
-{
+- (void)setLoadingView:(UIView *)loadingView {
   super.activityIndicatorViewFactory = ^UIView *(void)
   {
     return loadingView;
@@ -147,8 +136,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark RCTSurfaceDelegate proxying
 
-- (void)surface:(RCTSurface *)surface didChangeStage:(RCTSurfaceStage)stage
-{
+- (void)surface:(RCTSurface *)surface didChangeStage:(RCTSurfaceStage)stage {
   [super surface:surface didChangeStage:stage];
   if (RCTSurfaceStageIsRunning(stage)) {
     [_bridge.performanceLogger markStopForTag:RCTPLTTI];
@@ -158,8 +146,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (void)surface:(RCTSurface *)surface didChangeIntrinsicSize:(CGSize)intrinsicSize
-{
+- (void)surface:(RCTSurface *)surface didChangeIntrinsicSize:(CGSize)intrinsicSize {
   [super surface:surface didChangeIntrinsicSize:intrinsicSize];
 
   [_delegate rootViewDidChangeIntrinsicSize:(RCTRootView *)self];
@@ -167,15 +154,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark legacy
 
-- (UIViewController *)reactViewController
-{
+- (UIViewController *)reactViewController {
   return _reactViewController ?: [super reactViewController];
 }
 
 #pragma mark unsupported
 
-- (void)cancelTouches
-{
+- (void)cancelTouches {
   // Not supported.
 }
 

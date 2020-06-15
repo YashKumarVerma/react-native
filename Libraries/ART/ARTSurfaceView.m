@@ -13,8 +13,7 @@
 
 @implementation ARTSurfaceView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     self.opaque = NO;
   }
@@ -22,31 +21,26 @@
   return self;
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
   [super insertReactSubview:subview atIndex:atIndex];
   [self insertSubview:subview atIndex:atIndex];
   [self invalidate];
 }
 
-- (void)removeReactSubview:(UIView *)subview
-{
+- (void)removeReactSubview:(UIView *)subview {
   [super removeReactSubview:subview];
   [self invalidate];
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   // Do nothing, as subviews are inserted by insertReactSubview:
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
   [super drawRect:rect];
   CGContextRef context = UIGraphicsGetCurrentContext();
   for (UIView *subview in self.subviews) {

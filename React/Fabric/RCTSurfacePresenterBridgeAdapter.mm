@@ -73,8 +73,7 @@ static RuntimeExecutor RCTRuntimeExecutorFromBridge(RCTBridge *bridge)
   __weak RCTBridge *_batchedBridge;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge contextContainer:(ContextContainer::Shared)contextContainer
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge contextContainer:(ContextContainer::Shared)contextContainer {
   if (self = [super init]) {
     contextContainer->update(*RCTContextContainerFromBridge(bridge));
     _surfacePresenter = [[RCTSurfacePresenter alloc] initWithContextContainer:contextContainer
@@ -90,18 +89,15 @@ static RuntimeExecutor RCTRuntimeExecutorFromBridge(RCTBridge *bridge)
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [_surfacePresenter suspend];
 }
 
-- (RCTBridge *)bridge
-{
+- (RCTBridge *)bridge {
   return _bridge;
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   if (bridge == _bridge) {
     return;
   }
@@ -120,8 +116,7 @@ static RuntimeExecutor RCTRuntimeExecutorFromBridge(RCTBridge *bridge)
   [_surfacePresenter resume];
 }
 
-- (void)_updateSurfacePresenter
-{
+- (void)_updateSurfacePresenter {
   _surfacePresenter.runtimeExecutor = RCTRuntimeExecutorFromBridge(_bridge);
   _surfacePresenter.contextContainer->update(*RCTContextContainerFromBridge(_bridge));
 
@@ -129,8 +124,7 @@ static RuntimeExecutor RCTRuntimeExecutorFromBridge(RCTBridge *bridge)
   [_batchedBridge setSurfacePresenter:_surfacePresenter];
 }
 
-- (void)_addBridgeObservers:(RCTBridge *)bridge
-{
+- (void)_addBridgeObservers:(RCTBridge *)bridge {
   if (!bridge) {
     return;
   }
@@ -149,8 +143,7 @@ static RuntimeExecutor RCTRuntimeExecutorFromBridge(RCTBridge *bridge)
                                              object:bridge];
 }
 
-- (void)_removeBridgeObservers:(RCTBridge *)bridge
-{
+- (void)_removeBridgeObservers:(RCTBridge *)bridge {
   if (!bridge) {
     return;
   }
@@ -162,18 +155,15 @@ static RuntimeExecutor RCTRuntimeExecutorFromBridge(RCTBridge *bridge)
 
 #pragma mark - Bridge events
 
-- (void)handleBridgeWillReloadNotification:(NSNotification *)notification
-{
+- (void)handleBridgeWillReloadNotification:(NSNotification *)notification {
   [_surfacePresenter suspend];
 }
 
-- (void)handleBridgeWillBeInvalidatedNotification:(NSNotification *)notification
-{
+- (void)handleBridgeWillBeInvalidatedNotification:(NSNotification *)notification {
   [_surfacePresenter suspend];
 }
 
-- (void)handleJavaScriptDidLoadNotification:(NSNotification *)notification
-{
+- (void)handleJavaScriptDidLoadNotification:(NSNotification *)notification {
   RCTBridge *bridge = notification.userInfo[@"bridge"];
   if (bridge == _batchedBridge) {
     // Nothing really changed.

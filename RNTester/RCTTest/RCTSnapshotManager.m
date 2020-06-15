@@ -16,8 +16,7 @@
 
 @implementation RCTSnapshotView
 
-- (void)setTestIdentifier:(NSString *)testIdentifier
-{
+- (void)setTestIdentifier:(NSString *)testIdentifier {
   if (![_testIdentifier isEqualToString:testIdentifier]) {
     _testIdentifier = [testIdentifier copy];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -30,13 +29,11 @@
 
 @end
 
-
 @implementation RCTSnapshotManager
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [RCTSnapshotView new];
 }
 

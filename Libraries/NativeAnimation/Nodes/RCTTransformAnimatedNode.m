@@ -8,27 +8,22 @@
 #import <React/RCTTransformAnimatedNode.h>
 #import <React/RCTValueAnimatedNode.h>
 
-@implementation RCTTransformAnimatedNode
-{
+@implementation RCTTransformAnimatedNode {
   NSMutableDictionary<NSString *, NSObject *> *_propsDictionary;
 }
 
-- (instancetype)initWithTag:(NSNumber *)tag
-                     config:(NSDictionary<NSString *, id> *)config
-{
+- (instancetype)initWithTag:(NSNumber *)tag config:(NSDictionary<NSString *, id> *)config {
   if ((self = [super initWithTag:tag config:config])) {
     _propsDictionary = [NSMutableDictionary new];
   }
   return self;
 }
 
-- (NSDictionary *)propsDictionary
-{
+- (NSDictionary *)propsDictionary {
   return _propsDictionary;
 }
 
-- (void)performUpdate
-{
+- (void)performUpdate {
   [super performUpdate];
 
   NSArray<NSDictionary *> *transformConfigs = self.config[@"transforms"];
@@ -37,7 +32,7 @@
     NSString *type = transformConfig[@"type"];
     NSString *property = transformConfig[@"property"];
     NSNumber *value;
-    if ([type isEqualToString: @"animated"]) {
+    if ([type isEqualToString:@"animated"]) {
       NSNumber *nodeTag = transformConfig[@"nodeTag"];
       RCTAnimatedNode *node = [self.parentNodes objectForKey:nodeTag];
       if (![node isKindOfClass:[RCTValueAnimatedNode class]]) {
@@ -48,7 +43,7 @@
     } else {
       value = transformConfig[@"value"];
     }
-    [transform addObject:@{property: value}];
+    [transform addObject:@{property : value}];
   }
 
   _propsDictionary[@"transform"] = transform;

@@ -201,8 +201,8 @@ const Slider = (
   const style = StyleSheet.compose(styles.slider, props.style);
 
   const {
-    disabled = false,
-    value = 0.5,
+    disabled = true,
+    value = 1,
     minimumValue = 0,
     maximumValue = 1,
     step = 0,
@@ -235,8 +235,6 @@ const Slider = (
     <SliderNativeComponent
       {...localProps}
       // TODO: Reconcile these across the two platforms.
-      enabled={!disabled}
-      disabled={disabled}
       maximumValue={maximumValue}
       minimumValue={minimumValue}
       onChange={onChangeEvent}

@@ -18,8 +18,7 @@
 
 extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **argTypes);
 
-- (void)testOneArgument
-{
+- (void)testOneArgument {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSInteger)foo";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -28,8 +27,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[0]).type, @"NSInteger");
 }
 
-- (void)testTwoArguments
-{
+- (void)testTwoArguments {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSInteger)foo bar:(BOOL)bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -39,8 +37,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[1]).type, @"BOOL");
 }
 
-- (void)testSpaces
-{
+- (void)testSpaces {
   NSArray *arguments;
   const char *methodSignature = "foo : (NSInteger)foo bar : (BOOL) bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -50,8 +47,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[1]).type, @"BOOL");
 }
 
-- (void)testNewlines
-{
+- (void)testNewlines {
   NSArray *arguments;
   const char *methodSignature = "foo : (NSInteger)foo\nbar : (BOOL) bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -61,8 +57,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[1]).type, @"BOOL");
 }
 
-- (void)testUnnamedArgs
-{
+- (void)testUnnamedArgs {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSInteger)foo:(BOOL)bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -72,8 +67,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[1]).type, @"BOOL");
 }
 
-- (void)testUntypedUnnamedArgs
-{
+- (void)testUntypedUnnamedArgs {
   NSArray *arguments;
   const char *methodSignature = "foo:foo:bar:bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -84,8 +78,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[2]).type, @"id");
 }
 
-- (void)testNamespacedCxxStruct
-{
+- (void)testNamespacedCxxStruct {
   NSArray *arguments;
   const char *methodSignature = "foo:(foo::type &)foo bar:(bar::type &)bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -95,8 +88,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[1]).type, @"bar::type");
 }
 
-- (void)testAttributes
-{
+- (void)testAttributes {
   NSArray *arguments;
   const char *methodSignature = "foo:(__attribute__((unused)) NSString *)foo bar:(__unused BOOL)bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -106,8 +98,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[1]).type, @"BOOL");
 }
 
-- (void)testNullability
-{
+- (void)testNullability {
   NSArray *arguments;
   const char *methodSignature = "foo:(nullable NSString *)foo bar:(nonnull NSNumber *)bar baz:(id)baz";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -121,8 +112,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqual(((RCTMethodArgument *)arguments[2]).nullability, RCTNullabilityUnspecified);
 }
 
-- (void)testSemicolonStripping
-{
+- (void)testSemicolonStripping {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSString *)foo bar:(BOOL)bar;";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -132,8 +122,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[1]).type, @"BOOL");
 }
 
-- (void)testUnused
-{
+- (void)testUnused {
   NSArray *arguments;
   const char *methodSignature = "foo:(__unused NSString *)foo bar:(NSNumber *)bar";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -145,8 +134,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertFalse(((RCTMethodArgument *)arguments[1]).unused);
 }
 
-- (void)testGenericArray
-{
+- (void)testGenericArray {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSArray<NSString *> *)foo;";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -155,8 +143,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[0]).type, @"NSStringArray");
 }
 
-- (void)testNestedGenericArray
-{
+- (void)testNestedGenericArray {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSArray<NSArray<NSString *> *> *)foo;";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -165,8 +152,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[0]).type, @"NSStringArrayArray");
 }
 
-- (void)testGenericSet
-{
+- (void)testGenericSet {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSSet<NSNumber *> *)foo;";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);
@@ -175,8 +161,7 @@ extern NSString *RCTParseMethodSignature(const char *methodSignature, NSArray **
   XCTAssertEqualObjects(((RCTMethodArgument *)arguments[0]).type, @"NSNumberSet");
 }
 
-- (void)testGenericDictionary
-{
+- (void)testGenericDictionary {
   NSArray *arguments;
   const char *methodSignature = "foo:(NSDictionary<NSString *, NSNumber *> *)foo;";
   NSString *selector = RCTParseMethodSignature(methodSignature, &arguments);

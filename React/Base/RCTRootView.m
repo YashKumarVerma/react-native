@@ -52,8 +52,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
                     moduleName:(NSString *)moduleName
-             initialProperties:(NSDictionary *)initialProperties
-{
+             initialProperties:(NSDictionary *)initialProperties {
   RCTAssertMainQueue();
   RCTAssert(bridge, @"A bridge instance is required to create an RCTRootView");
   RCTAssert(moduleName, @"A moduleName is required to create an RCTRootView");
@@ -111,8 +110,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
                        moduleName:(NSString *)moduleName
                 initialProperties:(NSDictionary *)initialProperties
-                    launchOptions:(NSDictionary *)launchOptions
-{
+                    launchOptions:(NSDictionary *)launchOptions {
   RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:bundleURL moduleProvider:nil launchOptions:launchOptions];
 
   return [self initWithBridge:bridge moduleName:moduleName initialProperties:initialProperties];
@@ -122,8 +120,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #if TARGET_OS_TV
-- (UIView *)preferredFocusedView
-{
+- (UIView *)preferredFocusedView {
   if (self.reactPreferredFocusedView) {
     return self.reactPreferredFocusedView;
   }
@@ -133,21 +130,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark - passThroughTouches
 
-- (BOOL)passThroughTouches
-{
+- (BOOL)passThroughTouches {
   return _contentView.passThroughTouches;
 }
 
-- (void)setPassThroughTouches:(BOOL)passThroughTouches
-{
+- (void)setPassThroughTouches:(BOOL)passThroughTouches {
   _passThroughTouches = passThroughTouches;
   _contentView.passThroughTouches = passThroughTouches;
 }
 
 #pragma mark - Layout
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   CGSize fitSize = _intrinsicContentSize;
   CGSize currentSize = self.bounds.size;
 
@@ -162,15 +156,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return fitSize;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   [super layoutSubviews];
   _contentView.frame = self.bounds;
   _loadingView.center = (CGPoint){CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds)};
 }
 
-- (void)setMinimumSize:(CGSize)minimumSize
-{
+- (void)setMinimumSize:(CGSize)minimumSize {
   if (CGSizeEqualToSize(_minimumSize, minimumSize)) {
     return;
   }
@@ -186,34 +178,29 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   });
 }
 
-- (UIViewController *)reactViewController
-{
+- (UIViewController *)reactViewController {
   return _reactViewController ?: [super reactViewController];
 }
 
-- (BOOL)canBecomeFirstResponder
-{
+- (BOOL)canBecomeFirstResponder {
   return YES;
 }
 
-- (void)setLoadingView:(UIView *)loadingView
-{
+- (void)setLoadingView:(UIView *)loadingView {
   _loadingView = loadingView;
   if (!_contentView.contentHasAppeared) {
     [self showLoadingView];
   }
 }
 
-- (void)showLoadingView
-{
+- (void)showLoadingView {
   if (_loadingView && !_contentView.contentHasAppeared) {
     _loadingView.hidden = NO;
     [self addSubview:_loadingView];
   }
 }
 
-- (void)hideLoadingView
-{
+- (void)hideLoadingView {
   if (_loadingView.superview == self && _contentView.contentHasAppeared) {
     if (_loadingViewFadeDuration > 0) {
       dispatch_after(
@@ -237,8 +224,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (NSNumber *)reactTag
-{
+- (NSNumber *)reactTag {
   RCTAssertMainQueue();
   if (!super.reactTag) {
     /**
@@ -253,15 +239,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return super.reactTag;
 }
 
-- (void)bridgeDidReload
-{
+- (void)bridgeDidReload {
   RCTAssertMainQueue();
   // Clear the reactTag so it can be re-assigned
   self.reactTag = nil;
 }
 
-- (void)javaScriptDidLoad:(NSNotification *)notification
-{
+- (void)javaScriptDidLoad:(NSNotification *)notification {
   RCTAssertMainQueue();
 
   // Use the (batched) bridge that's sent in the notification payload, so the
@@ -272,8 +256,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (void)bundleFinishedLoading:(RCTBridge *)bridge
-{
+- (void)bundleFinishedLoading:(RCTBridge *)bridge {
   RCTAssert(bridge != nil, @"Bridge cannot be nil");
   if (!bridge.valid) {
     return;
@@ -294,8 +277,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (void)runApplication:(RCTBridge *)bridge
-{
+- (void)runApplication:(RCTBridge *)bridge {
   NSString *moduleName = _moduleName ?: @"";
   NSDictionary *appParameters = @{
     @"rootTag" : _contentView.reactTag,
@@ -306,8 +288,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   [bridge enqueueJSCall:@"AppRegistry" method:@"runApplication" args:@[ moduleName, appParameters ] completion:NULL];
 }
 
-- (void)setSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility
-{
+- (void)setSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility {
   if (_sizeFlexibility == sizeFlexibility) {
     return;
   }
@@ -317,8 +298,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   _contentView.sizeFlexibility = _sizeFlexibility;
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
   // The root view itself should never receive touches
   UIView *hitView = [super hitTest:point withEvent:event];
   if (self.passThroughTouches && hitView == self) {
@@ -327,8 +307,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return hitView;
 }
 
-- (void)setAppProperties:(NSDictionary *)appProperties
-{
+- (void)setAppProperties:(NSDictionary *)appProperties {
   RCTAssertMainQueue();
 
   if ([_appProperties isEqualToDictionary:appProperties]) {
@@ -342,8 +321,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (void)setIntrinsicContentSize:(CGSize)intrinsicContentSize
-{
+- (void)setIntrinsicContentSize:(CGSize)intrinsicContentSize {
   BOOL oldSizeHasAZeroDimension = _intrinsicContentSize.height == 0 || _intrinsicContentSize.width == 0;
   BOOL newSizeHasAZeroDimension = intrinsicContentSize.height == 0 || intrinsicContentSize.width == 0;
   BOOL bothSizesHaveAZeroDimension = oldSizeHasAZeroDimension && newSizeHasAZeroDimension;
@@ -363,20 +341,17 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   [_delegate rootViewDidChangeIntrinsicSize:self];
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   return _intrinsicContentSize;
 }
 
-- (void)contentViewInvalidated
-{
+- (void)contentViewInvalidated {
   [_contentView removeFromSuperview];
   _contentView = nil;
   [self showLoadingView];
 }
 
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
   [super traitCollectionDidChange:previousTraitCollection];
 
   [[NSNotificationCenter defaultCenter]
@@ -387,8 +362,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
                   }];
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [_contentView invalidate];
 }
 
@@ -396,14 +370,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 @implementation RCTRootView (Deprecated)
 
-- (CGSize)intrinsicSize
-{
+- (CGSize)intrinsicSize {
   RCTLogWarn(@"Calling deprecated `[-RCTRootView intrinsicSize]`.");
   return self.intrinsicContentSize;
 }
 
-- (void)cancelTouches
-{
+- (void)cancelTouches {
   RCTLogWarn(@"`-[RCTRootView cancelTouches]` is deprecated and will be deleted soon.");
   [[_contentView touchHandler] cancel];
 }

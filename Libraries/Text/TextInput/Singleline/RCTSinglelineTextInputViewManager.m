@@ -14,18 +14,15 @@
 
 RCT_EXPORT_MODULE()
 
-- (RCTShadowView *)shadowView
-{
-  RCTBaseTextInputShadowView *shadowView =
-    (RCTBaseTextInputShadowView *)[super shadowView];
+- (RCTShadowView *)shadowView {
+  RCTBaseTextInputShadowView *shadowView = (RCTBaseTextInputShadowView *)[super shadowView];
 
   shadowView.maximumNumberOfLines = 1;
 
   return shadowView;
 }
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [[RCTSinglelineTextInputView alloc] initWithBridge:self.bridge];
 }
 

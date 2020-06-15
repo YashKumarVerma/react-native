@@ -26,15 +26,13 @@ RCT_EXPORT_MODULE()
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
-- (NSArray<NSString *> *)customBubblingEventTypes
-{
-  return @[@"foo"];
+- (NSArray<NSString *> *)customBubblingEventTypes {
+  return @[ @"foo" ];
 }
 
 #pragma clang diagnostic pop
 
 @end
-
 
 @interface RCTNotificationObserverModule : NSObject <RCTBridgeModule>
 
@@ -48,14 +46,15 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_MODULE()
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didInitViewManager:) name:RCTDidInitializeModuleNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(didInitViewManager:)
+                                               name:RCTDidInitializeModuleNotification
+                                             object:nil];
 }
 
-- (void)didInitViewManager:(NSNotification *)note
-{
+- (void)didInitViewManager:(NSNotification *)note {
   id<RCTBridgeModule> module = note.userInfo[@"module"];
   if ([module isKindOfClass:[RCTTestViewManager class]]) {
     _didDetectViewManagerInit = YES;
@@ -64,8 +63,7 @@ RCT_EXPORT_MODULE()
 
 @end
 
-@interface RCTModuleInitNotificationRaceTests : XCTestCase <RCTBridgeDelegate>
-{
+@interface RCTModuleInitNotificationRaceTests : XCTestCase <RCTBridgeDelegate> {
   RCTBridge *_bridge;
   RCTNotificationObserverModule *_notificationObserver;
 }
@@ -73,19 +71,16 @@ RCT_EXPORT_MODULE()
 
 @implementation RCTModuleInitNotificationRaceTests
 
-- (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
-{
+- (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge {
   NSBundle *bundle = [NSBundle bundleForClass:[self class]];
   return [bundle URLForResource:@"RNTesterUnitTestsBundle" withExtension:@"js"];
 }
 
-- (NSArray *)extraModulesForBridge:(__unused RCTBridge *)bridge
-{
-  return @[[RCTTestViewManager new], _notificationObserver];
+- (NSArray *)extraModulesForBridge:(__unused RCTBridge *)bridge {
+  return @[ [RCTTestViewManager new], _notificationObserver ];
 }
 
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
 
   _notificationObserver = [RCTNotificationObserverModule new];
@@ -96,8 +91,7 @@ RCT_EXPORT_MODULE()
   });
 }
 
-- (void)tearDown
-{
+- (void)tearDown {
   [super tearDown];
 
   _notificationObserver = nil;
@@ -105,8 +99,7 @@ RCT_EXPORT_MODULE()
   _bridge = nil;
 }
 
-- (void)testViewManagerNotInitializedBeforeSetBridgeModule
-{
+- (void)testViewManagerNotInitializedBeforeSetBridgeModule {
   RCT_RUN_RUNLOOP_WHILE(!_notificationObserver.didDetectViewManagerInit);
 }
 

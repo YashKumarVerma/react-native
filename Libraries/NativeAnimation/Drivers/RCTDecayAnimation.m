@@ -7,8 +7,8 @@
 
 #import <React/RCTDecayAnimation.h>
 
-#import <UIKit/UIKit.h>
 #import <React/RCTConvert.h>
+#import <UIKit/UIKit.h>
 
 #import <React/RCTAnimationUtils.h>
 #import <React/RCTValueAnimatedNode.h>
@@ -22,8 +22,7 @@
 
 @end
 
-@implementation RCTDecayAnimation
-{
+@implementation RCTDecayAnimation {
   CGFloat _velocity;
   CGFloat _deceleration;
   NSTimeInterval _frameStartTime;
@@ -37,8 +36,7 @@
 - (instancetype)initWithId:(NSNumber *)animationId
                     config:(NSDictionary *)config
                    forNode:(RCTValueAnimatedNode *)valueNode
-                  callBack:(nullable RCTResponseSenderBlock)callback
-{
+                  callBack:(nullable RCTResponseSenderBlock)callback {
   if ((self = [super init])) {
     _callback = [callback copy];
     _animationId = animationId;
@@ -51,8 +49,7 @@
   return self;
 }
 
-- (void)resetAnimationConfig:(NSDictionary *)config
-{
+- (void)resetAnimationConfig:(NSDictionary *)config {
   NSNumber *iterations = [RCTConvert NSNumber:config[@"iterations"]] ?: @1;
   _fromValue = _lastValue;
   _deceleration = [RCTConvert CGFloat:config[@"deceleration"]];
@@ -61,26 +58,21 @@
   _animationHasFinished = iterations.integerValue == 0;
 }
 
-RCT_NOT_IMPLEMENTED(- (instancetype)init)
+RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (void)startAnimation
-{
+- (void)startAnimation {
   _frameStartTime = -1;
   _animationHasBegun = YES;
 }
 
-- (void)stopAnimation
-{
+- (void)stopAnimation {
   _valueNode = nil;
   if (_callback) {
-    _callback(@[@{
-      @"finished": @(_animationHasFinished)
-    }]);
+    _callback(@[ @{@"finished" : @(_animationHasFinished)} ]);
   }
 }
 
-- (void)stepAnimationWithTime:(NSTimeInterval)currentTime
-{
+- (void)stepAnimationWithTime:(NSTimeInterval)currentTime {
   if (!_animationHasBegun || _animationHasFinished) {
     // Animation has not begun or animation has already finished.
     return;
@@ -100,8 +92,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 
   CGFloat value = _fromValue +
-    (_velocity / (1 - _deceleration)) *
-    (1 - exp(-(1 - _deceleration) * (currentTime - _frameStartTime) * 1000.0 / RCTAnimationDragCoefficient()));
+      (_velocity / (1 - _deceleration)) *
+          (1 - exp(-(1 - _deceleration) * (currentTime - _frameStartTime) * 1000.0 / RCTAnimationDragCoefficient()));
 
   [self updateValue:value];
 
@@ -119,8 +111,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   _lastValue = value;
 }
 
-- (void)updateValue:(CGFloat)outputValue
-{
+- (void)updateValue:(CGFloat)outputValue {
   _valueNode.value = outputValue;
   [_valueNode setNeedsUpdate];
 }

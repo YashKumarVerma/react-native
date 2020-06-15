@@ -33,15 +33,13 @@ RCT_EXPORT_MODULE()
 
 @synthesize bridge = _bridge;
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
 - (void)presentViewController:(UIViewController *)alertController
        onParentViewController:(UIViewController *)parentViewController
-                anchorViewTag:(NSNumber *)anchorViewTag
-{
+                anchorViewTag:(NSNumber *)anchorViewTag {
   alertController.modalPresentationStyle = UIModalPresentationPopover;
   UIView *sourceView = parentViewController.view;
 
@@ -232,8 +230,7 @@ RCT_EXPORT_METHOD(showShareActionSheetWithOptions
   [self presentViewController:shareController onParentViewController:controller anchorViewTag:anchorViewTag];
 }
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeActionSheetManagerSpecJSI>(params);
 }
 

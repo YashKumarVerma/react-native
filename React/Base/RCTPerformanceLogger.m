@@ -23,8 +23,7 @@
 
 @implementation RCTPerformanceLogger
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     // Keep this in sync with RCTPLTag
     _labelsForTags = @[
@@ -51,8 +50,7 @@
   return self;
 }
 
-- (void)markStartForTag:(RCTPLTag)tag
-{
+- (void)markStartForTag:(RCTPLTag)tag {
 #if RCT_PROFILE
   if (RCTProfileIsProfiling()) {
     NSString *label = _labelsForTags[tag];
@@ -63,8 +61,7 @@
   _data[tag][1] = 0;
 }
 
-- (void)markStopForTag:(RCTPLTag)tag
-{
+- (void)markStopForTag:(RCTPLTag)tag {
 #if RCT_PROFILE
   if (RCTProfileIsProfiling()) {
     NSString *label = _labelsForTags[tag];
@@ -78,25 +75,21 @@
   }
 }
 
-- (void)setValue:(int64_t)value forTag:(RCTPLTag)tag
-{
+- (void)setValue:(int64_t)value forTag:(RCTPLTag)tag {
   _data[tag][0] = 0;
   _data[tag][1] = value;
 }
 
-- (void)addValue:(int64_t)value forTag:(RCTPLTag)tag
-{
+- (void)addValue:(int64_t)value forTag:(RCTPLTag)tag {
   _data[tag][0] = 0;
   _data[tag][1] += value;
 }
 
-- (void)appendStartForTag:(RCTPLTag)tag
-{
+- (void)appendStartForTag:(RCTPLTag)tag {
   _data[tag][0] = CACurrentMediaTime() * 1000;
 }
 
-- (void)appendStopForTag:(RCTPLTag)tag
-{
+- (void)appendStopForTag:(RCTPLTag)tag {
   if (_data[tag][0] != 0) {
     _data[tag][1] += CACurrentMediaTime() * 1000 - _data[tag][0];
     _data[tag][0] = 0;
@@ -105,8 +98,7 @@
   }
 }
 
-- (NSArray<NSNumber *> *)valuesForTags
-{
+- (NSArray<NSNumber *> *)valuesForTags {
   NSMutableArray *result = [NSMutableArray array];
   for (NSUInteger index = 0; index < RCTPLSize; index++) {
     [result addObject:@(_data[index][0])];
@@ -115,13 +107,11 @@
   return result;
 }
 
-- (int64_t)durationForTag:(RCTPLTag)tag
-{
+- (int64_t)durationForTag:(RCTPLTag)tag {
   return _data[tag][1] - _data[tag][0];
 }
 
-- (int64_t)valueForTag:(RCTPLTag)tag
-{
+- (int64_t)valueForTag:(RCTPLTag)tag {
   return _data[tag][1];
 }
 

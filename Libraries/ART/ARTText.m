@@ -11,8 +11,7 @@
 
 @implementation ARTText
 
-- (void)setAlignment:(CTTextAlignment)alignment
-{
+- (void)setAlignment:(CTTextAlignment)alignment {
   [self invalidate];
   _alignment = alignment;
 }
@@ -29,8 +28,7 @@ static void ARTFreeTextFrame(ARTTextFrame frame)
   }
 }
 
-- (void)setTextFrame:(ARTTextFrame)frame
-{
+- (void)setTextFrame:(ARTTextFrame)frame {
   if (frame.lines != _textFrame.lines) {
     ARTFreeTextFrame(_textFrame);
   }
@@ -38,13 +36,11 @@ static void ARTFreeTextFrame(ARTTextFrame frame)
   _textFrame = frame;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   ARTFreeTextFrame(_textFrame);
 }
 
-- (void)renderLayerTo:(CGContextRef)context
-{
+- (void)renderLayerTo:(CGContextRef)context {
   ARTTextFrame frame = self.textFrame;
 
   if ((!self.fill && !self.stroke) || !frame.count) {
@@ -58,7 +54,6 @@ static void ARTFreeTextFrame(ARTTextFrame frame)
     if ([self.fill applyFillColor:context]) {
       mode = kCGTextFill;
     } else {
-
       for (int i = 0; i < frame.count; i++) {
         CGContextSaveGState(context);
         // Inverse the coordinate space since CoreText assumes a bottom-up coordinate space
@@ -100,8 +95,7 @@ static void ARTFreeTextFrame(ARTTextFrame frame)
   }
 }
 
-- (void)renderLineTo:(CGContextRef)context atIndex:(int)index
-{
+- (void)renderLineTo:(CGContextRef)context atIndex:(int)index {
   ARTTextFrame frame = self.textFrame;
   CGFloat shift;
   switch (self.alignment) {

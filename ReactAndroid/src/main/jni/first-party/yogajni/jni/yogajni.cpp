@@ -9,8 +9,8 @@
 
 using namespace facebook::yoga;
 
-jint JNI_OnLoad(JavaVM* vm, void*) {
-  JNIEnv* env;
+jint JNI_OnLoad(JavaVM *vm, void *) {
+  JNIEnv *env;
   jint ret = vanillajni::ensureInitialized(&env, vm);
   YGJNIVanilla::registerNatives(env);
   return ret;

@@ -11,19 +11,16 @@
 
 #import "RCTConvert+ART.h"
 
-@implementation ARTLinearGradient
-{
+@implementation ARTLinearGradient {
   CGGradientRef _gradient;
   CGPoint _startPoint;
   CGPoint _endPoint;
 }
 
-- (instancetype)initWithArray:(NSArray<NSNumber *> *)array
-{
+- (instancetype)initWithArray:(NSArray<NSNumber *> *)array {
   if ((self = [super initWithArray:array])) {
     if (array.count < 5) {
-      RCTLogError(@"-[%@ %@] expects 5 elements, received %@",
-                  self.class, NSStringFromSelector(_cmd), array);
+      RCTLogError(@"-[%@ %@] expects 5 elements, received %@", self.class, NSStringFromSelector(_cmd), array);
       return nil;
     }
     _startPoint = [RCTConvert CGPoint:array offset:1];
@@ -33,15 +30,12 @@
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   CGGradientRelease(_gradient);
 }
 
-- (void)paint:(CGContextRef)context
-{
-  CGGradientDrawingOptions extendOptions =
-    kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation;
+- (void)paint:(CGContextRef)context {
+  CGGradientDrawingOptions extendOptions = kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation;
   CGContextDrawLinearGradient(context, _gradient, _startPoint, _endPoint, extendOptions);
 }
 

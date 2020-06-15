@@ -66,8 +66,7 @@ static void sendEventToAllConnections(NSString *event)
   }
 }
 
-+ (void)openURL:(NSString *)url withBundleURL:(NSURL *)bundleURL withErrorMessage:(NSString *)errorMessage
-{
++ (void)openURL:(NSString *)url withBundleURL:(NSURL *)bundleURL withErrorMessage:(NSString *)errorMessage {
   NSURL *endpoint = getOpenUrlEndpoint(bundleURL);
 
   NSDictionary *jsonBodyDict = @{@"url" : url};
@@ -87,13 +86,11 @@ static void sendEventToAllConnections(NSString *event)
         }] resume];
 }
 
-+ (void)disableDebugger
-{
++ (void)disableDebugger {
   sendEventToAllConnections(kDebuggerMsgDisable);
 }
 
-+ (RCTInspectorPackagerConnection *)connectWithBundleURL:(NSURL *)bundleURL
-{
++ (RCTInspectorPackagerConnection *)connectWithBundleURL:(NSURL *)bundleURL {
   NSURL *inspectorURL = getInspectorDeviceUrl(bundleURL);
 
   // Note, using a static dictionary isn't really the greatest design, but

@@ -13,8 +13,7 @@
 
 #pragma mark - Public
 
-- (instancetype)initWithDelegateUpdateBlock:(void (^)(id _Nullable delegate))block
-{
+- (instancetype)initWithDelegateUpdateBlock:(void (^)(id _Nullable delegate))block {
   if (self = [super init]) {
     _delegateUpdateBlock = block;
     _delegates = [NSHashTable weakObjectsHashTable];
@@ -23,28 +22,24 @@
   return self;
 }
 
-- (void)addDelegate:(id)delegate
-{
+- (void)addDelegate:(id)delegate {
   [_delegates addObject:delegate];
   [self _updateDelegate];
 }
 
-- (void)removeDelegate:(id)delegate
-{
+- (void)removeDelegate:(id)delegate {
   [_delegates removeObject:delegate];
   [self _updateDelegate];
 }
 
-- (void)removeAllDelegates
-{
+- (void)removeAllDelegates {
   [_delegates removeAllObjects];
   [self _updateDelegate];
 }
 
 #pragma mark - Private
 
-- (void)_updateDelegate
-{
+- (void)_updateDelegate {
   _delegateUpdateBlock(nil);
   if (_delegates.count == 0) {
     return;
@@ -55,8 +50,7 @@
 
 #pragma mark - Fast Forwarding
 
-- (BOOL)respondsToSelector:(SEL)selector
-{
+- (BOOL)respondsToSelector:(SEL)selector {
   for (id delegate in _delegates) {
     if ([delegate respondsToSelector:selector]) {
       return YES;
@@ -66,8 +60,7 @@
   return NO;
 }
 
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
-{
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
   for (id delegate in _delegates) {
     if ([delegate respondsToSelector:selector]) {
       return [delegate methodSignatureForSelector:selector];
@@ -76,8 +69,7 @@
   return nil;
 }
 
-- (void)forwardInvocation:(NSInvocation *)invocation
-{
+- (void)forwardInvocation:(NSInvocation *)invocation {
   NSMutableArray *targets = [[NSMutableArray alloc] initWithCapacity:_delegates.count];
 
   for (id delegate in _delegates) {

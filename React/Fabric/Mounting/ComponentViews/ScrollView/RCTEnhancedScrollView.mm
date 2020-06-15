@@ -12,8 +12,7 @@
   __weak id<UIScrollViewDelegate> _publicDelegate;
 }
 
-+ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
-{
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
   if ([key isEqualToString:@"delegate"]) {
     // For `delegate` property, we issue KVO notifications manually.
     // We need that to block notifications caused by setting the original `UIScrollView`s property.
@@ -23,8 +22,7 @@
   return [super automaticallyNotifiesObserversForKey:key];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     if (@available(iOS 11.0, *)) {
       // We set the default behavior to "never" so that iOS
@@ -42,18 +40,15 @@
   return self;
 }
 
-- (void)setPrivateDelegate:(id<UIScrollViewDelegate>)delegate
-{
+- (void)setPrivateDelegate:(id<UIScrollViewDelegate>)delegate {
   [super setDelegate:delegate];
 }
 
-- (id<UIScrollViewDelegate>)delegate
-{
+- (id<UIScrollViewDelegate>)delegate {
   return _publicDelegate;
 }
 
-- (void)setDelegate:(id<UIScrollViewDelegate>)delegate
-{
+- (void)setDelegate:(id<UIScrollViewDelegate>)delegate {
   if (_publicDelegate == delegate) {
     return;
   }
@@ -77,8 +72,7 @@
  * becomes larger than the ScrollView, there is no padding around the content but it
  * can still fill the whole view.
  */
-- (void)setContentOffset:(CGPoint)contentOffset
-{
+- (void)setContentOffset:(CGPoint)contentOffset {
   if (_centerContent && !CGSizeEqualToSize(self.contentSize, CGSizeZero)) {
     CGSize scrollViewSize = self.bounds.size;
     if (self.contentSize.width <= scrollViewSize.width) {

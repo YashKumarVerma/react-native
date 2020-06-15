@@ -40,24 +40,20 @@ static NSString *interfaceIdiom(UIUserInterfaceIdiom idiom)
 
 RCT_EXPORT_MODULE(PlatformConstants)
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
 // TODO: Use the generated struct return type.
-- (ModuleConstants<JS::NativePlatformConstantsIOS::Constants>)constantsToExport
-{
+- (ModuleConstants<JS::NativePlatformConstantsIOS::Constants>)constantsToExport {
   return (ModuleConstants<JS::NativePlatformConstantsIOS::Constants>)[self getConstants];
 }
 
-- (ModuleConstants<JS::NativePlatformConstantsIOS::Constants>)getConstants
-{
+- (ModuleConstants<JS::NativePlatformConstantsIOS::Constants>)getConstants {
   __block ModuleConstants<JS::NativePlatformConstantsIOS::Constants> constants;
   RCTUnsafeExecuteOnMainQueueSync(^{
     UIDevice *device = [UIDevice currentDevice];
@@ -81,8 +77,7 @@ RCT_EXPORT_MODULE(PlatformConstants)
   return constants;
 }
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativePlatformConstantsIOSSpecJSI>(params);
 }
 

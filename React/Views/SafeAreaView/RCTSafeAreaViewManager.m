@@ -17,13 +17,11 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_VIEW_PROPERTY(emulateUnlessSupported, BOOL)
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [[RCTSafeAreaView alloc] initWithBridge:self.bridge];
 }
 
-- (RCTSafeAreaShadowView *)shadowView
-{
+- (RCTSafeAreaShadowView *)shadowView {
   return [RCTSafeAreaShadowView new];
 }
 

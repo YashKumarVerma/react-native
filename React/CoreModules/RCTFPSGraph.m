@@ -34,8 +34,7 @@
   NSUInteger _height;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame color:(UIColor *)color
-{
+- (instancetype)initWithFrame:(CGRect)frame color:(UIColor *)color {
   if ((self = [super initWithFrame:frame])) {
     _frameCount = -1;
     _prevTime = -1;
@@ -52,16 +51,14 @@
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   free(_frames);
 }
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
-- (CAShapeLayer *)graph
-{
+- (CAShapeLayer *)graph {
   if (!_graph) {
     _graph = [CAShapeLayer new];
     _graph.frame = self.bounds;
@@ -72,8 +69,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return _graph;
 }
 
-- (UILabel *)label
-{
+- (UILabel *)label {
   if (!_label) {
     _label = [[UILabel alloc] initWithFrame:self.bounds];
     _label.font = [UIFont boldSystemFontOfSize:13];
@@ -83,8 +79,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return _label;
 }
 
-- (void)onTick:(NSTimeInterval)timestamp
-{
+- (void)onTick:(NSTimeInterval)timestamp {
   _frameCount++;
   if (_prevTime == -1) {
     _prevTime = timestamp;

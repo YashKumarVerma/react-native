@@ -9,17 +9,14 @@
 
 #import <React/RCTLog.h>
 
-@implementation RCTDiffClampAnimatedNode
-{
+@implementation RCTDiffClampAnimatedNode {
   NSNumber *_inputNodeTag;
   CGFloat _min;
   CGFloat _max;
   CGFloat _lastValue;
 }
 
-- (instancetype)initWithTag:(NSNumber *)tag
-                     config:(NSDictionary<NSString *, id> *)config
-{
+- (instancetype)initWithTag:(NSNumber *)tag config:(NSDictionary<NSString *, id> *)config {
   if (self = [super initWithTag:tag config:config]) {
     _inputNodeTag = config[@"input"];
     _min = [config[@"min"] floatValue];
@@ -29,15 +26,13 @@
   return self;
 }
 
-- (void)onAttachedToNode:(RCTAnimatedNode *)parent
-{
+- (void)onAttachedToNode:(RCTAnimatedNode *)parent {
   [super onAttachedToNode:parent];
 
   self.value = _lastValue = [self inputNodeValue];
 }
 
-- (void)performUpdate
-{
+- (void)performUpdate {
   [super performUpdate];
 
   CGFloat value = [self inputNodeValue];
@@ -47,8 +42,7 @@
   self.value = MIN(MAX(self.value + diff, _min), _max);
 }
 
-- (CGFloat)inputNodeValue
-{
+- (CGFloat)inputNodeValue {
   RCTValueAnimatedNode *inputNode = (RCTValueAnimatedNode *)[self.parentNodes objectForKey:_inputNodeTag];
   if (![inputNode isKindOfClass:[RCTValueAnimatedNode class]]) {
     RCTLogError(@"Illegal node ID set as an input for Animated.DiffClamp node");

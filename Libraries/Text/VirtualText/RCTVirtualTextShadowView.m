@@ -18,8 +18,7 @@
 
 #pragma mark - Layout
 
-- (void)dirtyLayout
-{
+- (void)dirtyLayout {
   [super dirtyLayout];
 
   if (_isLayoutDirty) {
@@ -30,8 +29,7 @@
   [self.superview dirtyLayout];
 }
 
-- (void)clearLayout
-{
+- (void)clearLayout {
   _isLayoutDirty = NO;
 }
 

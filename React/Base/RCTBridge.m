@@ -124,8 +124,7 @@ void RCTEnableTurboModule(BOOL enabled)
 
 dispatch_queue_t RCTJSThread;
 
-+ (void)initialize
-{
++ (void)initialize {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     // Set up JS thread
@@ -141,33 +140,28 @@ static RCTBridge *RCTCurrentBridgeInstance = nil;
  * that need to access the bridge for purposes such as logging, but should not
  * be relied upon to return any particular instance, due to race conditions.
  */
-+ (instancetype)currentBridge
-{
++ (instancetype)currentBridge {
   return RCTCurrentBridgeInstance;
 }
 
-+ (void)setCurrentBridge:(RCTBridge *)currentBridge
-{
++ (void)setCurrentBridge:(RCTBridge *)currentBridge {
   RCTCurrentBridgeInstance = currentBridge;
 }
 
-- (instancetype)initWithDelegate:(id<RCTBridgeDelegate>)delegate launchOptions:(NSDictionary *)launchOptions
-{
+- (instancetype)initWithDelegate:(id<RCTBridgeDelegate>)delegate launchOptions:(NSDictionary *)launchOptions {
   return [self initWithDelegate:delegate bundleURL:nil moduleProvider:nil launchOptions:launchOptions];
 }
 
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
                    moduleProvider:(RCTBridgeModuleListProvider)block
-                    launchOptions:(NSDictionary *)launchOptions
-{
+                    launchOptions:(NSDictionary *)launchOptions {
   return [self initWithDelegate:nil bundleURL:bundleURL moduleProvider:block launchOptions:launchOptions];
 }
 
 - (instancetype)initWithDelegate:(id<RCTBridgeDelegate>)delegate
                        bundleURL:(NSURL *)bundleURL
                   moduleProvider:(RCTBridgeModuleListProvider)block
-                   launchOptions:(NSDictionary *)launchOptions
-{
+                   launchOptions:(NSDictionary *)launchOptions {
   if (self = [super init]) {
     _delegate = delegate;
     _bundleURL = bundleURL;
@@ -181,8 +175,7 @@ static RCTBridge *RCTCurrentBridgeInstance = nil;
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (void)dealloc
-{
+- (void)dealloc {
   /**
    * This runs only on the main thread, but crashes the subclass
    * RCTAssertMainQueue();
@@ -190,33 +183,27 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   [self invalidate];
 }
 
-- (void)setRCTTurboModuleLookupDelegate:(id<RCTTurboModuleLookupDelegate>)turboModuleLookupDelegate
-{
+- (void)setRCTTurboModuleLookupDelegate:(id<RCTTurboModuleLookupDelegate>)turboModuleLookupDelegate {
   [self.batchedBridge setRCTTurboModuleLookupDelegate:turboModuleLookupDelegate];
 }
 
-- (void)didReceiveReloadCommand
-{
+- (void)didReceiveReloadCommand {
   [self reloadWithReason:@"Command"];
 }
 
-- (NSArray<Class> *)moduleClasses
-{
+- (NSArray<Class> *)moduleClasses {
   return self.batchedBridge.moduleClasses;
 }
 
-- (id)moduleForName:(NSString *)moduleName
-{
+- (id)moduleForName:(NSString *)moduleName {
   return [self.batchedBridge moduleForName:moduleName];
 }
 
-- (id)moduleForName:(NSString *)moduleName lazilyLoadIfNecessary:(BOOL)lazilyLoad
-{
+- (id)moduleForName:(NSString *)moduleName lazilyLoadIfNecessary:(BOOL)lazilyLoad {
   return [self.batchedBridge moduleForName:moduleName lazilyLoadIfNecessary:lazilyLoad];
 }
 
-- (id)moduleForClass:(Class)moduleClass
-{
+- (id)moduleForClass:(Class)moduleClass {
   id module = [self.batchedBridge moduleForClass:moduleClass];
   if (!module) {
     module = [self moduleForName:RCTBridgeModuleNameForClass(moduleClass)];
@@ -224,8 +211,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return module;
 }
 
-- (NSArray *)modulesConformingToProtocol:(Protocol *)protocol
-{
+- (NSArray *)modulesConformingToProtocol:(Protocol *)protocol {
   NSMutableArray *modules = [NSMutableArray new];
   for (Class moduleClass in [self.moduleClasses copy]) {
     if ([moduleClass conformsToProtocol:protocol]) {
@@ -238,24 +224,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return [modules copy];
 }
 
-- (BOOL)moduleIsInitialized:(Class)moduleClass
-{
+- (BOOL)moduleIsInitialized:(Class)moduleClass {
   return [self.batchedBridge moduleIsInitialized:moduleClass];
 }
 
 /**
  * DEPRECATED - please use RCTReloadCommand.
  */
-- (void)reload
-{
+- (void)reload {
   [self reloadWithReason:@"Unknown from bridge"];
 }
 
 /**
  * DEPRECATED - please use RCTReloadCommand.
  */
-- (void)reloadWithReason:(NSString *)reason
-{
+- (void)reloadWithReason:(NSString *)reason {
 #if RCT_ENABLE_INSPECTOR
   // Disable debugger to resume the JsVM & avoid thread locks while reloading
   [RCTInspectorDevServerHelper disableDebugger];
@@ -276,26 +259,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   });
 }
 
-- (void)onFastRefresh
-{
+- (void)onFastRefresh {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTBridgeFastRefreshNotification object:self];
 }
 
 /**
  * DEPRECATED - please use RCTReloadCommand.
  */
-- (void)requestReload
-{
+- (void)requestReload {
   [self reloadWithReason:@"Requested from bridge"];
 }
 
-- (Class)bridgeClass
-{
+- (Class)bridgeClass {
   return [RCTCxxBridge class];
 }
 
-- (void)setUp
-{
+- (void)setUp {
   RCT_PROFILE_BEGIN_EVENT(0, @"-[RCTBridge setUp]", nil);
 
   _performanceLogger = [RCTPerformanceLogger new];
@@ -325,23 +304,19 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
-- (BOOL)isLoading
-{
+- (BOOL)isLoading {
   return self.batchedBridge.loading;
 }
 
-- (BOOL)isValid
-{
+- (BOOL)isValid {
   return self.batchedBridge.valid;
 }
 
-- (BOOL)isBatchActive
-{
+- (BOOL)isBatchActive {
   return [_batchedBridge isBatchActive];
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTBridgeWillBeInvalidatedNotification object:self];
 
   RCTBridge *batchedBridge = self.batchedBridge;
@@ -354,18 +329,15 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   }
 }
 
-- (void)updateModuleWithInstance:(id<RCTBridgeModule>)instance
-{
+- (void)updateModuleWithInstance:(id<RCTBridgeModule>)instance {
   [self.batchedBridge updateModuleWithInstance:instance];
 }
 
-- (void)registerAdditionalModuleClasses:(NSArray<Class> *)modules
-{
+- (void)registerAdditionalModuleClasses:(NSArray<Class> *)modules {
   [self.batchedBridge registerAdditionalModuleClasses:modules];
 }
 
-- (void)enqueueJSCall:(NSString *)moduleDotMethod args:(NSArray *)args
-{
+- (void)enqueueJSCall:(NSString *)moduleDotMethod args:(NSArray *)args {
   NSArray<NSString *> *ids = [moduleDotMethod componentsSeparatedByString:@"."];
   NSString *module = ids[0];
   NSString *method = ids[1];
@@ -375,25 +347,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 - (void)enqueueJSCall:(NSString *)module
                method:(NSString *)method
                  args:(NSArray *)args
-           completion:(dispatch_block_t)completion
-{
+           completion:(dispatch_block_t)completion {
   [self.batchedBridge enqueueJSCall:module method:method args:args completion:completion];
 }
 
-- (void)enqueueCallback:(NSNumber *)cbID args:(NSArray *)args
-{
+- (void)enqueueCallback:(NSNumber *)cbID args:(NSArray *)args {
   [self.batchedBridge enqueueCallback:cbID args:args];
 }
 
-- (void)registerSegmentWithId:(NSUInteger)segmentId path:(NSString *)path
-{
+- (void)registerSegmentWithId:(NSUInteger)segmentId path:(NSString *)path {
   [self.batchedBridge registerSegmentWithId:segmentId path:path];
 }
 
 - (void)loadAndExecuteSplitBundleURL:(NSURL *)bundleURL
                              onError:(RCTLoadAndExecuteErrorBlock)onError
-                          onComplete:(dispatch_block_t)onComplete
-{
+                          onComplete:(dispatch_block_t)onComplete {
   [self.batchedBridge loadAndExecuteSplitBundleURL:bundleURL onError:onError onComplete:onComplete];
 }
 

@@ -16,8 +16,7 @@
   std::mutex _mutex;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _observers = [[NSHashTable alloc] initWithOptions:NSHashTableWeakMemory capacity:0];
   }
@@ -25,22 +24,19 @@
   return self;
 }
 
-- (void)addObserver:(id<RCTUIManagerObserver>)observer
-{
+- (void)addObserver:(id<RCTUIManagerObserver>)observer {
   std::lock_guard<std::mutex> lock(_mutex);
   [self->_observers addObject:observer];
 }
 
-- (void)removeObserver:(id<RCTUIManagerObserver>)observer
-{
+- (void)removeObserver:(id<RCTUIManagerObserver>)observer {
   std::lock_guard<std::mutex> lock(_mutex);
   [self->_observers removeObject:observer];
 }
 
 #pragma mark - RCTUIManagerObserver
 
-- (void)uiManagerWillPerformLayout:(RCTUIManager *)manager
-{
+- (void)uiManagerWillPerformLayout:(RCTUIManager *)manager {
   std::lock_guard<std::mutex> lock(_mutex);
 
   for (id<RCTUIManagerObserver> observer in _observers) {
@@ -50,8 +46,7 @@
   }
 }
 
-- (void)uiManagerDidPerformLayout:(RCTUIManager *)manager
-{
+- (void)uiManagerDidPerformLayout:(RCTUIManager *)manager {
   std::lock_guard<std::mutex> lock(_mutex);
 
   for (id<RCTUIManagerObserver> observer in _observers) {
@@ -61,8 +56,7 @@
   }
 }
 
-- (void)uiManagerWillPerformMounting:(RCTUIManager *)manager
-{
+- (void)uiManagerWillPerformMounting:(RCTUIManager *)manager {
   std::lock_guard<std::mutex> lock(_mutex);
 
   for (id<RCTUIManagerObserver> observer in _observers) {
@@ -72,8 +66,7 @@
   }
 }
 
-- (BOOL)uiManager:(RCTUIManager *)manager performMountingWithBlock:(RCTUIManagerMountingBlock)block
-{
+- (BOOL)uiManager:(RCTUIManager *)manager performMountingWithBlock:(RCTUIManagerMountingBlock)block {
   std::lock_guard<std::mutex> lock(_mutex);
 
   for (id<RCTUIManagerObserver> observer in _observers) {
@@ -86,8 +79,7 @@
   return NO;
 }
 
-- (void)uiManagerDidPerformMounting:(RCTUIManager *)manager
-{
+- (void)uiManagerDidPerformMounting:(RCTUIManager *)manager {
   std::lock_guard<std::mutex> lock(_mutex);
 
   for (id<RCTUIManagerObserver> observer in _observers) {

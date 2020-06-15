@@ -21,13 +21,11 @@ static NSString *const TVNavigationEventName = @"onHWKeyEvent";
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleTVNavigationEventNotification:)
@@ -37,21 +35,18 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
-- (NSArray<NSString *> *)supportedEvents
-{
+- (NSArray<NSString *> *)supportedEvents {
   return @[ TVNavigationEventName ];
 }
 
-- (void)handleTVNavigationEventNotification:(NSNotification *)notif
-{
+- (void)handleTVNavigationEventNotification:(NSNotification *)notif {
   if (self.bridge) {
     [self sendEventWithName:TVNavigationEventName body:notif.object];
   }
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeTVNavigationEventEmitterSpecJSI>(params);
 }
 

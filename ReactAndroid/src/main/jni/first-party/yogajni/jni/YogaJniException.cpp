@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include "YogaJniException.h"
 #include <stdexcept>
 #include <string>
-#include "YogaJniException.h"
 #include "common.h"
 
 namespace facebook {
@@ -27,10 +27,10 @@ YogaJniException::YogaJniException(jthrowable throwable) {
   throwable_ = newGlobalRef(getCurrentEnv(), throwable);
 }
 
-YogaJniException::YogaJniException(YogaJniException&& rhs)
+YogaJniException::YogaJniException(YogaJniException &&rhs)
     : throwable_(std::move(rhs.throwable_)) {}
 
-YogaJniException::YogaJniException(const YogaJniException& rhs) {
+YogaJniException::YogaJniException(const YogaJniException &rhs) {
   throwable_ = newGlobalRef(getCurrentEnv(), rhs.throwable_.get());
 }
 

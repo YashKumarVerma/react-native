@@ -11,8 +11,7 @@
 
 @implementation RCTI18nUtil
 
-+ (instancetype)sharedInstance
-{
++ (instancetype)sharedInstance {
   static RCTI18nUtil *sharedInstance;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -29,8 +28,7 @@
  * - is forcing RTL layout, regardless of the active language (for development purpose)
  * - allows RTL layout when using RTL locale
  */
-- (BOOL)isRTL
-{
+- (BOOL)isRTL {
   if ([self isRTLForced]) {
     return YES;
   }
@@ -45,8 +43,7 @@
  * Before the bridge is initialized
  * @return whether the app allows RTL layout, default is true
  */
-- (BOOL)isRTLAllowed
-{
+- (BOOL)isRTLAllowed {
   NSNumber *value = [[NSUserDefaults standardUserDefaults] objectForKey:@"RCTI18nUtil_allowRTL"];
   if (value == nil) {
     return YES;
@@ -54,8 +51,7 @@
   return [value boolValue];
 }
 
-- (void)allowRTL:(BOOL)rtlStatus
-{
+- (void)allowRTL:(BOOL)rtlStatus {
   [[NSUserDefaults standardUserDefaults] setBool:rtlStatus forKey:@"RCTI18nUtil_allowRTL"];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -64,40 +60,34 @@
  * Could be used to test RTL layout with English
  * Used for development and testing purpose
  */
-- (BOOL)isRTLForced
-{
+- (BOOL)isRTLForced {
   BOOL rtlStatus = [[NSUserDefaults standardUserDefaults] boolForKey:@"RCTI18nUtil_forceRTL"];
   return rtlStatus;
 }
 
-- (void)forceRTL:(BOOL)rtlStatus
-{
+- (void)forceRTL:(BOOL)rtlStatus {
   [[NSUserDefaults standardUserDefaults] setBool:rtlStatus forKey:@"RCTI18nUtil_forceRTL"];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (BOOL)doLeftAndRightSwapInRTL
-{
+- (BOOL)doLeftAndRightSwapInRTL {
   return [[NSUserDefaults standardUserDefaults] boolForKey:@"RCTI18nUtil_makeRTLFlipLeftAndRightStyles"];
 }
 
-- (void)swapLeftAndRightInRTL:(BOOL)value
-{
+- (void)swapLeftAndRightInRTL:(BOOL)value {
   [[NSUserDefaults standardUserDefaults] setBool:value forKey:@"RCTI18nUtil_makeRTLFlipLeftAndRightStyles"];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 // Check if the current device language is RTL
-- (BOOL)isDevicePreferredLanguageRTL
-{
+- (BOOL)isDevicePreferredLanguageRTL {
   NSLocaleLanguageDirection direction =
       [NSLocale characterDirectionForLanguage:[[NSLocale preferredLanguages] objectAtIndex:0]];
   return direction == NSLocaleLanguageDirectionRightToLeft;
 }
 
 // Check if the current application language is RTL
-- (BOOL)isApplicationPreferredLanguageRTL
-{
+- (BOOL)isApplicationPreferredLanguageRTL {
   NSWritingDirection direction = [NSParagraphStyle defaultWritingDirectionForLanguage:nil];
   return direction == NSWritingDirectionRightToLeft;
 }

@@ -9,8 +9,7 @@
 
 @implementation ARTShape
 
-- (void)setD:(CGPathRef)d
-{
+- (void)setD:(CGPathRef)d {
   if (d == _d) {
     return;
   }
@@ -19,13 +18,11 @@
   _d = CGPathRetain(d);
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   CGPathRelease(_d);
 }
 
-- (void)renderLayerTo:(CGContextRef)context
-{
+- (void)renderLayerTo:(CGContextRef)context {
   if ((!self.fill && !self.stroke) || !self.d) {
     return;
   }

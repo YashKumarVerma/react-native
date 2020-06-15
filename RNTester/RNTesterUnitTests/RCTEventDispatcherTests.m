@@ -16,8 +16,7 @@
 @property (atomic, assign, readwrite) BOOL canCoalesce;
 @end
 
-@implementation RCTTestEvent
-{
+@implementation RCTTestEvent {
   NSDictionary<NSString *, id> *_body;
 }
 
@@ -28,8 +27,7 @@
 - (instancetype)initWithViewTag:(NSNumber *)viewTag
                       eventName:(NSString *)eventName
                            body:(NSDictionary<NSString *, id> *)body
-                  coalescingKey:(uint16_t)coalescingKey
-{
+                  coalescingKey:(uint16_t)coalescingKey {
   if (self = [super init]) {
     _viewTag = viewTag;
     _eventName = eventName;
@@ -40,39 +38,33 @@
   return self;
 }
 
-- (id<RCTEvent>)coalesceWithEvent:(id<RCTEvent>)newEvent
-{
+- (id<RCTEvent>)coalesceWithEvent:(id<RCTEvent>)newEvent {
   return newEvent;
 }
 
-+ (NSString *)moduleDotMethod
-{
++ (NSString *)moduleDotMethod {
   return @"MyCustomEventemitter.emit";
 }
 
-- (NSArray *)arguments
-{
-  return @[_eventName, _body];
+- (NSArray *)arguments {
+  return @[ _eventName, _body ];
 }
 
 @end
 
 @interface RCTDummyBridge : RCTBridge
-- (void)dispatchBlock:(dispatch_block_t)block
-                queue:(dispatch_queue_t)queue;
+- (void)dispatchBlock:(dispatch_block_t)block queue:(dispatch_queue_t)queue;
 @end
 
 @implementation RCTDummyBridge
-- (void)dispatchBlock:(dispatch_block_t __unused)block
-                queue:(dispatch_queue_t __unused)queue
-{}
+- (void)dispatchBlock:(dispatch_block_t __unused)block queue:(dispatch_queue_t __unused)queue {
+}
 @end
 
 @interface RCTEventDispatcherTests : XCTestCase
 @end
 
-@implementation RCTEventDispatcherTests
-{
+@implementation RCTEventDispatcherTests {
   id _bridge;
   RCTEventDispatcher *_eventDispatcher;
 
@@ -82,9 +74,7 @@
   NSString *_JSMethod;
 }
 
-
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
 
   _bridge = [OCMockObject mockForClass:[RCTDummyBridge class]];
@@ -93,21 +83,14 @@
   [_eventDispatcher setValue:_bridge forKey:@"bridge"];
 
   _eventName = RCTNormalizeInputEventName(@"sampleEvent");
-  _body = @{ @"foo": @"bar" };
-  _testEvent = [[RCTTestEvent alloc] initWithViewTag:nil
-                                           eventName:_eventName
-                                                body:_body
-                                       coalescingKey:0];
+  _body = @{@"foo" : @"bar"};
+  _testEvent = [[RCTTestEvent alloc] initWithViewTag:nil eventName:_eventName body:_body coalescingKey:0];
 
   _JSMethod = [[_testEvent class] moduleDotMethod];
 }
 
-- (void)testLegacyEventsAreImmediatelyDispatched
-{
-  [[_bridge expect] enqueueJSCall:@"RCTDeviceEventEmitter"
-                           method:@"emit"
-                             args:[_testEvent arguments]
-                       completion:NULL];
+- (void)testLegacyEventsAreImmediatelyDispatched {
+  [[_bridge expect] enqueueJSCall:@"RCTDeviceEventEmitter" method:@"emit" args:[_testEvent arguments] completion:NULL];
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -117,8 +100,7 @@
   [_bridge verify];
 }
 
-- (void)testNonCoalescingEventIsImmediatelyDispatched
-{
+- (void)testNonCoalescingEventIsImmediatelyDispatched {
   _testEvent.canCoalesce = NO;
 
   [[_bridge expect] dispatchBlock:OCMOCK_ANY queue:RCTJSThread];
@@ -128,8 +110,7 @@
   [_bridge verify];
 }
 
-- (void)testCoalescingEventIsImmediatelyDispatched
-{
+- (void)testCoalescingEventIsImmediatelyDispatched {
   _testEvent.canCoalesce = YES;
 
   [[_bridge expect] dispatchBlock:OCMOCK_ANY queue:RCTJSThread];
@@ -139,8 +120,7 @@
   [_bridge verify];
 }
 
-- (void)testMultipleEventsResultInOnlyOneDispatchAfterTheFirstOne
-{
+- (void)testMultipleEventsResultInOnlyOneDispatchAfterTheFirstOne {
   [[_bridge expect] dispatchBlock:OCMOCK_ANY queue:RCTJSThread];
   [_eventDispatcher sendEvent:_testEvent];
   [_eventDispatcher sendEvent:_testEvent];
@@ -150,41 +130,38 @@
   [_bridge verify];
 }
 
-- (void)testRunningTheDispatchedBlockResultInANewOneBeingEnqueued
-{
+- (void)testRunningTheDispatchedBlockResultInANewOneBeingEnqueued {
   __block dispatch_block_t eventsEmittingBlock;
   [[_bridge expect] dispatchBlock:[OCMArg checkWithBlock:^(dispatch_block_t block) {
-    eventsEmittingBlock = block;
-    return YES;
-  }] queue:RCTJSThread];
+                      eventsEmittingBlock = block;
+                      return YES;
+                    }]
+                            queue:RCTJSThread];
   [_eventDispatcher sendEvent:_testEvent];
   [_bridge verify];
 
   // eventsEmittingBlock would be called when js is no longer busy, which will result in emitting events
-  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod]
-                             args:[_testEvent arguments]];
+  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod] args:[_testEvent arguments]];
   eventsEmittingBlock();
   [_bridge verify];
-
 
   [[_bridge expect] dispatchBlock:OCMOCK_ANY queue:RCTJSThread];
   [_eventDispatcher sendEvent:_testEvent];
   [_bridge verify];
 }
 
-- (void)testBasicCoalescingReturnsLastEvent
-{
+- (void)testBasicCoalescingReturnsLastEvent {
   __block dispatch_block_t eventsEmittingBlock;
   [[_bridge expect] dispatchBlock:[OCMArg checkWithBlock:^(dispatch_block_t block) {
-    eventsEmittingBlock = block;
-    return YES;
-  }] queue:RCTJSThread];
-  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod]
-                             args:[_testEvent arguments]];
+                      eventsEmittingBlock = block;
+                      return YES;
+                    }]
+                            queue:RCTJSThread];
+  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod] args:[_testEvent arguments]];
 
   RCTTestEvent *ignoredEvent = [[RCTTestEvent alloc] initWithViewTag:nil
                                                            eventName:_eventName
-                                                                body:@{ @"other": @"body" }
+                                                                body:@{@"other" : @"body"}
                                                        coalescingKey:0];
   [_eventDispatcher sendEvent:ignoredEvent];
   [_eventDispatcher sendEvent:_testEvent];
@@ -193,8 +170,7 @@
   [_bridge verify];
 }
 
-- (void)testDifferentEventTypesDontCoalesce
-{
+- (void)testDifferentEventTypesDontCoalesce {
   NSString *firstEventName = RCTNormalizeInputEventName(@"firstEvent");
   RCTTestEvent *firstEvent = [[RCTTestEvent alloc] initWithViewTag:nil
                                                          eventName:firstEventName
@@ -203,14 +179,12 @@
 
   __block dispatch_block_t eventsEmittingBlock;
   [[_bridge expect] dispatchBlock:[OCMArg checkWithBlock:^(dispatch_block_t block) {
-    eventsEmittingBlock = block;
-    return YES;
-  }] queue:RCTJSThread];
-  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod]
-                             args:[firstEvent arguments]];
-  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod]
-                             args:[_testEvent arguments]];
-
+                      eventsEmittingBlock = block;
+                      return YES;
+                    }]
+                            queue:RCTJSThread];
+  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod] args:[firstEvent arguments]];
+  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod] args:[_testEvent arguments]];
 
   [_eventDispatcher sendEvent:firstEvent];
   [_eventDispatcher sendEvent:_testEvent];
@@ -219,8 +193,7 @@
   [_bridge verify];
 }
 
-- (void)testDifferentViewTagsDontCoalesce
-{
+- (void)testDifferentViewTagsDontCoalesce {
   RCTTestEvent *firstEvent = [[RCTTestEvent alloc] initWithViewTag:@(1)
                                                          eventName:_eventName
                                                               body:_body
@@ -232,14 +205,12 @@
 
   __block dispatch_block_t eventsEmittingBlock;
   [[_bridge expect] dispatchBlock:[OCMArg checkWithBlock:^(dispatch_block_t block) {
-    eventsEmittingBlock = block;
-    return YES;
-  }] queue:RCTJSThread];
-  [[_bridge expect] enqueueJSCall:[[firstEvent class] moduleDotMethod]
-                             args:[firstEvent arguments]];
-  [[_bridge expect] enqueueJSCall:[[secondEvent class] moduleDotMethod]
-                             args:[secondEvent arguments]];
-
+                      eventsEmittingBlock = block;
+                      return YES;
+                    }]
+                            queue:RCTJSThread];
+  [[_bridge expect] enqueueJSCall:[[firstEvent class] moduleDotMethod] args:[firstEvent arguments]];
+  [[_bridge expect] enqueueJSCall:[[secondEvent class] moduleDotMethod] args:[secondEvent arguments]];
 
   [_eventDispatcher sendEvent:firstEvent];
   [_eventDispatcher sendEvent:secondEvent];
@@ -248,28 +219,19 @@
   [_bridge verify];
 }
 
-- (void)testSameEventTypesWithDifferentCoalesceKeysDontCoalesce
-{
+- (void)testSameEventTypesWithDifferentCoalesceKeysDontCoalesce {
   NSString *eventName = RCTNormalizeInputEventName(@"firstEvent");
-  RCTTestEvent *firstEvent = [[RCTTestEvent alloc] initWithViewTag:nil
-                                                         eventName:eventName
-                                                              body:_body
-                                                     coalescingKey:0];
-  RCTTestEvent *secondEvent = [[RCTTestEvent alloc] initWithViewTag:nil
-                                                         eventName:eventName
-                                                              body:_body
-                                                     coalescingKey:1];
+  RCTTestEvent *firstEvent = [[RCTTestEvent alloc] initWithViewTag:nil eventName:eventName body:_body coalescingKey:0];
+  RCTTestEvent *secondEvent = [[RCTTestEvent alloc] initWithViewTag:nil eventName:eventName body:_body coalescingKey:1];
 
   __block dispatch_block_t eventsEmittingBlock;
   [[_bridge expect] dispatchBlock:[OCMArg checkWithBlock:^(dispatch_block_t block) {
-    eventsEmittingBlock = block;
-    return YES;
-  }] queue:RCTJSThread];
-  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod]
-                             args:[firstEvent arguments]];
-  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod]
-                             args:[secondEvent arguments]];
-
+                      eventsEmittingBlock = block;
+                      return YES;
+                    }]
+                            queue:RCTJSThread];
+  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod] args:[firstEvent arguments]];
+  [[_bridge expect] enqueueJSCall:[[_testEvent class] moduleDotMethod] args:[secondEvent arguments]];
 
   [_eventDispatcher sendEvent:firstEvent];
   [_eventDispatcher sendEvent:secondEvent];

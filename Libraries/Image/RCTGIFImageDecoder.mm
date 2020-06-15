@@ -15,15 +15,14 @@
 
 #import "RCTImagePlugins.h"
 
-@interface RCTGIFImageDecoder() <RCTTurboModule>
+@interface RCTGIFImageDecoder () <RCTTurboModule>
 @end
 
 @implementation RCTGIFImageDecoder
 
 RCT_EXPORT_MODULE()
 
-- (BOOL)canDecodeImageData:(NSData *)imageData
-{
+- (BOOL)canDecodeImageData:(NSData *)imageData {
   char header[7] = {};
   [imageData getBytes:header length:6];
 
@@ -34,21 +33,23 @@ RCT_EXPORT_MODULE()
                                               size:(CGSize)size
                                              scale:(CGFloat)scale
                                         resizeMode:(RCTResizeMode)resizeMode
-                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
-{
+                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler {
   RCTAnimatedImage *image = [[RCTAnimatedImage alloc] initWithData:imageData scale:scale];
 
   if (!image) {
     completionHandler(nil, nil);
-    return ^{};
+    return ^{
+    };
   }
 
   completionHandler(nil, image);
-  return ^{};
+  return ^{
+  };
 }
 
 @end
 
-Class RCTGIFImageDecoderCls() {
+Class RCTGIFImageDecoderCls()
+{
   return RCTGIFImageDecoder.class;
 }

@@ -57,8 +57,7 @@ static NSRegularExpression *RCTJSStackFrameRegex()
                               file:(NSString *)file
                         lineNumber:(NSInteger)lineNumber
                             column:(NSInteger)column
-                          collapse:(NSInteger)collapse
-{
+                          collapse:(NSInteger)collapse {
   if (self = [super init]) {
     _methodName = methodName;
     _file = file;
@@ -69,8 +68,7 @@ static NSRegularExpression *RCTJSStackFrameRegex()
   return self;
 }
 
-- (NSDictionary *)toDictionary
-{
+- (NSDictionary *)toDictionary {
   return @{
     @"methodName" : RCTNullIfNil(self.methodName),
     @"file" : RCTNullIfNil(self.file),
@@ -80,8 +78,7 @@ static NSRegularExpression *RCTJSStackFrameRegex()
   };
 }
 
-+ (instancetype)stackFrameWithLine:(NSString *)line
-{
++ (instancetype)stackFrameWithLine:(NSString *)line {
   NSTextCheckingResult *match = [RCTJSStackFrameRegex() firstMatchInString:line
                                                                    options:0
                                                                      range:NSMakeRange(0, line.length)];
@@ -103,8 +100,7 @@ static NSRegularExpression *RCTJSStackFrameRegex()
                                  collapse:@NO];
 }
 
-+ (instancetype)stackFrameWithDictionary:(NSDictionary *)dict
-{
++ (instancetype)stackFrameWithDictionary:(NSDictionary *)dict {
   return [[self alloc] initWithMethodName:RCTNilIfNull(dict[@"methodName"])
                                      file:dict[@"file"]
                                lineNumber:[RCTNilIfNull(dict[@"lineNumber"]) integerValue]
@@ -112,8 +108,7 @@ static NSRegularExpression *RCTJSStackFrameRegex()
                                  collapse:[RCTNilIfNull(dict[@"collapse"]) integerValue]];
 }
 
-+ (NSArray<RCTJSStackFrame *> *)stackFramesWithLines:(NSString *)lines
-{
++ (NSArray<RCTJSStackFrame *> *)stackFramesWithLines:(NSString *)lines {
   NSMutableArray *stack = [NSMutableArray new];
   for (NSString *line in [lines componentsSeparatedByString:@"\n"]) {
     RCTJSStackFrame *frame = [self stackFrameWithLine:line];
@@ -124,8 +119,7 @@ static NSRegularExpression *RCTJSStackFrameRegex()
   return stack;
 }
 
-+ (NSArray<RCTJSStackFrame *> *)stackFramesWithDictionaries:(NSArray<NSDictionary *> *)dicts
-{
++ (NSArray<RCTJSStackFrame *> *)stackFramesWithDictionaries:(NSArray<NSDictionary *> *)dicts {
   NSMutableArray *stack = [NSMutableArray new];
   for (NSDictionary *dict in dicts) {
     RCTJSStackFrame *frame = [self stackFrameWithDictionary:dict];
@@ -136,8 +130,7 @@ static NSRegularExpression *RCTJSStackFrameRegex()
   return stack;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString stringWithFormat:@"<%@: %p method name: %@; file name: %@; line: %ld; column: %ld>",
                                     self.class,
                                     self,

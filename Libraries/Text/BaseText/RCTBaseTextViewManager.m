@@ -11,14 +11,12 @@
 
 RCT_EXPORT_MODULE(RCTBaseText)
 
-- (UIView *)view
-{
+- (UIView *)view {
   RCTAssert(NO, @"The `-[RCTBaseTextViewManager view]` property must be overridden in subclass.");
   return nil;
 }
 
-- (RCTShadowView *)shadowView
-{
+- (RCTShadowView *)shadowView {
   RCTAssert(NO, @"The `-[RCTBaseTextViewManager shadowView]` property must be overridden in subclass.");
   return nil;
 }

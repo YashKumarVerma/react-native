@@ -10,8 +10,7 @@
 @implementation RCTActivityIndicatorView {
 }
 
-- (void)setHidden:(BOOL)hidden
-{
+- (void)setHidden:(BOOL)hidden {
   if ([self hidesWhenStopped] && ![self isAnimating]) {
     [super setHidden:YES];
   } else {

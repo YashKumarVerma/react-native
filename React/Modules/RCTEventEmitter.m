@@ -16,13 +16,11 @@
 
 @synthesize invokeJS = _invokeJS;
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return @"";
 }
 
-+ (void)initialize
-{
++ (void)initialize {
   [super initialize];
   if (self != [RCTEventEmitter class]) {
     RCTAssert(
@@ -32,13 +30,11 @@
   }
 }
 
-- (NSArray<NSString *> *)supportedEvents
-{
+- (NSArray<NSString *> *)supportedEvents {
   return nil;
 }
 
-- (void)sendEventWithName:(NSString *)eventName body:(id)body
-{
+- (void)sendEventWithName:(NSString *)eventName body:(id)body {
   RCTAssert(
       _bridge != nil || _invokeJS != nil,
       @"Error when sending event: %@ with body: %@. "
@@ -68,18 +64,15 @@
   }
 }
 
-- (void)startObserving
-{
+- (void)startObserving {
   // Does nothing
 }
 
-- (void)stopObserving
-{
+- (void)stopObserving {
   // Does nothing
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   if (_listenerCount > 0) {
     [self stopObserving];
   }

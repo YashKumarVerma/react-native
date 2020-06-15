@@ -30,13 +30,11 @@ using namespace facebook::react;
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
 }
 
@@ -55,8 +53,7 @@ RCT_EXPORT_METHOD(loadBundle
       }];
 }
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeDevSplitBundleLoaderSpecJSI>(params);
 }
 
@@ -66,15 +63,13 @@ RCT_EXPORT_METHOD(loadBundle
 
 @implementation RCTDevSplitBundleLoader
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return nil;
 }
 - (void)loadBundle:(NSString *)bundlePath resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject;
 {
 }
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeDevSplitBundleLoaderSpecJSI>(params);
 }
 

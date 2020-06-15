@@ -9,19 +9,19 @@
 
 #import <React/RCTBridge.h>
 #import <React/RCTDefines.h>
+#import <React/RCTImageCache.h>
+#import <React/RCTImageDataDecoder.h>
+#import <React/RCTImageLoaderProtocol.h>
+#import <React/RCTImageURLLoader.h>
 #import <React/RCTResizeMode.h>
 #import <React/RCTURLRequestHandler.h>
-#import <React/RCTImageDataDecoder.h>
-#import <React/RCTImageURLLoader.h>
-#import <React/RCTImageCache.h>
-#import <React/RCTImageLoaderProtocol.h>
 
 @interface RCTImageLoader : NSObject <RCTBridgeModule, RCTImageLoaderProtocol>
 - (instancetype)init;
 - (instancetype)initWithRedirectDelegate:(id<RCTImageRedirectProtocol>)redirectDelegate NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithRedirectDelegate:(id<RCTImageRedirectProtocol>)redirectDelegate
-                              loadersProvider:(NSArray<id<RCTImageURLLoader>> * (^)(void))getLoaders
-                             decodersProvider:(NSArray<id<RCTImageDataDecoder>> * (^)(void))getDecoders;
+                         loadersProvider:(NSArray<id<RCTImageURLLoader>> * (^)(void))getLoaders
+                        decodersProvider:(NSArray<id<RCTImageDataDecoder>> * (^)(void))getDecoders;
 @end
 
 /**

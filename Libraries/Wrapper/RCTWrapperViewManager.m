@@ -14,13 +14,11 @@
 
 RCT_EXPORT_MODULE()
 
-- (RCTShadowView *)shadowView
-{
+- (RCTShadowView *)shadowView {
   return [[RCTWrapperShadowView alloc] initWithBridge:self.bridge];
 }
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [[RCTWrapperView alloc] initWithBridge:self.bridge];
 }
 

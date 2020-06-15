@@ -24,8 +24,7 @@ using namespace facebook::react;
   id<RCTImageLoaderWithAttributionProtocol> _imageLoader;
 }
 
-- (instancetype)initWithImageLoader:(id<RCTImageLoaderWithAttributionProtocol>)imageLoader
-{
+- (instancetype)initWithImageLoader:(id<RCTImageLoaderWithAttributionProtocol>)imageLoader {
   if (self = [super init]) {
     RCTAssert(RCTRunningInTestEnvironment(), @"This class is only meant to be used in test environment");
     _imageLoader = imageLoader;
@@ -34,8 +33,7 @@ using namespace facebook::react;
   return self;
 }
 
-- (ImageRequest)requestImage:(ImageSource)imageSource surfaceId:(SurfaceId)surfaceId
-{
+- (ImageRequest)requestImage:(ImageSource)imageSource surfaceId:(SurfaceId)surfaceId {
   auto imageRequest = ImageRequest(imageSource, nullptr);
   auto weakObserverCoordinator =
       (std::weak_ptr<const ImageResponseObserverCoordinator>)imageRequest.getSharedObserverCoordinator();

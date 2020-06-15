@@ -33,18 +33,15 @@ using namespace facebook::react;
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
 
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -115,13 +112,11 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
   return @{@"window" : dimsWindow, @"screen" : dimsScreen};
 }
 
-- (NSDictionary<NSString *, id> *)constantsToExport
-{
+- (NSDictionary<NSString *, id> *)constantsToExport {
   return [self getConstants];
 }
 
-- (NSDictionary<NSString *, id> *)getConstants
-{
+- (NSDictionary<NSString *, id> *)getConstants {
   __block NSDictionary<NSString *, id> *constants;
   RCTUnsafeExecuteOnMainQueueSync(^{
     constants = @{
@@ -137,8 +132,7 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
   return constants;
 }
 
-- (void)didReceiveNewContentSizeMultiplier
-{
+- (void)didReceiveNewContentSizeMultiplier {
   RCTBridge *bridge = _bridge;
   RCTExecuteOnMainQueue(^{
   // Report the event across the bridge.
@@ -151,16 +145,14 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
 
 #if !TARGET_OS_TV
 
-- (void)interfaceOrientationDidChange
-{
+- (void)interfaceOrientationDidChange {
   __weak __typeof(self) weakSelf = self;
   RCTExecuteOnMainQueue(^{
     [weakSelf _interfaceOrientationDidChange];
   });
 }
 
-- (void)_interfaceOrientationDidChange
-{
+- (void)_interfaceOrientationDidChange {
   UIInterfaceOrientation nextOrientation = [RCTSharedApplication() statusBarOrientation];
 
   // Update when we go from portrait to landscape, or landscape to portrait
@@ -177,16 +169,14 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
   _currentInterfaceOrientation = nextOrientation;
 }
 
-- (void)interfaceFrameDidChange
-{
+- (void)interfaceFrameDidChange {
   __weak __typeof(self) weakSelf = self;
   RCTExecuteOnMainQueue(^{
     [weakSelf _interfaceFrameDidChange];
   });
 }
 
-- (void)_interfaceFrameDidChange
-{
+- (void)_interfaceFrameDidChange {
   NSDictionary *nextInterfaceDimensions = RCTExportedDimensions(_bridge);
 
   if (!([nextInterfaceDimensions isEqual:_currentInterfaceDimensions])) {
@@ -201,8 +191,7 @@ static NSDictionary *RCTExportedDimensions(RCTBridge *bridge)
 
 #endif // TARGET_OS_TV
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeDeviceInfoSpecJSI>(params);
 }
 

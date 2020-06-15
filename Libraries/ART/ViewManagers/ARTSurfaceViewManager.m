@@ -13,8 +13,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [ARTSurfaceView new];
 }
 

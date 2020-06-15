@@ -29,8 +29,7 @@
 
 + (RCTSurface *)createSurfaceWithBridge:(RCTBridge *)bridge
                              moduleName:(NSString *)moduleName
-                      initialProperties:(NSDictionary *)initialProperties
-{
+                      initialProperties:(NSDictionary *)initialProperties {
   return [[RCTSurface alloc] initWithBridge:bridge moduleName:moduleName initialProperties:initialProperties];
 }
 
@@ -41,8 +40,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 - (instancetype)initWithBridge:(RCTBridge *)bridge
                     moduleName:(NSString *)moduleName
              initialProperties:(NSDictionary *)initialProperties
-               sizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode
-{
+               sizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode {
   RCTSurface *surface = [[self class] createSurfaceWithBridge:bridge
                                                    moduleName:moduleName
                                             initialProperties:initialProperties];
@@ -50,8 +48,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   return [self initWithSurface:surface sizeMeasureMode:sizeMeasureMode];
 }
 
-- (instancetype)initWithSurface:(RCTSurface *)surface sizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode
-{
+- (instancetype)initWithSurface:(RCTSurface *)surface sizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode {
   if (self = [super initWithFrame:CGRectZero]) {
     _surface = surface;
     _sizeMeasureMode = sizeMeasureMode;
@@ -64,13 +61,11 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [_surface stop];
 }
 
-- (void)setFrame:(CGRect)frame
-{
+- (void)setFrame:(CGRect)frame {
   [super setFrame:frame];
 
   CGSize minimumSize;
@@ -82,8 +77,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   [_surface setMinimumSize:minimumSize maximumSize:maximumSize];
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   if (RCTSurfaceStageIsPreparing(_stage)) {
     if (_activityIndicatorView) {
       return _activityIndicatorView.intrinsicContentSize;
@@ -95,8 +89,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   return _surface.intrinsicSize;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   if (RCTSurfaceStageIsPreparing(_stage)) {
     if (_activityIndicatorView) {
       return [_activityIndicatorView sizeThatFits:size];
@@ -113,8 +106,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   return [_surface sizeThatFitsMinimumSize:minimumSize maximumSize:maximumSize];
 }
 
-- (void)setStage:(RCTSurfaceStage)stage
-{
+- (void)setStage:(RCTSurfaceStage)stage {
   if (stage == _stage) {
     return;
   }
@@ -130,8 +122,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   }
 }
 
-- (void)setSizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode
-{
+- (void)setSizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode {
   if (sizeMeasureMode == _sizeMeasureMode) {
     return;
   }
@@ -142,8 +133,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 
 #pragma mark - isActivityIndicatorViewVisible
 
-- (void)setIsActivityIndicatorViewVisible:(BOOL)visible
-{
+- (void)setIsActivityIndicatorViewVisible:(BOOL)visible {
   if (_isActivityIndicatorViewVisible == visible) {
     return;
   }
@@ -165,8 +155,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 
 #pragma mark - isSurfaceViewVisible
 
-- (void)setIsSurfaceViewVisible:(BOOL)visible
-{
+- (void)setIsSurfaceViewVisible:(BOOL)visible {
   if (_isSurfaceViewVisible == visible) {
     return;
   }
@@ -186,8 +175,8 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 
 #pragma mark - activityIndicatorViewFactory
 
-- (void)setActivityIndicatorViewFactory:(RCTSurfaceHostingViewActivityIndicatorViewFactory)activityIndicatorViewFactory
-{
+- (void)setActivityIndicatorViewFactory:
+    (RCTSurfaceHostingViewActivityIndicatorViewFactory)activityIndicatorViewFactory {
   _activityIndicatorViewFactory = activityIndicatorViewFactory;
   if (_isActivityIndicatorViewVisible) {
     self.isActivityIndicatorViewVisible = NO;
@@ -197,8 +186,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 
 #pragma mark - UITraitCollection updates
 
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
   [super traitCollectionDidChange:previousTraitCollection];
   [[NSNotificationCenter defaultCenter]
       postNotificationName:RCTUserInterfaceStyleDidChangeNotification
@@ -210,35 +198,30 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 
 #pragma mark - Private stuff
 
-- (void)_invalidateLayout
-{
+- (void)_invalidateLayout {
   [self invalidateIntrinsicContentSize];
   [self.superview setNeedsLayout];
 }
 
-- (void)_updateViews
-{
+- (void)_updateViews {
   self.isSurfaceViewVisible = RCTSurfaceStageIsRunning(_stage);
   self.isActivityIndicatorViewVisible = RCTSurfaceStageIsPreparing(_stage);
 }
 
-- (void)didMoveToWindow
-{
+- (void)didMoveToWindow {
   [super didMoveToWindow];
   [self _updateViews];
 }
 
 #pragma mark - RCTSurfaceDelegate
 
-- (void)surface:(__unused RCTSurface *)surface didChangeStage:(RCTSurfaceStage)stage
-{
+- (void)surface:(__unused RCTSurface *)surface didChangeStage:(RCTSurfaceStage)stage {
   RCTExecuteOnMainQueue(^{
     [self setStage:stage];
   });
 }
 
-- (void)surface:(__unused RCTSurface *)surface didChangeIntrinsicSize:(__unused CGSize)intrinsicSize
-{
+- (void)surface:(__unused RCTSurface *)surface didChangeIntrinsicSize:(__unused CGSize)intrinsicSize {
   RCTExecuteOnMainQueue(^{
     [self _invalidateLayout];
   });

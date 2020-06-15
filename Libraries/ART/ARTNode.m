@@ -11,46 +11,39 @@
 
 @implementation ARTNode
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
   [super insertReactSubview:subview atIndex:atIndex];
   [self insertSubview:subview atIndex:atIndex];
   [self invalidate];
 }
 
-- (void)removeReactSubview:(UIView *)subview
-{
+- (void)removeReactSubview:(UIView *)subview {
   [super removeReactSubview:subview];
   [self invalidate];
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   // Do nothing, as subviews are inserted by insertReactSubview:
 }
 
-- (void)setOpacity:(CGFloat)opacity
-{
+- (void)setOpacity:(CGFloat)opacity {
   [self invalidate];
   _opacity = opacity;
 }
 
-- (void)setTransform:(CGAffineTransform)transform
-{
+- (void)setTransform:(CGAffineTransform)transform {
   [self invalidate];
   super.transform = transform;
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   if ([self.superview respondsToSelector:@selector(invalidate)]) {
     id<ARTContainer> container = (id<ARTContainer>)self.superview;
     [container invalidate];
   }
 }
 
-- (void)renderTo:(CGContextRef)context
-{
+- (void)renderTo:(CGContextRef)context {
   if (self.opacity <= 0) {
     // Nothing to paint
     return;
@@ -74,8 +67,7 @@
   CGContextRestoreGState(context);
 }
 
-- (void)renderLayerTo:(CGContextRef)context
-{
+- (void)renderLayerTo:(CGContextRef)context {
   // abstract
 }
 

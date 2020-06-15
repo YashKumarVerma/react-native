@@ -22,7 +22,7 @@ void YGNodeCalculateLayoutWithContext(
     float availableWidth,
     float availableHeight,
     YGDirection ownerDirection,
-    void* layoutContext);
+    void *layoutContext);
 
 YG_EXTERN_C_END
 
@@ -96,17 +96,21 @@ namespace detail {
 
 template <size_t Size>
 class Values {
-private:
+ private:
   std::array<CompactValue, Size> values_;
 
-public:
+ public:
   Values() = default;
-  explicit Values(const YGValue& defaultValue) noexcept {
+  explicit Values(const YGValue &defaultValue) noexcept {
     values_.fill(defaultValue);
   }
 
-  const CompactValue& operator[](size_t i) const noexcept { return values_[i]; }
-  CompactValue& operator[](size_t i) noexcept { return values_[i]; }
+  const CompactValue &operator[](size_t i) const noexcept {
+    return values_[i];
+  }
+  CompactValue &operator[](size_t i) noexcept {
+    return values_[i];
+  }
 
   template <size_t I>
   YGValue get() const noexcept {
@@ -114,16 +118,16 @@ public:
   }
 
   template <size_t I>
-  void set(YGValue& value) noexcept {
+  void set(YGValue &value) noexcept {
     std::get<I>(values_) = value;
   }
 
   template <size_t I>
-  void set(YGValue&& value) noexcept {
+  void set(YGValue &&value) noexcept {
     set<I>(value);
   }
 
-  bool operator==(const Values& other) const noexcept {
+  bool operator==(const Values &other) const noexcept {
     for (size_t i = 0; i < Size; ++i) {
       if (values_[i] != other.values_[i]) {
         return false;
@@ -132,7 +136,7 @@ public:
     return true;
   }
 
-  Values& operator=(const Values& other) = default;
+  Values &operator=(const Values &other) = default;
 };
 
 } // namespace detail
@@ -145,7 +149,7 @@ static const float kWebDefaultFlexShrink = 1.0f;
 
 extern bool YGFloatsEqual(const float a, const float b);
 extern facebook::yoga::detail::CompactValue YGComputedEdgeValue(
-    const facebook::yoga::detail::Values<
-        facebook::yoga::enums::count<YGEdge>()>& edges,
+    const facebook::yoga::detail::Values<facebook::yoga::enums::count<YGEdge>()>
+        &edges,
     YGEdge edge,
     facebook::yoga::detail::CompactValue defaultValue);

@@ -37,8 +37,7 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
 // when the initialization code runs. `+initialize` runs immediately before the first message is sent
 // to the class which may be too late for us. By this time, we may have missed some
 // `UIKeyboardWillChangeFrameNotification`s.
-+ (void)initializeStatics
-{
++ (void)initializeStatics {
 #if !TARGET_OS_TV
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -50,8 +49,7 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
 #endif
 }
 
-+ (void)keyboardWillChangeFrame:(NSNotification *)notification
-{
++ (void)keyboardWillChangeFrame:(NSNotification *)notification {
 #if !TARGET_OS_TV
   NSDictionary *userInfo = notification.userInfo;
   _currentKeyboardAnimationCurve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
@@ -63,8 +61,7 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
                         property:(NSString *)property
                    springDamping:(CGFloat)springDamping
                  initialVelocity:(CGFloat)initialVelocity
-                   animationType:(RCTAnimationType)animationType
-{
+                   animationType:(RCTAnimationType)animationType {
   if (self = [super init]) {
     _duration = duration;
     _delay = delay;
@@ -77,8 +74,7 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
   return self;
 }
 
-- (instancetype)initWithDuration:(NSTimeInterval)duration config:(NSDictionary *)config
-{
+- (instancetype)initWithDuration:(NSTimeInterval)duration config:(NSDictionary *)config {
   if (!config) {
     return nil;
   }
@@ -108,8 +104,7 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
   return self;
 }
 
-- (void)performAnimations:(void (^)(void))animations withCompletionBlock:(void (^)(BOOL completed))completionBlock
-{
+- (void)performAnimations:(void (^)(void))animations withCompletionBlock:(void (^)(BOOL completed))completionBlock {
   if (_animationType == RCTAnimationTypeSpring) {
     [UIView animateWithDuration:_duration
                           delay:_delay
@@ -130,16 +125,14 @@ static UIViewAnimationOptions UIViewAnimationOptionsFromRCTAnimationType(RCTAnim
   }
 }
 
-- (BOOL)isEqual:(RCTLayoutAnimation *)animation
-{
+- (BOOL)isEqual:(RCTLayoutAnimation *)animation {
   return _duration == animation.duration && _delay == animation.delay &&
       (_property == animation.property || [_property isEqualToString:animation.property]) &&
       _springDamping == animation.springDamping && _initialVelocity == animation.initialVelocity &&
       _animationType == animation.animationType;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString
       stringWithFormat:
           @"<%@: %p; duration: %f; delay: %f; property: %@; springDamping: %f; initialVelocity: %f; animationType: %li;>",

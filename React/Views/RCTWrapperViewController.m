@@ -25,8 +25,7 @@
   id<UILayoutSupport> _currentBottomLayoutGuide;
 }
 
-- (instancetype)initWithContentView:(UIView *)contentView
-{
+- (instancetype)initWithContentView:(UIView *)contentView {
   RCTAssertParam(contentView);
 
   if ((self = [super initWithNibName:nil bundle:nil])) {
@@ -39,8 +38,7 @@
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithNibName : (NSString *)nn bundle : (NSBundle *)nb)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
-- (void)viewWillLayoutSubviews
-{
+- (void)viewWillLayoutSubviews {
   [super viewWillLayoutSubviews];
 
   _currentTopLayoutGuide = self.topLayoutGuide;
@@ -61,8 +59,7 @@ static BOOL RCTFindScrollViewAndRefreshContentInsetInView(UIView *view)
   return NO;
 }
 
-- (void)viewDidLayoutSubviews
-{
+- (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
 
   if (_previousTopLayoutLength != _currentTopLayoutGuide.length ||
@@ -73,8 +70,7 @@ static BOOL RCTFindScrollViewAndRefreshContentInsetInView(UIView *view)
   }
 }
 
-- (void)loadView
-{
+- (void)loadView {
   // Add a wrapper so that the wrapper view managed by the
   // UINavigationController doesn't end up resetting the frames for
   //`contentView` which is a react-managed view.

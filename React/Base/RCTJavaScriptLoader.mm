@@ -47,8 +47,7 @@ static RCTSource *RCTSourceCreate(NSURL *url, NSData *data, int64_t length) NS_R
 
 @implementation RCTLoadingProgress
 
-- (NSString *)description
-{
+- (NSString *)description {
   NSMutableString *desc = [NSMutableString new];
   [desc appendString:_status ?: @"Bundling"];
 
@@ -71,8 +70,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 + (void)loadBundleAtURL:(NSURL *)scriptURL
              onProgress:(RCTSourceLoadProgressBlock)onProgress
-             onComplete:(RCTSourceLoadBlock)onComplete
-{
+             onComplete:(RCTSourceLoadBlock)onComplete {
   int64_t sourceLength;
   NSError *error;
   NSData *data = [self attemptSynchronousLoadOfBundleAtURL:scriptURL
@@ -97,8 +95,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 + (NSData *)attemptSynchronousLoadOfBundleAtURL:(NSURL *)scriptURL
                                runtimeBCVersion:(int32_t)runtimeBCVersion
                                    sourceLength:(int64_t *)sourceLength
-                                          error:(NSError **)error
-{
+                                          error:(NSError **)error {
   NSString *unsanitizedScriptURLString = scriptURL.absoluteString;
   // Sanitize the script URL
   scriptURL = sanitizeURL(scriptURL);

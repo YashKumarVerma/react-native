@@ -16,8 +16,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
+- (UIView *)view {
   RCTSlider *slider = [RCTSlider new];
   [slider addTarget:self action:@selector(sliderValueChanged:) forControlEvents:UIControlEventValueChanged];
   [slider addTarget:self
@@ -56,13 +55,11 @@ static void RCTSendSliderEvent(RCTSlider *sender, BOOL continuous)
   sender.lastValue = value;
 }
 
-- (void)sliderValueChanged:(RCTSlider *)sender
-{
+- (void)sliderValueChanged:(RCTSlider *)sender {
   RCTSendSliderEvent(sender, YES);
 }
 
-- (void)sliderTouchEnd:(RCTSlider *)sender
-{
+- (void)sliderTouchEnd:(RCTSlider *)sender {
   RCTSendSliderEvent(sender, NO);
 }
 

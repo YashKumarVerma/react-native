@@ -28,8 +28,7 @@ RCT_ENUM_CONVERTER(
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [UIProgressView new];
 }
 

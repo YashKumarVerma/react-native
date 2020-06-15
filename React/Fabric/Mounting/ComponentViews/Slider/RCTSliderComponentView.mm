@@ -40,8 +40,7 @@ using namespace facebook::react;
   RCTImageResponseObserverProxy _thumbImageResponseObserverProxy;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const SliderProps>();
     _props = defaultProps;
@@ -68,8 +67,7 @@ using namespace facebook::react;
 
 // Recycling still doesn't work 100% properly
 // TODO: T40099998 implement recycling properly for Fabric Slider component
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
 
   self.trackImageCoordinator = nullptr;
@@ -98,13 +96,11 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<SliderComponentDescriptor>();
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   const auto &oldSliderProps = *std::static_pointer_cast<const SliderProps>(_props);
   const auto &newSliderProps = *std::static_pointer_cast<const SliderProps>(props);
 
@@ -148,8 +144,7 @@ using namespace facebook::react;
 }
 
 - (void)updateState:(facebook::react::State::Shared const &)state
-           oldState:(facebook::react::State::Shared const &)oldState
-{
+           oldState:(facebook::react::State::Shared const &)oldState {
   auto _state = std::static_pointer_cast<SliderShadowNode::ConcreteState const>(state);
   auto _oldState = std::static_pointer_cast<SliderShadowNode::ConcreteState const>(oldState);
 
@@ -182,8 +177,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)setTrackImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator
-{
+- (void)setTrackImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator {
   if (_trackImageCoordinator) {
     _trackImageCoordinator->removeObserver(_trackImageResponseObserverProxy);
   }
@@ -193,8 +187,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)setMinimumTrackImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator
-{
+- (void)setMinimumTrackImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator {
   if (_minimumTrackImageCoordinator) {
     _minimumTrackImageCoordinator->removeObserver(_minimumTrackImageResponseObserverProxy);
   }
@@ -204,8 +197,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)setMaximumTrackImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator
-{
+- (void)setMaximumTrackImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator {
   if (_maximumTrackImageCoordinator) {
     _maximumTrackImageCoordinator->removeObserver(_maximumTrackImageResponseObserverProxy);
   }
@@ -215,8 +207,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)setThumbImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator
-{
+- (void)setThumbImageCoordinator:(const ImageResponseObserverCoordinator *)coordinator {
   if (_thumbImageCoordinator) {
     _thumbImageCoordinator->removeObserver(_thumbImageResponseObserverProxy);
   }
@@ -226,8 +217,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)setTrackImage:(UIImage *)trackImage
-{
+- (void)setTrackImage:(UIImage *)trackImage {
   if ([trackImage isEqual:_trackImage]) {
     return;
   }
@@ -244,8 +234,7 @@ using namespace facebook::react;
   [_sliderView setMaximumTrackImage:maximumTrackImage forState:UIControlStateNormal];
 }
 
-- (void)setMinimumTrackImage:(UIImage *)minimumTrackImage
-{
+- (void)setMinimumTrackImage:(UIImage *)minimumTrackImage {
   if ([minimumTrackImage isEqual:_minimumTrackImage] && _trackImage == nil) {
     return;
   }
@@ -258,8 +247,7 @@ using namespace facebook::react;
   [_sliderView setMinimumTrackImage:_minimumTrackImage forState:UIControlStateNormal];
 }
 
-- (void)setMaximumTrackImage:(UIImage *)maximumTrackImage
-{
+- (void)setMaximumTrackImage:(UIImage *)maximumTrackImage {
   if ([maximumTrackImage isEqual:_maximumTrackImage] && _trackImage == nil) {
     return;
   }
@@ -272,8 +260,7 @@ using namespace facebook::react;
   [_sliderView setMaximumTrackImage:_maximumTrackImage forState:UIControlStateNormal];
 }
 
-- (void)setThumbImage:(UIImage *)thumbImage
-{
+- (void)setThumbImage:(UIImage *)thumbImage {
   if ([thumbImage isEqual:_thumbImage]) {
     return;
   }
@@ -282,18 +269,15 @@ using namespace facebook::react;
   [_sliderView setThumbImage:thumbImage forState:UIControlStateNormal];
 }
 
-- (void)onChange:(UISlider *)sender
-{
+- (void)onChange:(UISlider *)sender {
   [self onChange:sender withContinuous:YES];
 }
 
-- (void)sliderTouchEnd:(UISlider *)sender
-{
+- (void)sliderTouchEnd:(UISlider *)sender {
   [self onChange:sender withContinuous:NO];
 }
 
-- (void)onChange:(UISlider *)sender withContinuous:(BOOL)continuous
-{
+- (void)onChange:(UISlider *)sender withContinuous:(BOOL)continuous {
   float value = sender.value;
 
   const auto &props = *std::static_pointer_cast<const SliderProps>(_props);
@@ -320,8 +304,7 @@ using namespace facebook::react;
 
 #pragma mark - RCTImageResponseDelegate
 
-- (void)didReceiveImage:(UIImage *)image fromObserver:(void const *)observer
-{
+- (void)didReceiveImage:(UIImage *)image fromObserver:(void const *)observer {
   if (observer == &_trackImageResponseObserverProxy) {
     self.trackImage = image;
   } else if (observer == &_minimumTrackImageResponseObserverProxy) {
@@ -333,12 +316,10 @@ using namespace facebook::react;
   }
 }
 
-- (void)didReceiveProgress:(float)progress fromObserver:(void const *)observer
-{
+- (void)didReceiveProgress:(float)progress fromObserver:(void const *)observer {
 }
 
-- (void)didReceiveFailureFromObserver:(void const *)observer
-{
+- (void)didReceiveFailureFromObserver:(void const *)observer {
 }
 
 @end

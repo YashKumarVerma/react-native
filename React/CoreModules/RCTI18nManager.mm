@@ -21,8 +21,7 @@ using namespace facebook::react;
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
@@ -41,21 +40,18 @@ RCT_EXPORT_METHOD(swapLeftAndRightInRTL : (BOOL)value)
   [[RCTI18nUtil sharedInstance] swapLeftAndRightInRTL:value];
 }
 
-- (NSDictionary *)constantsToExport
-{
+- (NSDictionary *)constantsToExport {
   return [self getConstants];
 }
 
-- (NSDictionary *)getConstants
-{
+- (NSDictionary *)getConstants {
   return @{
     @"isRTL" : @([[RCTI18nUtil sharedInstance] isRTL]),
     @"doLeftAndRightSwapInRTL" : @([[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL])
   };
 }
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeI18nManagerSpecJSI>(params);
 }
 

@@ -20,8 +20,7 @@ using namespace facebook;
   NSMapTable<id, RCTFabricSurface *> *_registry;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _registry = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsIntegerPersonality | NSPointerFunctionsOpaqueMemory
                                       valueOptions:NSPointerFunctionsObjectPersonality | NSPointerFunctionsWeakMemory];
@@ -30,30 +29,26 @@ using namespace facebook;
   return self;
 }
 
-- (void)enumerateWithBlock:(RCTSurfaceEnumeratorBlock)block
-{
+- (void)enumerateWithBlock:(RCTSurfaceEnumeratorBlock)block {
   std::shared_lock<better::shared_mutex> lock(_mutex);
   block([_registry objectEnumerator]);
 }
 
-- (void)registerSurface:(RCTFabricSurface *)surface
-{
+- (void)registerSurface:(RCTFabricSurface *)surface {
   std::unique_lock<better::shared_mutex> lock(_mutex);
 
   ReactTag rootTag = surface.rootViewTag.integerValue;
   [_registry setObject:surface forKey:(__bridge id)(void *)rootTag];
 }
 
-- (void)unregisterSurface:(RCTFabricSurface *)surface
-{
+- (void)unregisterSurface:(RCTFabricSurface *)surface {
   std::unique_lock<better::shared_mutex> lock(_mutex);
 
   ReactTag rootTag = surface.rootViewTag.integerValue;
   [_registry removeObjectForKey:(__bridge id)(void *)rootTag];
 }
 
-- (RCTFabricSurface *)surfaceForRootTag:(ReactTag)rootTag
-{
+- (RCTFabricSurface *)surfaceForRootTag:(ReactTag)rootTag {
   std::shared_lock<better::shared_mutex> lock(_mutex);
 
   return [_registry objectForKey:(__bridge id)(void *)rootTag];

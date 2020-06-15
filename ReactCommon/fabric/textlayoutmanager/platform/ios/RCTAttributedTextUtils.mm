@@ -19,18 +19,15 @@ using namespace facebook::react;
   std::weak_ptr<const EventEmitter> _weakEventEmitter;
 }
 
-- (void)setEventEmitter:(SharedEventEmitter)eventEmitter
-{
+- (void)setEventEmitter:(SharedEventEmitter)eventEmitter {
   _weakEventEmitter = eventEmitter;
 }
 
-- (SharedEventEmitter)eventEmitter
-{
+- (SharedEventEmitter)eventEmitter {
   return _weakEventEmitter.lock();
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   _weakEventEmitter.reset();
 }
 

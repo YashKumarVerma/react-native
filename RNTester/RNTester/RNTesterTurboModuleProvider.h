@@ -18,13 +18,17 @@ Class RNTesterTurboModuleClassProvider(const char *name);
 /**
  * Provide a pure C++ instance of a TurboModule, specific to this app.
  */
-std::shared_ptr<TurboModule> RNTesterTurboModuleProvider(const std::string &name, std::shared_ptr<CallInvoker> jsInvoker);
+std::shared_ptr<TurboModule> RNTesterTurboModuleProvider(
+    const std::string &name,
+    std::shared_ptr<CallInvoker> jsInvoker);
 
 /**
- * Provide an instance of a ObjCTurboModule, given the ObjC instance, specific to this app.
+ * Provide an instance of a ObjCTurboModule, given the ObjC instance, specific
+ * to this app.
  */
-std::shared_ptr<TurboModule> RNTesterTurboModuleProvider(const std::string &name,
-                                                         const ObjCTurboModule::InitParams &params);
+std::shared_ptr<TurboModule> RNTesterTurboModuleProvider(
+    const std::string &name,
+    const ObjCTurboModule::InitParams &params);
 
 } // namespace react
 } // namespace facebook

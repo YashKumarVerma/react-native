@@ -17,33 +17,28 @@
 
 @implementation FBSnapshotTestCase
 
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
   self.snapshotController = [[FBSnapshotTestController alloc] initWithTestName:NSStringFromClass([self class])];
 }
 
-- (void)tearDown
-{
+- (void)tearDown {
   self.snapshotController = nil;
   [super tearDown];
 }
 
-- (BOOL)recordMode
-{
+- (BOOL)recordMode {
   return self.snapshotController.recordMode;
 }
 
-- (void)setRecordMode:(BOOL)recordMode
-{
+- (void)setRecordMode:(BOOL)recordMode {
   self.snapshotController.recordMode = recordMode;
 }
 
 - (BOOL)compareSnapshotOfView:(UIView *)view
      referenceImagesDirectory:(NSString *)referenceImagesDirectory
                    identifier:(NSString *)identifier
-                        error:(NSError **)errorPtr
-{
+                        error:(NSError **)errorPtr {
   _snapshotController.referenceImagesDirectory = referenceImagesDirectory;
   return [_snapshotController compareSnapshotOfView:view
                                            selector:self.invocation.selector

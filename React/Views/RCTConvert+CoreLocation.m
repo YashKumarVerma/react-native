@@ -12,8 +12,7 @@
 RCT_CONVERTER(CLLocationDegrees, CLLocationDegrees, doubleValue);
 RCT_CONVERTER(CLLocationDistance, CLLocationDistance, doubleValue);
 
-+ (CLLocationCoordinate2D)CLLocationCoordinate2D:(id)json
-{
++ (CLLocationCoordinate2D)CLLocationCoordinate2D:(id)json {
   json = [self NSDictionary:json];
   return (CLLocationCoordinate2D){[self CLLocationDegrees:json[@"latitude"]],
                                   [self CLLocationDegrees:json[@"longitude"]]};

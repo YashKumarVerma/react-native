@@ -15,8 +15,7 @@
 
 @implementation RCTShadowView (Internal)
 
-- (void)setRootView:(RCTRootShadowView *)rootView
-{
+- (void)setRootView:(RCTRootShadowView *)rootView {
   _rootView = rootView;
 }
 

@@ -11,13 +11,11 @@
 
 @implementation RCTImageShadowView
 
-- (BOOL)isYogaLeafNode
-{
+- (BOOL)isYogaLeafNode {
   return YES;
 }
 
-- (BOOL)canHaveSubviews
-{
+- (BOOL)canHaveSubviews {
   return NO;
 }
 

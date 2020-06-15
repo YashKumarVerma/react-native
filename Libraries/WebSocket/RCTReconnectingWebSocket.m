@@ -23,8 +23,7 @@
   BOOL _stopped;
 }
 
-- (instancetype)initWithURL:(NSURL *)url queue:(dispatch_queue_t)queue
-{
+- (instancetype)initWithURL:(NSURL *)url queue:(dispatch_queue_t)queue {
   if (self = [super init]) {
     _url = url;
     _delegateDispatchQueue = queue;
@@ -32,18 +31,15 @@
   return self;
 }
 
-- (instancetype)initWithURL:(NSURL *)url
-{
+- (instancetype)initWithURL:(NSURL *)url {
   return [self initWithURL:url queue:dispatch_get_main_queue()];
 }
 
-- (void)send:(id)data
-{
+- (void)send:(id)data {
   [_socket send:data];
 }
 
-- (void)start
-{
+- (void)start {
   [self stop];
   _stopped = NO;
   _socket = [[RCTSRWebSocket alloc] initWithURL:_url];
@@ -52,23 +48,20 @@
   [_socket open];
 }
 
-- (void)stop
-{
+- (void)stop {
   _stopped = YES;
   _socket.delegate = nil;
   [_socket closeWithCode:1000 reason:@"Invalidated"];
   _socket = nil;
 }
 
-- (void)webSocket:(RCTSRWebSocket *)webSocket didReceiveMessage:(id)message
-{
+- (void)webSocket:(RCTSRWebSocket *)webSocket didReceiveMessage:(id)message {
   [_delegate reconnectingWebSocket:self didReceiveMessage:message];
 }
 
-- (void)reconnect
-{
+- (void)reconnect {
   if (_stopped) {
-   return;
+    return;
   }
 
   __weak RCTSRWebSocket *socket = _socket;
@@ -82,21 +75,21 @@
   });
 }
 
-- (void)webSocketDidOpen:(RCTSRWebSocket *)webSocket
-{
+- (void)webSocketDidOpen:(RCTSRWebSocket *)webSocket {
   [_delegate reconnectingWebSocketDidOpen:self];
 }
 
-- (void)webSocket:(RCTSRWebSocket *)webSocket didFailWithError:(NSError *)error
-{
+- (void)webSocket:(RCTSRWebSocket *)webSocket didFailWithError:(NSError *)error {
   [_delegate reconnectingWebSocketDidClose:self];
   if ([error code] != ECONNREFUSED) {
     [self reconnect];
   }
 }
 
-- (void)webSocket:(RCTSRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
-{
+- (void)webSocket:(RCTSRWebSocket *)webSocket
+    didCloseWithCode:(NSInteger)code
+              reason:(NSString *)reason
+            wasClean:(BOOL)wasClean {
   [_delegate reconnectingWebSocketDidClose:self];
   [self reconnect];
 }

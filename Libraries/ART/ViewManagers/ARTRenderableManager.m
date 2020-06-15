@@ -13,8 +13,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (ARTRenderable *)node
-{
+- (ARTRenderable *)node {
   return [ARTRenderable new];
 }
 

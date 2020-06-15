@@ -15,10 +15,7 @@
 #import <React/RCTStyleAnimatedNode.h>
 #import <React/RCTValueAnimatedNode.h>
 
-
-
-@implementation RCTPropsAnimatedNode
-{
+@implementation RCTPropsAnimatedNode {
   NSNumber *_connectedViewTag;
   NSNumber *_rootTag;
   NSString *_connectedViewName;
@@ -27,24 +24,18 @@
   BOOL _managedByFabric;
 }
 
-- (instancetype)initWithTag:(NSNumber *)tag
-                     config:(NSDictionary<NSString *, id> *)config
-{
+- (instancetype)initWithTag:(NSNumber *)tag config:(NSDictionary<NSString *, id> *)config {
   if (self = [super initWithTag:tag config:config]) {
     _propsDictionary = [NSMutableDictionary new];
   }
   return self;
 }
 
-- (BOOL)isManagedByFabric
-{
+- (BOOL)isManagedByFabric {
   return _managedByFabric;
 }
 
-- (void)connectToView:(NSNumber *)viewTag
-             viewName:(NSString *)viewName
-               bridge:(RCTBridge *)bridge
-{
+- (void)connectToView:(NSNumber *)viewTag viewName:(NSString *)viewName bridge:(RCTBridge *)bridge {
   _bridge = bridge;
   _connectedViewTag = viewTag;
   _connectedViewName = viewName;
@@ -52,8 +43,7 @@
   _rootTag = nil;
 }
 
-- (void)disconnectFromView:(NSNumber *)viewTag
-{
+- (void)disconnectFromView:(NSNumber *)viewTag {
   _bridge = nil;
   _connectedViewTag = nil;
   _connectedViewName = nil;
@@ -61,11 +51,9 @@
   _rootTag = nil;
 }
 
-- (void)updateView
-{
+- (void)updateView {
   if (_managedByFabric) {
-    [_bridge.surfacePresenter synchronouslyUpdateViewOnUIThread:_connectedViewTag
-                                                          props:_propsDictionary];
+    [_bridge.surfacePresenter synchronouslyUpdateViewOnUIThread:_connectedViewTag props:_propsDictionary];
   } else {
     [_bridge.uiManager synchronouslyUpdateViewOnUIThread:_connectedViewTag
                                                 viewName:_connectedViewName
@@ -73,8 +61,7 @@
   }
 }
 
-- (void)restoreDefaultValues
-{
+- (void)restoreDefaultValues {
   if (_managedByFabric) {
     // Restoring to default values causes render of inconsistent state
     // to the user because it isn't synchonised with Fabric's UIManager.
@@ -90,20 +77,19 @@
   }
 }
 
-- (NSString *)propertyNameForParentTag:(NSNumber *)parentTag
-{
+- (NSString *)propertyNameForParentTag:(NSNumber *)parentTag {
   __block NSString *propertyName;
-  [self.config[@"props"] enumerateKeysAndObjectsUsingBlock:^(NSString *_Nonnull property, NSNumber *_Nonnull tag, BOOL *_Nonnull stop) {
-    if ([tag isEqualToNumber:parentTag]) {
-      propertyName = property;
-      *stop = YES;
-    }
-  }];
+  [self.config[@"props"]
+      enumerateKeysAndObjectsUsingBlock:^(NSString *_Nonnull property, NSNumber *_Nonnull tag, BOOL *_Nonnull stop) {
+        if ([tag isEqualToNumber:parentTag]) {
+          propertyName = property;
+          *stop = YES;
+        }
+      }];
   return propertyName;
 }
 
-- (void)performUpdate
-{
+- (void)performUpdate {
   [super performUpdate];
 
   // Since we are updating nodes after detaching them from views there is a time where it's

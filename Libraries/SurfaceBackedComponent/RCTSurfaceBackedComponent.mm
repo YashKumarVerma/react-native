@@ -18,41 +18,34 @@
 
 @implementation RCTSurfaceBackedComponent
 
-+ (id)initialState
-{
++ (id)initialState {
   return [RCTSurfaceBackedComponentState new];
 }
 
 + (instancetype)newWithBridge:(RCTBridge *)bridge
                    moduleName:(NSString *)moduleName
                    properties:(NSDictionary *)properties
-                      options:(RCTSurfaceHostingComponentOptions)options
-{
+                      options:(RCTSurfaceHostingComponentOptions)options {
   CKComponentScope scope(self, moduleName);
 
   RCTSurfaceBackedComponentState *state = scope.state();
 
   if (state.surface == nil || ![state.surface.moduleName isEqualToString:moduleName]) {
-    RCTSurface *surface =
-      [[RCTSurface alloc] initWithBridge:bridge
-                              moduleName:moduleName
-                       initialProperties:properties];
+    RCTSurface *surface = [[RCTSurface alloc] initWithBridge:bridge moduleName:moduleName initialProperties:properties];
 
     [surface start];
 
     state = [RCTSurfaceBackedComponentState newWithSurface:surface];
 
     CKComponentScope::replaceState(scope, state);
-  }
-  else {
+  } else {
     if (![state.surface.properties isEqualToDictionary:properties]) {
       state.surface.properties = properties;
     }
   }
 
-  RCTSurfaceHostingComponent *surfaceHostingComponent =
-    [RCTSurfaceHostingComponent newWithSurface:state.surface
-                                       options:options];
+  RCTSurfaceHostingComponent *surfaceHostingComponent = [RCTSurfaceHostingComponent newWithSurface:state.surface
+                                                                                           options:options];
 
   CKComponent *component;
   if (options.activityIndicatorComponentFactory == nil || RCTSurfaceStageIsRunning(state.surface.stage)) {

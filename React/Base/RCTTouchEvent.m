@@ -22,8 +22,7 @@
                          reactTag:(NSNumber *)reactTag
                      reactTouches:(NSArray<NSDictionary *> *)reactTouches
                    changedIndexes:(NSArray<NSNumber *> *)changedIndexes
-                    coalescingKey:(uint16_t)coalescingKey
-{
+                    coalescingKey:(uint16_t)coalescingKey {
   if (self = [super init]) {
     _viewTag = reactTag;
     _eventName = eventName;
@@ -38,15 +37,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 #pragma mark - RCTEvent
 
-- (BOOL)canCoalesce
-{
+- (BOOL)canCoalesce {
   return [_eventName isEqual:@"touchMove"];
 }
 
 // We coalesce only move events, while holding some assumptions that seem reasonable but there are no explicit
 // guarantees about them.
-- (id<RCTEvent>)coalesceWithEvent:(id<RCTEvent>)newEvent
-{
+- (id<RCTEvent>)coalesceWithEvent:(id<RCTEvent>)newEvent {
   RCTAssert(
       [newEvent isKindOfClass:[RCTTouchEvent class]],
       @"Touch event cannot be coalesced with any other type of event, such as provided %@",
@@ -83,23 +80,19 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return newEventIsMoreRecent ? newEvent : self;
 }
 
-+ (NSString *)moduleDotMethod
-{
++ (NSString *)moduleDotMethod {
   return @"RCTEventEmitter.receiveTouches";
 }
 
-- (NSArray *)arguments
-{
+- (NSArray *)arguments {
   return @[ RCTNormalizeInputEventName(_eventName), _reactTouches, _changedIndexes ];
 }
 
-- (uint16_t)coalescingKey
-{
+- (uint16_t)coalescingKey {
   return _coalescingKey;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString
       stringWithFormat:@"<%@: %p; name = %@; coalescing key = %hu>", [self class], self, _eventName, _coalescingKey];
 }

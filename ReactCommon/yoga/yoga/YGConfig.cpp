@@ -13,11 +13,11 @@ YGConfig::YGConfig(YGLogger logger) : cloneNodeCallback_{nullptr} {
 }
 
 void YGConfig::log(
-    YGConfig* config,
-    YGNode* node,
+    YGConfig *config,
+    YGNode *node,
     YGLogLevel logLevel,
-    void* logContext,
-    const char* format,
+    void *logContext,
+    const char *format,
     va_list args) {
   if (loggerUsesContext_) {
     logger_.withContext(config, node, logLevel, logContext, format, args);
@@ -30,7 +30,7 @@ YGNodeRef YGConfig::cloneNode(
     YGNodeRef node,
     YGNodeRef owner,
     int childIndex,
-    void* cloneContext) {
+    void *cloneContext) {
   YGNodeRef clone = nullptr;
   if (cloneNodeCallback_.noContext != nullptr) {
     clone = cloneNodeUsesContext_

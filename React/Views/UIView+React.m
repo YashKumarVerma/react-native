@@ -15,38 +15,31 @@
 
 @implementation UIView (React)
 
-- (NSNumber *)reactTag
-{
+- (NSNumber *)reactTag {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setReactTag:(NSNumber *)reactTag
-{
+- (void)setReactTag:(NSNumber *)reactTag {
   objc_setAssociatedObject(self, @selector(reactTag), reactTag, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSNumber *)rootTag
-{
+- (NSNumber *)rootTag {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setRootTag:(NSNumber *)rootTag
-{
+- (void)setRootTag:(NSNumber *)rootTag {
   objc_setAssociatedObject(self, @selector(rootTag), rootTag, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSString *)nativeID
-{
+- (NSString *)nativeID {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setNativeID:(NSString *)nativeID
-{
+- (void)setNativeID:(NSString *)nativeID {
   objc_setAssociatedObject(self, @selector(nativeID), nativeID, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (BOOL)shouldAccessibilityIgnoresInvertColors
-{
+- (BOOL)shouldAccessibilityIgnoresInvertColors {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
   if (@available(iOS 11.0, *)) {
     return self.accessibilityIgnoresInvertColors;
@@ -55,8 +48,7 @@
   return NO;
 }
 
-- (void)setShouldAccessibilityIgnoresInvertColors:(BOOL)shouldAccessibilityIgnoresInvertColors
-{
+- (void)setShouldAccessibilityIgnoresInvertColors:(BOOL)shouldAccessibilityIgnoresInvertColors {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
   if (@available(iOS 11.0, *)) {
     self.accessibilityIgnoresInvertColors = shouldAccessibilityIgnoresInvertColors;
@@ -64,13 +56,11 @@
 #endif
 }
 
-- (BOOL)isReactRootView
-{
+- (BOOL)isReactRootView {
   return RCTIsReactRootView(self.reactTag);
 }
 
-- (NSNumber *)reactTagAtPoint:(CGPoint)point
-{
+- (NSNumber *)reactTagAtPoint:(CGPoint)point {
   UIView *view = [self hitTest:point withEvent:nil];
   while (view && !view.reactTag) {
     view = view.superview;
@@ -78,18 +68,15 @@
   return view.reactTag;
 }
 
-- (NSArray<UIView *> *)reactSubviews
-{
+- (NSArray<UIView *> *)reactSubviews {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (UIView *)reactSuperview
-{
+- (UIView *)reactSuperview {
   return self.superview;
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
   // We access the associated object directly here in case someone overrides
   // the `reactSubviews` getter method and returns an immutable array.
   NSMutableArray *subviews = objc_getAssociatedObject(self, @selector(reactSubviews));
@@ -100,8 +87,7 @@
   [subviews insertObject:subview atIndex:atIndex];
 }
 
-- (void)removeReactSubview:(UIView *)subview
-{
+- (void)removeReactSubview:(UIView *)subview {
   // We access the associated object directly here in case someone overrides
   // the `reactSubviews` getter method and returns an immutable array.
   NSMutableArray *subviews = objc_getAssociatedObject(self, @selector(reactSubviews));
@@ -111,20 +97,17 @@
 
 #pragma mark - Display
 
-- (YGDisplay)reactDisplay
-{
+- (YGDisplay)reactDisplay {
   return self.isHidden ? YGDisplayNone : YGDisplayFlex;
 }
 
-- (void)setReactDisplay:(YGDisplay)display
-{
+- (void)setReactDisplay:(YGDisplay)display {
   self.hidden = display == YGDisplayNone;
 }
 
 #pragma mark - Layout Direction
 
-- (UIUserInterfaceLayoutDirection)reactLayoutDirection
-{
+- (UIUserInterfaceLayoutDirection)reactLayoutDirection {
   if ([self respondsToSelector:@selector(semanticContentAttribute)]) {
     return [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:self.semanticContentAttribute];
   } else {
@@ -132,8 +115,7 @@
   }
 }
 
-- (void)setReactLayoutDirection:(UIUserInterfaceLayoutDirection)layoutDirection
-{
+- (void)setReactLayoutDirection:(UIUserInterfaceLayoutDirection)layoutDirection {
   if ([self respondsToSelector:@selector(setSemanticContentAttribute:)]) {
     self.semanticContentAttribute = layoutDirection == UIUserInterfaceLayoutDirectionLeftToRight
         ? UISemanticContentAttributeForceLeftToRight
@@ -146,18 +128,15 @@
 
 #pragma mark - zIndex
 
-- (NSInteger)reactZIndex
-{
+- (NSInteger)reactZIndex {
   return self.layer.zPosition;
 }
 
-- (void)setReactZIndex:(NSInteger)reactZIndex
-{
+- (void)setReactZIndex:(NSInteger)reactZIndex {
   self.layer.zPosition = reactZIndex;
 }
 
-- (NSArray<UIView *> *)reactZIndexSortedSubviews
-{
+- (NSArray<UIView *> *)reactZIndexSortedSubviews {
   // Check if sorting is required - in most cases it won't be.
   BOOL sortingRequired = NO;
   for (UIView *subview in self.subviews) {
@@ -178,20 +157,17 @@
                          : self.subviews;
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   for (UIView *subview in self.reactSubviews) {
     [self addSubview:subview];
   }
 }
 
-- (void)didSetProps:(__unused NSArray<NSString *> *)changedProps
-{
+- (void)didSetProps:(__unused NSArray<NSString *> *)changedProps {
   // The default implementation does nothing.
 }
 
-- (void)reactSetFrame:(CGRect)frame
-{
+- (void)reactSetFrame:(CGRect)frame {
   // These frames are in terms of anchorPoint = topLeft, but internally the
   // views are anchorPoint = center for easier scale and rotation animations.
   // Convert the frame so it works with anchorPoint = center.
@@ -214,8 +190,7 @@
   self.bounds = bounds;
 }
 
-- (UIViewController *)reactViewController
-{
+- (UIViewController *)reactViewController {
   id responder = [self nextResponder];
   while (responder) {
     if ([responder isKindOfClass:[UIViewController class]]) {
@@ -226,8 +201,7 @@
   return nil;
 }
 
-- (void)reactAddControllerToClosestParent:(UIViewController *)controller
-{
+- (void)reactAddControllerToClosestParent:(UIViewController *)controller {
   if (!controller.parentViewController) {
     UIView *parentView = (UIView *)self.reactSuperview;
     while (parentView) {
@@ -245,25 +219,21 @@
 /**
  * Focus manipulation.
  */
-- (BOOL)reactIsFocusNeeded
-{
+- (BOOL)reactIsFocusNeeded {
   return [(NSNumber *)objc_getAssociatedObject(self, @selector(reactIsFocusNeeded)) boolValue];
 }
 
-- (void)setReactIsFocusNeeded:(BOOL)isFocusNeeded
-{
+- (void)setReactIsFocusNeeded:(BOOL)isFocusNeeded {
   objc_setAssociatedObject(self, @selector(reactIsFocusNeeded), @(isFocusNeeded), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)reactFocus
-{
+- (void)reactFocus {
   if (![self becomeFirstResponder]) {
     self.reactIsFocusNeeded = YES;
   }
 }
 
-- (void)reactFocusIfNeeded
-{
+- (void)reactFocusIfNeeded {
   if (self.reactIsFocusNeeded) {
     if ([self becomeFirstResponder]) {
       self.reactIsFocusNeeded = NO;
@@ -271,26 +241,22 @@
   }
 }
 
-- (void)reactBlur
-{
+- (void)reactBlur {
   [self resignFirstResponder];
 }
 
 #pragma mark - Layout
 
-- (UIEdgeInsets)reactBorderInsets
-{
+- (UIEdgeInsets)reactBorderInsets {
   CGFloat borderWidth = self.layer.borderWidth;
   return UIEdgeInsetsMake(borderWidth, borderWidth, borderWidth, borderWidth);
 }
 
-- (UIEdgeInsets)reactPaddingInsets
-{
+- (UIEdgeInsets)reactPaddingInsets {
   return UIEdgeInsetsZero;
 }
 
-- (UIEdgeInsets)reactCompoundInsets
-{
+- (UIEdgeInsets)reactCompoundInsets {
   UIEdgeInsets borderInsets = self.reactBorderInsets;
   UIEdgeInsets paddingInsets = self.reactPaddingInsets;
 
@@ -301,62 +267,51 @@
       borderInsets.right + paddingInsets.right);
 }
 
-- (CGRect)reactContentFrame
-{
+- (CGRect)reactContentFrame {
   return UIEdgeInsetsInsetRect(self.bounds, self.reactCompoundInsets);
 }
 
 #pragma mark - Accessibility
 
-- (UIView *)reactAccessibilityElement
-{
+- (UIView *)reactAccessibilityElement {
   return self;
 }
 
-- (NSArray<NSDictionary *> *)accessibilityActions
-{
+- (NSArray<NSDictionary *> *)accessibilityActions {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setAccessibilityActions:(NSArray<NSDictionary *> *)accessibilityActions
-{
+- (void)setAccessibilityActions:(NSArray<NSDictionary *> *)accessibilityActions {
   objc_setAssociatedObject(
       self, @selector(accessibilityActions), accessibilityActions, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSString *)accessibilityRole
-{
+- (NSString *)accessibilityRole {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setAccessibilityRole:(NSString *)accessibilityRole
-{
+- (void)setAccessibilityRole:(NSString *)accessibilityRole {
   objc_setAssociatedObject(self, @selector(accessibilityRole), accessibilityRole, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSDictionary<NSString *, id> *)accessibilityState
-{
+- (NSDictionary<NSString *, id> *)accessibilityState {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setAccessibilityState:(NSDictionary<NSString *, id> *)accessibilityState
-{
+- (void)setAccessibilityState:(NSDictionary<NSString *, id> *)accessibilityState {
   objc_setAssociatedObject(self, @selector(accessibilityState), accessibilityState, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSDictionary<NSString *, id> *)accessibilityValueInternal
-{
+- (NSDictionary<NSString *, id> *)accessibilityValueInternal {
   return objc_getAssociatedObject(self, _cmd);
 }
-- (void)setAccessibilityValueInternal:(NSDictionary<NSString *, id> *)accessibilityValue
-{
+- (void)setAccessibilityValueInternal:(NSDictionary<NSString *, id> *)accessibilityValue {
   objc_setAssociatedObject(
       self, @selector(accessibilityValueInternal), accessibilityValue, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 #pragma mark - Debug
-- (void)react_addRecursiveDescriptionToString:(NSMutableString *)string atLevel:(NSUInteger)level
-{
+- (void)react_addRecursiveDescriptionToString:(NSMutableString *)string atLevel:(NSUInteger)level {
   for (NSUInteger i = 0; i < level; i++) {
     [string appendString:@"   | "];
   }
@@ -369,8 +324,7 @@
   }
 }
 
-- (NSString *)react_recursiveDescription
-{
+- (NSString *)react_recursiveDescription {
   NSMutableString *description = [NSMutableString string];
   [self react_addRecursiveDescriptionToString:description atLevel:0];
   return description;

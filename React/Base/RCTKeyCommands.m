@@ -36,8 +36,7 @@
 
 @implementation RCTKeyCommand
 
-- (instancetype)init:(NSString *)key flags:(UIKeyModifierFlags)flags block:(void (^)(UIKeyCommand *))block
-{
+- (instancetype)init:(NSString *)key flags:(UIKeyModifierFlags)flags block:(void (^)(UIKeyCommand *))block {
   if ((self = [super init])) {
     _key = key;
     _flags = flags;
@@ -48,34 +47,29 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (id)copyWithZone:(__unused NSZone *)zone
-{
+- (id)copyWithZone:(__unused NSZone *)zone {
   return self;
 }
 
-- (NSUInteger)hash
-{
+- (NSUInteger)hash {
   return _key.hash ^ _flags;
 }
 
-- (BOOL)isEqual:(RCTKeyCommand *)object
-{
+- (BOOL)isEqual:(RCTKeyCommand *)object {
   if (![object isKindOfClass:[RCTKeyCommand class]]) {
     return NO;
   }
   return [self matchesInput:object.key flags:object.flags];
 }
 
-- (BOOL)matchesInput:(NSString *)input flags:(UIKeyModifierFlags)flags
-{
+- (BOOL)matchesInput:(NSString *)input flags:(UIKeyModifierFlags)flags {
   // We consider the key command a match if the modifier flags match
   // exactly or is there are no modifier flags. This means that for
   // `cmd + r`, we will match both `cmd + r` and `r` but not `opt + r`.
   return [_key isEqual:input] && (_flags == flags || flags == 0);
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString stringWithFormat:@"<%@:%p input=\"%@\" flags=%lld hasBlock=%@>",
                                     [self class],
                                     self,
@@ -94,8 +88,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 @implementation RCTKeyCommands
 
-+ (void)initialize
-{
++ (void)initialize {
   SEL originalKeyEventSelector = NSSelectorFromString(@"handleKeyUIEvent:");
   SEL swizzledKeyEventSelector = NSSelectorFromString(
       [NSString stringWithFormat:@"_rct_swizzle_%x_%@", arc4random(), NSStringFromSelector(originalKeyEventSelector)]);
@@ -110,8 +103,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
       [UIApplication class], originalKeyEventSelector, handleKeyUIEventSwizzleBlock, swizzledKeyEventSelector);
 }
 
-- (void)handleKeyUIEventSwizzle:(UIEvent *)event
-{
+- (void)handleKeyUIEventSwizzle:(UIEvent *)event {
   NSString *modifiedInput = nil;
   UIKeyModifierFlags *modifierFlags = nil;
   BOOL isKeyDown = NO;
@@ -147,8 +139,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   }
 };
 
-- (NSArray<UIWindow *> *)allWindows
-{
+- (NSArray<UIWindow *> *)allWindows {
   BOOL includeInternalWindows = YES;
   BOOL onlyVisibleWindows = NO;
 
@@ -171,8 +162,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return windows;
 }
 
-- (void)RCT_handleKeyCommand:(NSString *)input flags:(UIKeyModifierFlags)modifierFlags
-{
+- (void)RCT_handleKeyCommand:(NSString *)input flags:(UIKeyModifierFlags)modifierFlags {
   for (RCTKeyCommand *command in [RCTKeyCommands sharedInstance].commands) {
     if ([command matchesInput:input flags:modifierFlags]) {
       if (command.block) {
@@ -182,8 +172,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   }
 }
 
-+ (instancetype)sharedInstance
-{
++ (instancetype)sharedInstance {
   static RCTKeyCommands *sharedInstance;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -193,8 +182,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return sharedInstance;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if ((self = [super init])) {
     _commands = [NSMutableSet new];
   }
@@ -203,8 +191,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 - (void)registerKeyCommandWithInput:(NSString *)input
                       modifierFlags:(UIKeyModifierFlags)flags
-                             action:(void (^)(UIKeyCommand *))block
-{
+                             action:(void (^)(UIKeyCommand *))block {
   RCTAssertMainQueue();
 
   RCTKeyCommand *keyCommand = [[RCTKeyCommand alloc] init:input flags:flags block:block];
@@ -212,8 +199,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   [_commands addObject:keyCommand];
 }
 
-- (void)unregisterKeyCommandWithInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags
-{
+- (void)unregisterKeyCommandWithInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags {
   RCTAssertMainQueue();
 
   for (RCTKeyCommand *command in _commands.allObjects) {
@@ -224,8 +210,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   }
 }
 
-- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags
-{
+- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags {
   RCTAssertMainQueue();
 
   for (RCTKeyCommand *command in _commands) {
@@ -242,23 +227,19 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 @implementation RCTKeyCommands
 
-+ (instancetype)sharedInstance
-{
++ (instancetype)sharedInstance {
   return nil;
 }
 
 - (void)registerKeyCommandWithInput:(NSString *)input
                       modifierFlags:(UIKeyModifierFlags)flags
-                             action:(void (^)(UIKeyCommand *))block
-{
+                             action:(void (^)(UIKeyCommand *))block {
 }
 
-- (void)unregisterKeyCommandWithInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags
-{
+- (void)unregisterKeyCommandWithInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags {
 }
 
-- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags
-{
+- (BOOL)isKeyCommandRegisteredForInput:(NSString *)input modifierFlags:(UIKeyModifierFlags)flags {
   return NO;
 }
 

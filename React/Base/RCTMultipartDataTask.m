@@ -23,8 +23,7 @@
 
 - (instancetype)initWithURL:(NSURL *)url
                 partHandler:(RCTMultipartDataTaskCallback)partHandler
-            progressHandler:(RCTMultipartProgressCallback)progressHandler
-{
+            progressHandler:(RCTMultipartProgressCallback)progressHandler {
   if (self = [super init]) {
     _url = url;
     _partHandler = [partHandler copy];
@@ -33,8 +32,7 @@
   return self;
 }
 
-- (void)startTask
-{
+- (void)startTask {
   NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                         delegate:self
                                                    delegateQueue:nil];
@@ -48,8 +46,7 @@
 - (void)URLSession:(__unused NSURLSession *)session
               dataTask:(__unused NSURLSessionDataTask *)dataTask
     didReceiveResponse:(NSURLResponse *)response
-     completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
-{
+     completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
   if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
     _headers = [httpResponse allHeaderFields];
@@ -84,8 +81,7 @@
 
 - (void)URLSession:(__unused NSURLSession *)session
                     task:(__unused NSURLSessionTask *)task
-    didCompleteWithError:(NSError *)error
-{
+    didCompleteWithError:(NSError *)error {
   if (_partHandler) {
     _partHandler(_statusCode, _headers, _data, error, YES);
   }
@@ -93,23 +89,20 @@
 
 - (void)URLSession:(__unused NSURLSession *)session
           dataTask:(__unused NSURLSessionDataTask *)dataTask
-    didReceiveData:(NSData *)data
-{
+    didReceiveData:(NSData *)data {
   [_data appendData:data];
 }
 
 - (void)URLSession:(__unused NSURLSession *)session
                dataTask:(__unused NSURLSessionDataTask *)dataTask
-    didBecomeStreamTask:(NSURLSessionStreamTask *)streamTask
-{
+    didBecomeStreamTask:(NSURLSessionStreamTask *)streamTask {
   [streamTask captureStreams];
 }
 
 - (void)URLSession:(__unused NSURLSession *)session
               streamTask:(__unused NSURLSessionStreamTask *)streamTask
     didBecomeInputStream:(NSInputStream *)inputStream
-            outputStream:(__unused NSOutputStream *)outputStream
-{
+            outputStream:(__unused NSOutputStream *)outputStream {
   RCTMultipartStreamReader *reader = [[RCTMultipartStreamReader alloc] initWithInputStream:inputStream
                                                                                   boundary:_boundary];
   RCTMultipartDataTaskCallback partHandler = _partHandler;

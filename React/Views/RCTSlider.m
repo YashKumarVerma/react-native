@@ -11,26 +11,22 @@
   float _unclippedValue;
 }
 
-- (void)setValue:(float)value
-{
+- (void)setValue:(float)value {
   _unclippedValue = value;
   super.value = value;
 }
 
-- (void)setMinimumValue:(float)minimumValue
-{
+- (void)setMinimumValue:(float)minimumValue {
   super.minimumValue = minimumValue;
   super.value = _unclippedValue;
 }
 
-- (void)setMaximumValue:(float)maximumValue
-{
+- (void)setMaximumValue:(float)maximumValue {
   super.maximumValue = maximumValue;
   super.value = _unclippedValue;
 }
 
-- (void)setTrackImage:(UIImage *)trackImage
-{
+- (void)setTrackImage:(UIImage *)trackImage {
   if (trackImage != _trackImage) {
     _trackImage = trackImage;
     CGFloat width = trackImage.size.width / 2;
@@ -43,8 +39,7 @@
   }
 }
 
-- (void)setMinimumTrackImage:(UIImage *)minimumTrackImage
-{
+- (void)setMinimumTrackImage:(UIImage *)minimumTrackImage {
   _trackImage = nil;
   minimumTrackImage =
       [minimumTrackImage resizableImageWithCapInsets:(UIEdgeInsets){0, minimumTrackImage.size.width, 0, 0}
@@ -52,13 +47,11 @@
   [self setMinimumTrackImage:minimumTrackImage forState:UIControlStateNormal];
 }
 
-- (UIImage *)minimumTrackImage
-{
+- (UIImage *)minimumTrackImage {
   return [self thumbImageForState:UIControlStateNormal];
 }
 
-- (void)setMaximumTrackImage:(UIImage *)maximumTrackImage
-{
+- (void)setMaximumTrackImage:(UIImage *)maximumTrackImage {
   _trackImage = nil;
   maximumTrackImage =
       [maximumTrackImage resizableImageWithCapInsets:(UIEdgeInsets){0, 0, 0, maximumTrackImage.size.width}
@@ -66,23 +59,19 @@
   [self setMaximumTrackImage:maximumTrackImage forState:UIControlStateNormal];
 }
 
-- (UIImage *)maximumTrackImage
-{
+- (UIImage *)maximumTrackImage {
   return [self thumbImageForState:UIControlStateNormal];
 }
 
-- (void)setThumbImage:(UIImage *)thumbImage
-{
+- (void)setThumbImage:(UIImage *)thumbImage {
   [self setThumbImage:thumbImage forState:UIControlStateNormal];
 }
 
-- (UIImage *)thumbImage
-{
+- (UIImage *)thumbImage {
   return [self thumbImageForState:UIControlStateNormal];
 }
 
-- (void)accessibilityIncrement
-{
+- (void)accessibilityIncrement {
   [super accessibilityIncrement];
   if (_onSlidingComplete) {
     _onSlidingComplete(@{
@@ -91,8 +80,7 @@
   }
 }
 
-- (void)accessibilityDecrement
-{
+- (void)accessibilityDecrement {
   [super accessibilityDecrement];
   if (_onSlidingComplete) {
     _onSlidingComplete(@{

@@ -26,8 +26,7 @@
 
 const NSTimeInterval MAX_DELTA_TIME = 0.064;
 
-@implementation RCTSpringAnimation
-{
+@implementation RCTSpringAnimation {
   CGFloat _toValue;
   CGFloat _fromValue;
   BOOL _overshootClamping;
@@ -53,8 +52,7 @@ const NSTimeInterval MAX_DELTA_TIME = 0.064;
 - (instancetype)initWithId:(NSNumber *)animationId
                     config:(NSDictionary *)config
                    forNode:(RCTValueAnimatedNode *)valueNode
-                  callBack:(nullable RCTResponseSenderBlock)callback
-{
+                  callBack:(nullable RCTResponseSenderBlock)callback {
   if ((self = [super init])) {
     _animationId = animationId;
     _lastPosition = valueNode.value;
@@ -66,8 +64,7 @@ const NSTimeInterval MAX_DELTA_TIME = 0.064;
   return self;
 }
 
-- (void)resetAnimationConfig:(NSDictionary *)config
-{
+- (void)resetAnimationConfig:(NSDictionary *)config {
   NSNumber *iterations = [RCTConvert NSNumber:config[@"iterations"]] ?: @1;
   _toValue = [RCTConvert CGFloat:config[@"toValue"]];
   _overshootClamping = [RCTConvert BOOL:config[@"overshootClamping"]];
@@ -87,33 +84,28 @@ const NSTimeInterval MAX_DELTA_TIME = 0.064;
   _animationHasBegun = YES;
 }
 
-RCT_NOT_IMPLEMENTED(- (instancetype)init)
+RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (void)startAnimation
-{
+- (void)startAnimation {
   _animationStartTime = _animationCurrentTime = -1;
   _animationHasBegun = YES;
 }
 
-- (void)stopAnimation
-{
+- (void)stopAnimation {
   _valueNode = nil;
   if (_callback) {
-    _callback(@[@{
-      @"finished": @(_animationHasFinished)
-    }]);
+    _callback(@[ @{@"finished" : @(_animationHasFinished)} ]);
   }
 }
 
-- (void)stepAnimationWithTime:(NSTimeInterval)currentTime
-{
+- (void)stepAnimationWithTime:(NSTimeInterval)currentTime {
   if (!_animationHasBegun || _animationHasFinished) {
     // Animation has not begun or animation has already finished.
     return;
   }
 
   // calculate delta time
-  if(_animationStartTime == -1) {
+  if (_animationStartTime == -1) {
     _t = 0.0;
     _animationStartTime = currentTime;
   } else {
@@ -140,27 +132,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   if (zeta < 1) {
     // Under damped
     CGFloat envelope = expf(-zeta * omega0 * _t);
-    position =
-      _toValue -
-      envelope *
-      ((v0 + zeta * omega0 * x0) / omega1 * sinf(omega1 * _t) +
-        x0 * cosf(omega1 * _t));
+    position = _toValue - envelope * ((v0 + zeta * omega0 * x0) / omega1 * sinf(omega1 * _t) + x0 * cosf(omega1 * _t));
     // This looks crazy -- it's actually just the derivative of the
     // oscillation function
     velocity =
-      zeta *
-        omega0 *
-        envelope *
-        (sinf(omega1 * _t) * (v0 + zeta * omega0 * x0) / omega1 +
-          x0 * cosf(omega1 * _t)) -
-      envelope *
-        (cosf(omega1 * _t) * (v0 + zeta * omega0 * x0) -
-          omega1 * x0 * sinf(omega1 * _t));
+        zeta * omega0 * envelope * (sinf(omega1 * _t) * (v0 + zeta * omega0 * x0) / omega1 + x0 * cosf(omega1 * _t)) -
+        envelope * (cosf(omega1 * _t) * (v0 + zeta * omega0 * x0) - omega1 * x0 * sinf(omega1 * _t));
   } else {
     CGFloat envelope = expf(-omega0 * _t);
     position = _toValue - envelope * (x0 + (v0 + omega0 * x0) * _t);
-    velocity =
-      envelope * (v0 * (_t * omega0 - 1) + _t * x0 * (omega0 * omega0));
+    velocity = envelope * (v0 * (_t * omega0 - 1) + _t * x0 * (omega0 * omega0));
   }
 
   _lastPosition = position;
@@ -205,8 +186,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)onUpdate:(CGFloat)outputValue
-{
+- (void)onUpdate:(CGFloat)outputValue {
   _valueNode.value = outputValue;
   [_valueNode setNeedsUpdate];
 }

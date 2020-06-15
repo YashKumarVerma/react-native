@@ -7,9 +7,9 @@
 
 #include "log.h"
 
-#include "Yoga.h"
 #include "YGConfig.h"
 #include "YGNode.h"
+#include "Yoga.h"
 
 namespace facebook {
 namespace yoga {
@@ -18,22 +18,22 @@ namespace detail {
 namespace {
 
 void vlog(
-    YGConfig* config,
-    YGNode* node,
+    YGConfig *config,
+    YGNode *node,
     YGLogLevel level,
-    void* context,
-    const char* format,
+    void *context,
+    const char *format,
     va_list args) {
-  YGConfig* logConfig = config != nullptr ? config : YGConfigGetDefault();
+  YGConfig *logConfig = config != nullptr ? config : YGConfigGetDefault();
   logConfig->log(logConfig, node, level, context, format, args);
 }
 } // namespace
 
 YOGA_EXPORT void Log::log(
-    YGNode* node,
+    YGNode *node,
     YGLogLevel level,
-    void* context,
-    const char* format,
+    void *context,
+    const char *format,
     ...) noexcept {
   va_list args;
   va_start(args, format);
@@ -48,10 +48,10 @@ YOGA_EXPORT void Log::log(
 }
 
 void Log::log(
-    YGConfig* config,
+    YGConfig *config,
     YGLogLevel level,
-    void* context,
-    const char* format,
+    void *context,
+    const char *format,
     ...) noexcept {
   va_list args;
   va_start(args, format);

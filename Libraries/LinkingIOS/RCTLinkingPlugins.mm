@@ -16,9 +16,10 @@
 #import <string>
 #import <unordered_map>
 
-Class RCTLinkingClassProvider(const char *name) {
+Class RCTLinkingClassProvider(const char *name)
+{
   static std::unordered_map<std::string, Class (*)(void)> sCoreModuleClassMap = {
-    {"LinkingManager", RCTLinkingManagerCls},
+      {"LinkingManager", RCTLinkingManagerCls},
   };
 
   auto p = sCoreModuleClassMap.find(name);

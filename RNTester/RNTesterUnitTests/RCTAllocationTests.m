@@ -14,7 +14,7 @@
 #import <React/RCTModuleMethod.h>
 #import <React/RCTRootView.h>
 
-@interface AllocationTestModule : NSObject<RCTBridgeModule, RCTInvalidating>
+@interface AllocationTestModule : NSObject <RCTBridgeModule, RCTInvalidating>
 
 @property (nonatomic, assign, getter=isValid) BOOL valid;
 
@@ -24,23 +24,24 @@
 
 RCT_EXPORT_MODULE();
 
-- (instancetype)init
-{
+- (instancetype)init {
   if ((self = [super init])) {
     _valid = YES;
   }
   return self;
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   _valid = NO;
 }
 
-RCT_EXPORT_METHOD(test:(__unused NSString *)a
-                      :(__unused NSNumber *)b
-                      :(__unused RCTResponseSenderBlock)c
-                      :(__unused RCTResponseErrorBlock)d) {}
+RCT_EXPORT_METHOD(test
+                  : (__unused NSString *)a
+                  : (__unused NSNumber *)b
+                  : (__unused RCTResponseSenderBlock)c
+                  : (__unused RCTResponseErrorBlock)d)
+{
+}
 
 @end
 
@@ -51,19 +52,21 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   NSURL *_bundleURL;
 }
 
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
 
   NSString *bundleContents =
-  @"var __fbBatchedBridge = {"
-   "  callFunctionReturnFlushedQueue: function() { return null; },"
-   "  invokeCallbackAndReturnFlushedQueue: function() { return null; },"
-   "  flushedQueue: function() { return null; },"
-   "};";
+      @"var __fbBatchedBridge = {"
+       "  callFunctionReturnFlushedQueue: function() { return null; },"
+       "  invokeCallbackAndReturnFlushedQueue: function() { return null; },"
+       "  flushedQueue: function() { return null; },"
+       "};";
 
   NSURL *tempDir = [NSURL fileURLWithPath:NSTemporaryDirectory() isDirectory:YES];
-  [[NSFileManager defaultManager] createDirectoryAtURL:tempDir withIntermediateDirectories:YES attributes:nil error:NULL];
+  [[NSFileManager defaultManager] createDirectoryAtURL:tempDir
+                           withIntermediateDirectories:YES
+                                            attributes:nil
+                                                 error:NULL];
   NSString *guid = [[NSProcessInfo processInfo] globallyUniqueString];
   NSString *fileName = [NSString stringWithFormat:@"rctallocationtests-bundle-%@.js", guid];
 
@@ -74,15 +77,13 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   };
 }
 
-- (void)tearDown
-{
+- (void)tearDown {
   [super tearDown];
 
   [[NSFileManager defaultManager] removeItemAtURL:_bundleURL error:NULL];
 }
 
-- (void)testBridgeIsDeallocated
-{
+- (void)testBridgeIsDeallocated {
   __weak RCTBridge *weakBridge;
   @autoreleasepool {
     RCTRootView *view = [[RCTRootView alloc] initWithBundleURL:_bundleURL
@@ -97,12 +98,13 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   XCTAssertNil(weakBridge, @"RCTBridge should have been deallocated");
 }
 
-- (void)testModulesAreInvalidated
-{
+- (void)testModulesAreInvalidated {
   AllocationTestModule *module = [AllocationTestModule new];
   @autoreleasepool {
     RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:_bundleURL
-                                              moduleProvider:^{ return @[module]; }
+                                              moduleProvider:^{
+                                                return @[ module ];
+                                              }
                                                launchOptions:nil];
     XCTAssertTrue(module.isValid, @"AllocationTestModule should be valid");
     (void)bridge;
@@ -112,13 +114,14 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   XCTAssertFalse(module.isValid, @"AllocationTestModule should have been invalidated by the bridge");
 }
 
-- (void)testModulesAreDeallocated
-{
+- (void)testModulesAreDeallocated {
   __weak AllocationTestModule *weakModule;
   @autoreleasepool {
     AllocationTestModule *module = [AllocationTestModule new];
     RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:_bundleURL
-                                              moduleProvider:^{ return @[module]; }
+                                              moduleProvider:^{
+                                                return @[ module ];
+                                              }
                                                launchOptions:nil];
     XCTAssertNotNil(module, @"AllocationTestModule should have been created");
     weakModule = module;
@@ -129,18 +132,16 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   XCTAssertNil(weakModule, @"AllocationTestModule should have been deallocated");
 }
 
-- (void)testModuleMethodsAreDeallocated
-{
+- (void)testModuleMethodsAreDeallocated {
   static RCTMethodInfo methodInfo = {
-    .objcName = "test:(NSString *)a :(nonnull NSNumber *)b :(RCTResponseSenderBlock)c :(RCTResponseErrorBlock)d",
-    .jsName = "",
-    .isSync = false
-  };
+      .objcName = "test:(NSString *)a :(nonnull NSNumber *)b :(RCTResponseSenderBlock)c :(RCTResponseErrorBlock)d",
+      .jsName = "",
+      .isSync = false};
 
   __weak RCTModuleMethod *weakMethod;
   @autoreleasepool {
-    __autoreleasing RCTModuleMethod *method = [[RCTModuleMethod alloc] initWithExportedMethod:&methodInfo
-                                                                                  moduleClass:[AllocationTestModule class]];
+    __autoreleasing RCTModuleMethod *method =
+        [[RCTModuleMethod alloc] initWithExportedMethod:&methodInfo moduleClass:[AllocationTestModule class]];
     XCTAssertNotNil(method, @"RCTModuleMethod should have been created");
     weakMethod = method;
   }
@@ -149,11 +150,8 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
   XCTAssertNil(weakMethod, @"RCTModuleMethod should have been deallocated");
 }
 
-- (void)testContentViewIsInvalidated
-{
-  RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:_bundleURL
-                                            moduleProvider:nil
-                                             launchOptions:nil];
+- (void)testContentViewIsInvalidated {
+  RCTBridge *bridge = [[RCTBridge alloc] initWithBundleURL:_bundleURL moduleProvider:nil launchOptions:nil];
   __weak UIView *rootContentView;
   @autoreleasepool {
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge moduleName:@"" initialProperties:nil];
@@ -177,8 +175,7 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
  * crash. Hence, we should disable this test until we either fix the bridge
  * or delete it.
  */
-- (void)disabled_testUnderlyingBridgeIsDeallocated
-{
+- (void)disabled_testUnderlyingBridgeIsDeallocated {
   RCTBridge *bridge;
   __weak id batchedBridge;
   @autoreleasepool {

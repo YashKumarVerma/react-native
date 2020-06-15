@@ -17,7 +17,7 @@ using namespace facebook::jsi;
 namespace facebook {
 namespace jsi {
 
-Value valueFromDynamic(Runtime& runtime, const folly::dynamic& dyn) {
+Value valueFromDynamic(Runtime &runtime, const folly::dynamic &dyn) {
   switch (dyn.type()) {
     case folly::dynamic::NULLT:
       return Value::null();
@@ -39,7 +39,7 @@ Value valueFromDynamic(Runtime& runtime, const folly::dynamic& dyn) {
       return (double)dyn.getInt();
     case folly::dynamic::OBJECT: {
       Object ret(runtime);
-      for (const auto& element : dyn.items()) {
+      for (const auto &element : dyn.items()) {
         Value value = valueFromDynamic(runtime, element.second);
         if (element.first.isNumber() || element.first.isString()) {
           ret.setProperty(
@@ -56,7 +56,7 @@ Value valueFromDynamic(Runtime& runtime, const folly::dynamic& dyn) {
   CHECK(false);
 }
 
-folly::dynamic dynamicFromValue(Runtime& runtime, const Value& value) {
+folly::dynamic dynamicFromValue(Runtime &runtime, const Value &value) {
   if (value.isUndefined() || value.isNull()) {
     return nullptr;
   } else if (value.isBool()) {

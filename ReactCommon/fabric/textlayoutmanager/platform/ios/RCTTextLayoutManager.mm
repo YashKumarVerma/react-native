@@ -36,8 +36,7 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
 
 - (TextMeasurement)measureNSAttributedString:(NSAttributedString *)attributedString
                          paragraphAttributes:(ParagraphAttributes)paragraphAttributes
-                           layoutConstraints:(LayoutConstraints)layoutConstraints
-{
+                           layoutConstraints:(LayoutConstraints)layoutConstraints {
   if (attributedString.length == 0) {
     // This is not really an optimization because that should be checked much earlier on the call stack.
     // Sometimes, very irregularly, measuring an empty string crashes/freezes iOS internal text infrastructure.
@@ -90,8 +89,7 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
 
 - (TextMeasurement)measureAttributedString:(AttributedString)attributedString
                        paragraphAttributes:(ParagraphAttributes)paragraphAttributes
-                         layoutConstraints:(LayoutConstraints)layoutConstraints
-{
+                         layoutConstraints:(LayoutConstraints)layoutConstraints {
   return [self measureNSAttributedString:[self _nsAttributedStringFromAttributedString:attributedString]
                      paragraphAttributes:paragraphAttributes
                        layoutConstraints:layoutConstraints];
@@ -99,8 +97,7 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
 
 - (void)drawAttributedString:(AttributedString)attributedString
          paragraphAttributes:(ParagraphAttributes)paragraphAttributes
-                       frame:(CGRect)frame
-{
+                       frame:(CGRect)frame {
   NSTextStorage *textStorage = [self
       _textStorageAndLayoutManagerWithAttributesString:[self _nsAttributedStringFromAttributedString:attributedString]
                                    paragraphAttributes:paragraphAttributes
@@ -115,8 +112,7 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
 
 - (NSTextStorage *)_textStorageAndLayoutManagerWithAttributesString:(NSAttributedString *)attributedString
                                                 paragraphAttributes:(ParagraphAttributes)paragraphAttributes
-                                                               size:(CGSize)size
-{
+                                                               size:(CGSize)size {
   NSTextContainer *textContainer = [[NSTextContainer alloc] initWithSize:size];
 
   textContainer.lineFragmentPadding = 0.0; // Note, the default value is 5.
@@ -145,8 +141,7 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
 - (SharedEventEmitter)getEventEmitterWithAttributeString:(AttributedString)attributedString
                                      paragraphAttributes:(ParagraphAttributes)paragraphAttributes
                                                    frame:(CGRect)frame
-                                                 atPoint:(CGPoint)point
-{
+                                                 atPoint:(CGPoint)point {
   NSTextStorage *textStorage = [self
       _textStorageAndLayoutManagerWithAttributesString:[self _nsAttributedStringFromAttributedString:attributedString]
                                    paragraphAttributes:paragraphAttributes
@@ -173,8 +168,7 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
   return nil;
 }
 
-- (NSAttributedString *)_nsAttributedStringFromAttributedString:(AttributedString)attributedString
-{
+- (NSAttributedString *)_nsAttributedStringFromAttributedString:(AttributedString)attributedString {
   auto sharedNSAttributedString = _cache.get(attributedString, [](AttributedString attributedString) {
     return wrapManagedObject(RCTNSAttributedStringFromAttributedString(attributedString));
   });

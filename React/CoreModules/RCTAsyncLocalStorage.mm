@@ -179,13 +179,11 @@ static NSDictionary *RCTDeleteStorageDirectory()
 
 RCT_EXPORT_MODULE()
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return RCTGetMethodQueue();
 }
 
-- (void)clearAllData
-{
+- (void)clearAllData {
   dispatch_async(RCTGetMethodQueue(), ^{
     [self->_manifest removeAllObjects];
     [RCTGetCache() removeAllObjects];
@@ -193,16 +191,14 @@ RCT_EXPORT_MODULE()
   });
 }
 
-+ (void)clearAllData
-{
++ (void)clearAllData {
   dispatch_async(RCTGetMethodQueue(), ^{
     [RCTGetCache() removeAllObjects];
     RCTDeleteStorageDirectory();
   });
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   if (_clearOnInvalidate) {
     [RCTGetCache() removeAllObjects];
     RCTDeleteStorageDirectory();
@@ -212,24 +208,20 @@ RCT_EXPORT_MODULE()
   _haveSetup = NO;
 }
 
-- (BOOL)isValid
-{
+- (BOOL)isValid {
   return _haveSetup;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [self invalidate];
 }
 
-- (NSString *)_filePathForKey:(NSString *)key
-{
+- (NSString *)_filePathForKey:(NSString *)key {
   NSString *safeFileName = RCTMD5Hash(key);
   return [RCTGetStorageDirectory() stringByAppendingPathComponent:safeFileName];
 }
 
-- (NSDictionary *)_ensureSetup
-{
+- (NSDictionary *)_ensureSetup {
   RCTAssertThread(RCTGetMethodQueue(), @"Must be executed on storage thread");
 
 #if TARGET_OS_TV
@@ -260,8 +252,7 @@ RCT_EXPORT_MODULE()
   return nil;
 }
 
-- (NSDictionary *)_writeManifest:(NSMutableArray<NSDictionary *> **)errors
-{
+- (NSDictionary *)_writeManifest:(NSMutableArray<NSDictionary *> **)errors {
   NSError *error;
   NSString *serialized = RCTJSONStringify(_manifest, &error);
   [serialized writeToFile:RCTGetManifestFilePath() atomically:YES encoding:NSUTF8StringEncoding error:&error];
@@ -273,8 +264,7 @@ RCT_EXPORT_MODULE()
   return errorOut;
 }
 
-- (NSDictionary *)_appendItemForKey:(NSString *)key toArray:(NSMutableArray<NSArray<NSString *> *> *)result
-{
+- (NSDictionary *)_appendItemForKey:(NSString *)key toArray:(NSMutableArray<NSArray<NSString *> *> *)result {
   NSDictionary *errorOut = RCTErrorForKey(key);
   if (errorOut) {
     return errorOut;
@@ -284,8 +274,7 @@ RCT_EXPORT_MODULE()
   return errorOut;
 }
 
-- (NSString *)_getValueForKey:(NSString *)key errorOut:(NSDictionary **)errorOut
-{
+- (NSString *)_getValueForKey:(NSString *)key errorOut:(NSDictionary **)errorOut {
   NSString *value = _manifest[key]; // nil means missing, null means there may be a data file, else: NSString
   if (value == (id)kCFNull) {
     value = [RCTGetCache() objectForKey:key];
@@ -304,8 +293,7 @@ RCT_EXPORT_MODULE()
   return value;
 }
 
-- (NSDictionary *)_writeEntry:(NSArray<NSString *> *)entry changedManifest:(BOOL *)changedManifest
-{
+- (NSDictionary *)_writeEntry:(NSArray<NSString *> *)entry changedManifest:(BOOL *)changedManifest {
   if (entry.count != 2) {
     return RCTMakeAndLogError(@"Entries must be arrays of the form [key: string, value: string], got: ", entry, nil);
   }
@@ -461,8 +449,7 @@ RCT_EXPORT_METHOD(getAllKeys : (RCTResponseSenderBlock)callback)
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeAsyncStorageSpecJSI>(params);
 }
 

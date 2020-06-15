@@ -15,17 +15,20 @@
 #import <React/RCTUtils.h>
 #import <React/RCTWebSocketModule.h>
 
-#import "RCTBlobPlugins.h"
 #import "RCTBlobCollector.h"
+#import "RCTBlobPlugins.h"
 
 static NSString *const kBlobURIScheme = @"blob";
 
-@interface RCTBlobManager () <RCTNetworkingRequestHandler, RCTNetworkingResponseHandler, RCTWebSocketContentHandler, NativeBlobModuleSpec>
+@interface RCTBlobManager () <
+    RCTNetworkingRequestHandler,
+    RCTNetworkingResponseHandler,
+    RCTWebSocketContentHandler,
+    NativeBlobModuleSpec>
 
 @end
 
-@implementation RCTBlobManager
-{
+@implementation RCTBlobManager {
   // Blobs should be thread safe since they are used from the websocket and networking module,
   // make sure to use proper locking when accessing this.
   NSMutableDictionary<NSString *, NSData *> *_blobs;
@@ -40,8 +43,7 @@ RCT_EXPORT_MODULE(BlobModule)
 @synthesize methodQueue = _methodQueue;
 @synthesize turboModuleLookupDelegate = _turboModuleLookupDelegate;
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
 
   std::lock_guard<std::mutex> lock(_blobsMutex);
@@ -50,49 +52,40 @@ RCT_EXPORT_MODULE(BlobModule)
   facebook::react::RCTBlobCollector::install(self);
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
-- (NSDictionary<NSString *, id> *)constantsToExport
-{
+- (NSDictionary<NSString *, id> *)constantsToExport {
   return [self getConstants];
 }
 
-- (NSDictionary<NSString *, id> *)getConstants
-{
+- (NSDictionary<NSString *, id> *)getConstants {
   return @{
-    @"BLOB_URI_SCHEME": kBlobURIScheme,
-    @"BLOB_URI_HOST": [NSNull null],
+    @"BLOB_URI_SCHEME" : kBlobURIScheme,
+    @"BLOB_URI_HOST" : [NSNull null],
   };
 }
 
-- (NSString *)store:(NSData *)data
-{
+- (NSString *)store:(NSData *)data {
   NSString *blobId = [NSUUID UUID].UUIDString;
   [self store:data withId:blobId];
   return blobId;
 }
 
-- (void)store:(NSData *)data withId:(NSString *)blobId
-{
+- (void)store:(NSData *)data withId:(NSString *)blobId {
   std::lock_guard<std::mutex> lock(_blobsMutex);
   _blobs[blobId] = data;
 }
 
-- (NSData *)resolve:(NSDictionary<NSString *, id> *)blob
-{
+- (NSData *)resolve:(NSDictionary<NSString *, id> *)blob {
   NSString *blobId = [RCTConvert NSString:blob[@"blobId"]];
   NSNumber *offset = [RCTConvert NSNumber:blob[@"offset"]];
   NSNumber *size = [RCTConvert NSNumber:blob[@"size"]];
-  return [self resolve:blobId
-                offset:offset ? [offset integerValue] : 0
-                  size:size ? [size integerValue] : -1];
+  return [self resolve:blobId offset:offset ? [offset integerValue] : 0 size:size ? [size integerValue] : -1];
 }
 
-- (NSData *)resolve:(NSString *)blobId offset:(NSInteger)offset size:(NSInteger)size
-{
+- (NSData *)resolve:(NSString *)blobId offset:(NSInteger)offset size:(NSInteger)size {
   NSData *data;
   {
     std::lock_guard<std::mutex> lock(_blobsMutex);
@@ -107,8 +100,7 @@ RCT_EXPORT_MODULE(BlobModule)
   return data;
 }
 
-- (NSData *)resolveURL:(NSURL *)url
-{
+- (NSData *)resolveURL:(NSURL *)url {
   NSURLComponents *components = [[NSURLComponents alloc] initWithURL:url resolvingAgainstBaseURL:NO];
 
   NSString *blobId = components.path;
@@ -132,17 +124,17 @@ RCT_EXPORT_MODULE(BlobModule)
   return nil;
 }
 
-- (void)remove:(NSString *)blobId
-{
+- (void)remove:(NSString *)blobId {
   std::lock_guard<std::mutex> lock(_blobsMutex);
   [_blobs removeObjectForKey:blobId];
 }
 
 RCT_EXPORT_METHOD(addNetworkingHandler)
 {
-  RCTNetworking *const networking = _bridge ? _bridge.networking : [_turboModuleLookupDelegate moduleForName:"RCTNetworking"];
+  RCTNetworking *const networking =
+      _bridge ? _bridge.networking : [_turboModuleLookupDelegate moduleForName:"RCTNetworking"];
 
-  // TODO(T63516227): Why can methodQueue be nil here? 
+  // TODO(T63516227): Why can methodQueue be nil here?
   // We don't want to do anything when methodQueue is nil.
   if (!networking.methodQueue) {
     return;
@@ -154,14 +146,14 @@ RCT_EXPORT_METHOD(addNetworkingHandler)
   });
 }
 
-RCT_EXPORT_METHOD(addWebSocketHandler:(double)socketID)
+RCT_EXPORT_METHOD(addWebSocketHandler : (double)socketID)
 {
   dispatch_async(_bridge.webSocketModule.methodQueue, ^{
     [self->_bridge.webSocketModule setContentHandler:self forSocketID:[NSNumber numberWithDouble:socketID]];
   });
 }
 
-RCT_EXPORT_METHOD(removeWebSocketHandler:(double)socketID)
+RCT_EXPORT_METHOD(removeWebSocketHandler : (double)socketID)
 {
   dispatch_async(_bridge.webSocketModule.methodQueue, ^{
     [self->_bridge.webSocketModule setContentHandler:nil forSocketID:[NSNumber numberWithDouble:socketID]];
@@ -169,14 +161,14 @@ RCT_EXPORT_METHOD(removeWebSocketHandler:(double)socketID)
 }
 
 // @lint-ignore FBOBJCUNTYPEDCOLLECTION1
-RCT_EXPORT_METHOD(sendOverSocket:(NSDictionary *)blob socketID:(double)socketID)
+RCT_EXPORT_METHOD(sendOverSocket : (NSDictionary *)blob socketID : (double)socketID)
 {
   dispatch_async(_bridge.webSocketModule.methodQueue, ^{
     [self->_bridge.webSocketModule sendData:[self resolve:blob] forSocketID:[NSNumber numberWithDouble:socketID]];
   });
 }
 
-RCT_EXPORT_METHOD(createFromParts:(NSArray<NSDictionary<NSString *, id> *> *)parts withId:(NSString *)blobId)
+RCT_EXPORT_METHOD(createFromParts : (NSArray<NSDictionary<NSString *, id> *> *)parts withId : (NSString *)blobId)
 {
   NSMutableData *data = [NSMutableData new];
   for (NSDictionary<NSString *, id> *part in parts) {
@@ -195,20 +187,18 @@ RCT_EXPORT_METHOD(createFromParts:(NSArray<NSDictionary<NSString *, id> *> *)par
   [self store:data withId:blobId];
 }
 
-RCT_EXPORT_METHOD(release:(NSString *)blobId)
+RCT_EXPORT_METHOD(release : (NSString *)blobId)
 {
   [self remove:blobId];
 }
 
 #pragma mark - RCTURLRequestHandler methods
 
-- (BOOL)canHandleRequest:(NSURLRequest *)request
-{
+- (BOOL)canHandleRequest:(NSURLRequest *)request {
   return [request.URL.scheme caseInsensitiveCompare:kBlobURIScheme] == NSOrderedSame;
 }
 
-- (id)sendRequest:(NSURLRequest *)request withDelegate:(id<RCTURLRequestDelegate>)delegate
-{
+- (id)sendRequest:(NSURLRequest *)request withDelegate:(id<RCTURLRequestDelegate>)delegate {
   // Lazy setup
   if (!_queue) {
     _queue = [NSOperationQueue new];
@@ -244,22 +234,19 @@ RCT_EXPORT_METHOD(release:(NSString *)blobId)
   return op;
 }
 
-- (void)cancelRequest:(NSOperation *)op
-{
+- (void)cancelRequest:(NSOperation *)op {
   [op cancel];
 }
 
 #pragma mark - RCTNetworkingRequestHandler methods
 
 // @lint-ignore FBOBJCUNTYPEDCOLLECTION1
-- (BOOL)canHandleNetworkingRequest:(NSDictionary *)data
-{
+- (BOOL)canHandleNetworkingRequest:(NSDictionary *)data {
   return data[@"blob"] != nil;
 }
 
 // @lint-ignore FBOBJCUNTYPEDCOLLECTION1
-- (NSDictionary *)handleNetworkingRequest:(NSDictionary *)data
-{
+- (NSDictionary *)handleNetworkingRequest:(NSDictionary *)data {
   // @lint-ignore FBOBJCUNTYPEDCOLLECTION1
   NSDictionary *blob = [RCTConvert NSDictionary:data[@"blob"]];
 
@@ -269,25 +256,23 @@ RCT_EXPORT_METHOD(release:(NSString *)blobId)
     contentType = blob[@"type"];
   }
 
-  return @{@"body": [self resolve:blob], @"contentType": contentType};
+  return @{@"body" : [self resolve:blob], @"contentType" : contentType};
 }
 
-- (BOOL)canHandleNetworkingResponse:(NSString *)responseType
-{
+- (BOOL)canHandleNetworkingResponse:(NSString *)responseType {
   return [responseType isEqualToString:@"blob"];
 }
 
-- (id)handleNetworkingResponse:(NSURLResponse *)response data:(NSData *)data
-{
+- (id)handleNetworkingResponse:(NSURLResponse *)response data:(NSData *)data {
   // An empty body will have nil for data, in this case we need to return
   // an empty blob as per the XMLHttpRequest spec.
   data = data ?: [NSData new];
   return @{
-    @"blobId": [self store:data],
-    @"offset": @0,
-    @"size": @(data.length),
-    @"name": RCTNullIfNil([response suggestedFilename]),
-    @"type": RCTNullIfNil([response MIMEType]),
+    @"blobId" : [self store:data],
+    @"offset" : @0,
+    @"size" : @(data.length),
+    @"name" : RCTNullIfNil([response suggestedFilename]),
+    @"type" : RCTNullIfNil([response MIMEType]),
   };
 }
 
@@ -295,8 +280,7 @@ RCT_EXPORT_METHOD(release:(NSString *)blobId)
 
 - (id)processWebsocketMessage:(id)message
                   forSocketID:(NSNumber *)socketID
-                     withType:(NSString *__autoreleasing _Nonnull *)type
-{
+                     withType:(NSString *__autoreleasing _Nonnull *)type {
   if (![message isKindOfClass:[NSData class]]) {
     *type = @"text";
     return message;
@@ -304,19 +288,20 @@ RCT_EXPORT_METHOD(release:(NSString *)blobId)
 
   *type = @"blob";
   return @{
-    @"blobId": [self store:message],
-    @"offset": @0,
-    @"size": @(((NSData *)message).length),
+    @"blobId" : [self store:message],
+    @"offset" : @0,
+    @"size" : @(((NSData *)message).length),
   };
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeBlobModuleSpecJSI>(params);
 }
 
 @end
 
-Class RCTBlobManagerCls(void) {
+Class RCTBlobManagerCls(void)
+{
   return RCTBlobManager.class;
 }

@@ -40,6 +40,7 @@ double RCTBridgingToDouble(id value)
   return [RCTConvert double:value];
 }
 
-NSArray *RCTBridgingToArray(id value) {
+NSArray *RCTBridgingToArray(id value)
+{
   return [RCTConvert NSArray:value];
 }

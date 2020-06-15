@@ -15,8 +15,7 @@
 
 @implementation RCTPicker
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if ((self = [super initWithFrame:frame])) {
     _color = [UIColor blackColor];
     _font = [UIFont systemFontOfSize:21]; // TODO: selected title default should be 23.5
@@ -33,14 +32,12 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
-- (void)setItems:(NSArray<NSDictionary *> *)items
-{
+- (void)setItems:(NSArray<NSDictionary *> *)items {
   _items = [items copy];
   [self setNeedsLayout];
 }
 
-- (void)setSelectedIndex:(NSInteger)selectedIndex
-{
+- (void)setSelectedIndex:(NSInteger)selectedIndex {
   if (_selectedIndex != selectedIndex) {
     BOOL animated = _selectedIndex != NSNotFound; // Don't animate the initial value
     _selectedIndex = selectedIndex;
@@ -52,13 +49,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark - UIPickerViewDataSource protocol
 
-- (NSInteger)numberOfComponentsInPickerView:(__unused UIPickerView *)pickerView
-{
+- (NSInteger)numberOfComponentsInPickerView:(__unused UIPickerView *)pickerView {
   return 1;
 }
 
-- (NSInteger)pickerView:(__unused UIPickerView *)pickerView numberOfRowsInComponent:(__unused NSInteger)component
-{
+- (NSInteger)pickerView:(__unused UIPickerView *)pickerView numberOfRowsInComponent:(__unused NSInteger)component {
   return _items.count;
 }
 
@@ -66,21 +61,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 - (NSString *)pickerView:(__unused UIPickerView *)pickerView
              titleForRow:(NSInteger)row
-            forComponent:(__unused NSInteger)component
-{
+            forComponent:(__unused NSInteger)component {
   return [RCTConvert NSString:_items[row][@"label"]];
 }
 
-- (CGFloat)pickerView:(__unused UIPickerView *)pickerView rowHeightForComponent:(NSInteger)__unused component
-{
+- (CGFloat)pickerView:(__unused UIPickerView *)pickerView rowHeightForComponent:(NSInteger)__unused component {
   return _font.pointSize + 19;
 }
 
 - (UIView *)pickerView:(UIPickerView *)pickerView
             viewForRow:(NSInteger)row
           forComponent:(NSInteger)component
-           reusingView:(UILabel *)label
-{
+           reusingView:(UILabel *)label {
   if (!label) {
     label = [[UILabel alloc] initWithFrame:(CGRect){CGPointZero,
                                                     {
@@ -100,8 +92,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 - (void)pickerView:(__unused UIPickerView *)pickerView
       didSelectRow:(NSInteger)row
-       inComponent:(__unused NSInteger)component
-{
+       inComponent:(__unused NSInteger)component {
   _selectedIndex = row;
   if (_onChange && _items.count > (NSUInteger)row) {
     _onChange(@{
@@ -113,8 +104,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark - UIPickerViewAccessibilityDelegate protocol
 
-- (NSString *)pickerView:(UIPickerView *)pickerView accessibilityLabelForComponent:(NSInteger)component
-{
+- (NSString *)pickerView:(UIPickerView *)pickerView accessibilityLabelForComponent:(NSInteger)component {
   return super.accessibilityLabel;
 }
 

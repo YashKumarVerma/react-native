@@ -14,8 +14,7 @@ using namespace facebook::react;
 
 @implementation RCTRootComponentView
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const RootProps>();
     _props = defaultProps;
@@ -26,8 +25,7 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<RootComponentDescriptor>();
 }
 

@@ -23,8 +23,7 @@
   UITapGestureRecognizer *_selectRecognizer;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     dispatch_once(&onceToken, ^{
       defaultTVParallaxProperties = @{
@@ -47,8 +46,7 @@
 static NSDictionary *defaultTVParallaxProperties = nil;
 static dispatch_once_t onceToken;
 
-- (void)setTvParallaxProperties:(NSDictionary *)tvParallaxProperties
-{
+- (void)setTvParallaxProperties:(NSDictionary *)tvParallaxProperties {
   if (_tvParallaxProperties == nil) {
     _tvParallaxProperties = [defaultTVParallaxProperties copy];
     return;
@@ -65,8 +63,7 @@ static dispatch_once_t onceToken;
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
-- (void)setIsTVSelectable:(BOOL)isTVSelectable
-{
+- (void)setIsTVSelectable:(BOOL)isTVSelectable {
   self->_isTVSelectable = isTVSelectable;
   if (isTVSelectable) {
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -81,8 +78,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)handleSelect:(__unused UIGestureRecognizer *)r
-{
+- (void)handleSelect:(__unused UIGestureRecognizer *)r {
   if ([self.tvParallaxProperties[@"enabled"] boolValue] == YES) {
     float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
     float pressMagnification = [self.tvParallaxProperties[@"pressMagnification"] floatValue];
@@ -117,18 +113,15 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (BOOL)isUserInteractionEnabled
-{
+- (BOOL)isUserInteractionEnabled {
   return YES;
 }
 
-- (BOOL)canBecomeFocused
-{
+- (BOOL)canBecomeFocused {
   return (self.isTVSelectable);
 }
 
-- (void)addParallaxMotionEffects
-{
+- (void)addParallaxMotionEffects {
   // Size of shift movements
   CGFloat const shiftDistanceX = [self.tvParallaxProperties[@"shiftDistanceX"] floatValue];
   CGFloat const shiftDistanceY = [self.tvParallaxProperties[@"shiftDistanceY"] floatValue];
@@ -200,8 +193,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
-       withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
-{
+       withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator {
   if (context.nextFocusedView == self && self.isTVSelectable) {
     [self becomeFirstResponder];
     [coordinator
@@ -235,8 +227,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)setHasTVPreferredFocus:(BOOL)hasTVPreferredFocus
-{
+- (void)setHasTVPreferredFocus:(BOOL)hasTVPreferredFocus {
   _hasTVPreferredFocus = hasTVPreferredFocus;
   if (hasTVPreferredFocus) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

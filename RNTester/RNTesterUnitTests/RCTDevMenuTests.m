@@ -11,7 +11,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTDevMenu.h>
 
-typedef void(^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
+typedef void (^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
 
 @interface RCTDevMenu ()
 
@@ -23,13 +23,11 @@ typedef void(^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
 
 @end
 
-@implementation RCTDevMenuTests
-{
+@implementation RCTDevMenuTests {
   RCTBridge *_bridge;
 }
 
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
 
   NSBundle *bundle = [NSBundle bundleForClass:[self class]];
@@ -40,15 +38,13 @@ typedef void(^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
   RCT_RUN_RUNLOOP_WHILE(_bridge.isLoading);
 }
 
-- (void)testShowCreatingActionSheet
-{
+- (void)testShowCreatingActionSheet {
   XCTAssertFalse([_bridge.devMenu isActionSheetShown]);
   [_bridge.devMenu show];
   XCTAssertTrue([_bridge.devMenu isActionSheetShown]);
 }
 
-- (void)testClosingActionSheetAfterAction
-{
+- (void)testClosingActionSheetAfterAction {
   for (RCTDevMenuItem *item in _bridge.devMenu.presentedItems) {
     RCTDevMenuAlertActionHandler handler = [_bridge.devMenu alertActionHandlerForDevItem:item];
     XCTAssertTrue([_bridge.devMenu isActionSheetShown]);

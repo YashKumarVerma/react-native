@@ -33,8 +33,7 @@ static SEL selectorForType(NSString *type)
 
 @implementation RCTMethodArgument
 
-- (instancetype)initWithType:(NSString *)type nullability:(RCTNullability)nullability unused:(BOOL)unused
-{
+- (instancetype)initWithType:(NSString *)type nullability:(RCTNullability)nullability unused:(BOOL)unused {
   if (self = [super init]) {
     _type = [type copy];
     _nullability = nullability;
@@ -192,8 +191,7 @@ NSString *RCTParseMethodSignature(const char *input, NSArray<RCTMethodArgument *
 
 RCT_EXTERN_C_END
 
-- (instancetype)initWithExportedMethod:(const RCTMethodInfo *)exportedMethod moduleClass:(Class)moduleClass
-{
+- (instancetype)initWithExportedMethod:(const RCTMethodInfo *)exportedMethod moduleClass:(Class)moduleClass {
   if (self = [super init]) {
     _moduleClass = moduleClass;
     _methodInfo = exportedMethod;
@@ -201,8 +199,7 @@ RCT_EXTERN_C_END
   return self;
 }
 
-- (void)processMethodSignature
-{
+- (void)processMethodSignature {
   NSArray<RCTMethodArgument *> *arguments;
   _selector = NSSelectorFromString(RCTParseMethodSignature(_methodInfo->objcName, &arguments));
   RCTAssert(_selector, @"%s is not a valid selector", _methodInfo->objcName);
@@ -466,8 +463,7 @@ RCT_EXTERN_C_END
   _argumentBlocks = argumentBlocks;
 }
 
-- (SEL)selector
-{
+- (SEL)selector {
   if (_selector == NULL) {
     RCT_PROFILE_BEGIN_EVENT(
         RCTProfileTagAlways,
@@ -479,8 +475,7 @@ RCT_EXTERN_C_END
   return _selector;
 }
 
-- (const char *)JSMethodName
-{
+- (const char *)JSMethodName {
   NSString *methodName = _JSMethodName;
   if (!methodName) {
     const char *jsName = _methodInfo->jsName;
@@ -504,8 +499,7 @@ RCT_EXTERN_C_END
   return methodName.UTF8String;
 }
 
-- (RCTFunctionType)functionType
-{
+- (RCTFunctionType)functionType {
   if (strstr(_methodInfo->objcName, "RCTPromise") != NULL) {
     RCTAssert(!_methodInfo->isSync, @"Promises cannot be used in sync functions");
     return RCTFunctionTypePromise;
@@ -516,8 +510,7 @@ RCT_EXTERN_C_END
   }
 }
 
-- (id)invokeWithBridge:(RCTBridge *)bridge module:(id)module arguments:(NSArray *)arguments
-{
+- (id)invokeWithBridge:(RCTBridge *)bridge module:(id)module arguments:(NSArray *)arguments {
   if (_argumentBlocks == nil) {
     [self processMethodSignature];
   }
@@ -594,16 +587,14 @@ RCT_EXTERN_C_END
   return nil;
 }
 
-- (NSString *)methodName
-{
+- (NSString *)methodName {
   if (!_selector) {
     [self processMethodSignature];
   }
   return [NSString stringWithFormat:@"-[%@ %s]", _moduleClass, sel_getName(_selector)];
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString stringWithFormat:@"<%@: %p; exports %@ as %s(); type: %s>",
                                     [self class],
                                     self,

@@ -21,8 +21,7 @@ using namespace facebook::react;
 
 RCT_EXPORT_MODULE()
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
@@ -38,8 +37,7 @@ RCT_EXPORT_METHOD(getString : (RCTPromiseResolveBlock)resolve reject : (__unused
   resolve((clipboard.string ?: @""));
 }
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeClipboardSpecJSI>(params);
 }
 

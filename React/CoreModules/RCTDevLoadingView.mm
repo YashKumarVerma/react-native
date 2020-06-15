@@ -39,18 +39,15 @@ using namespace facebook::react;
 
 RCT_EXPORT_MODULE()
 
-+ (void)setEnabled:(BOOL)enabled
-{
++ (void)setEnabled:(BOOL)enabled {
   RCTDevLoadingViewSetEnabled(enabled);
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
 
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -67,16 +64,14 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)clearInitialMessageDelay
-{
+- (void)clearInitialMessageDelay {
   if (self->_initialMessageBlock != nil) {
     dispatch_block_cancel(self->_initialMessageBlock);
     self->_initialMessageBlock = nil;
   }
 }
 
-- (void)showInitialMessageDelayed:(void (^)())initialMessage
-{
+- (void)showInitialMessageDelayed:(void (^)())initialMessage {
   self->_initialMessageBlock = dispatch_block_create(static_cast<dispatch_block_flags_t>(0), initialMessage);
 
   // We delay the initial loading message to prevent flashing it
@@ -88,8 +83,7 @@ RCT_EXPORT_MODULE()
       dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), self->_initialMessageBlock);
 }
 
-- (UIColor *)dimColor:(UIColor *)c
-{
+- (UIColor *)dimColor:(UIColor *)c {
   // Given a color, return a slightly lighter or darker color for dim effect.
   CGFloat h, s, b, a;
   if ([c getHue:&h saturation:&s brightness:&b alpha:&a])
@@ -97,8 +91,7 @@ RCT_EXPORT_MODULE()
   return nil;
 }
 
-- (NSString *)getTextForHost
-{
+- (NSString *)getTextForHost {
   if (self->_bridge.bundleURL == nil || self->_bridge.bundleURL.fileURL) {
     return @"React Native";
   }
@@ -106,8 +99,7 @@ RCT_EXPORT_MODULE()
   return [NSString stringWithFormat:@"%@:%@", self->_bridge.bundleURL.host, self->_bridge.bundleURL.port];
 }
 
-- (void)showMessage:(NSString *)message color:(UIColor *)color backgroundColor:(UIColor *)backgroundColor
-{
+- (void)showMessage:(NSString *)message color:(UIColor *)color backgroundColor:(UIColor *)backgroundColor {
   if (!RCTDevLoadingViewGetEnabled() || self->_hiding) {
     return;
   }
@@ -191,8 +183,7 @@ RCT_EXPORT_METHOD(hide)
   });
 }
 
-- (void)showProgressMessage:(NSString *)message
-{
+- (void)showProgressMessage:(NSString *)message {
   if (self->_window != nil) {
     // This is an optimization. Since the progress can come in quickly,
     // we want to do the minimum amount of work to update the UI,
@@ -212,8 +203,7 @@ RCT_EXPORT_METHOD(hide)
   [self showMessage:message color:color backgroundColor:backgroundColor];
 }
 
-- (void)showOfflineMessage
-{
+- (void)showOfflineMessage {
   UIColor *color = [UIColor whiteColor];
   UIColor *backgroundColor = [UIColor blackColor];
 
@@ -226,16 +216,14 @@ RCT_EXPORT_METHOD(hide)
   [self showMessage:message color:color backgroundColor:backgroundColor];
 }
 
-- (BOOL)isDarkModeEnabled
-{
+- (BOOL)isDarkModeEnabled {
   // We pass nil here to match the behavior of the native module.
   // If we were to pass a view, then it's possible that this native
   // banner would have a different color than the JavaScript banner
   // (which always passes nil). This would result in an inconsistent UI.
   return [RCTColorSchemePreference(nil) isEqualToString:@"dark"];
 }
-- (void)showWithURL:(NSURL *)URL
-{
+- (void)showWithURL:(NSURL *)URL {
   if (URL.fileURL) {
     // If dev mode is not enabled, we don't want to show this kind of notification.
 #if !RCT_DEV
@@ -250,8 +238,7 @@ RCT_EXPORT_METHOD(hide)
   }
 }
 
-- (void)updateProgress:(RCTLoadingProgress *)progress
-{
+- (void)updateProgress:(RCTLoadingProgress *)progress {
   if (!progress) {
     return;
   }
@@ -264,8 +251,7 @@ RCT_EXPORT_METHOD(hide)
   });
 }
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeDevLoadingViewSpecJSI>(params);
 }
 
@@ -275,30 +261,22 @@ RCT_EXPORT_METHOD(hide)
 
 @implementation RCTDevLoadingView
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return nil;
 }
-+ (void)setEnabled:(BOOL)enabled
-{
++ (void)setEnabled:(BOOL)enabled {
 }
-- (void)showMessage:(NSString *)message color:(UIColor *)color backgroundColor:(UIColor *)backgroundColor
-{
+- (void)showMessage:(NSString *)message color:(UIColor *)color backgroundColor:(UIColor *)backgroundColor {
 }
-- (void)showMessage:(NSString *)message withColor:(NSNumber *)color withBackgroundColor:(NSNumber *)backgroundColor
-{
+- (void)showMessage:(NSString *)message withColor:(NSNumber *)color withBackgroundColor:(NSNumber *)backgroundColor {
 }
-- (void)showWithURL:(NSURL *)URL
-{
+- (void)showWithURL:(NSURL *)URL {
 }
-- (void)updateProgress:(RCTLoadingProgress *)progress
-{
+- (void)updateProgress:(RCTLoadingProgress *)progress {
 }
-- (void)hide
-{
+- (void)hide {
 }
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeDevLoadingViewSpecJSI>(params);
 }
 

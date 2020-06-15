@@ -6,17 +6,17 @@
  */
 
 #include "corefunctions.h"
-#include "macros.h"
 #include "YogaJniException.h"
+#include "macros.h"
 
 namespace facebook {
 namespace yoga {
 namespace vanillajni {
 
 namespace {
-JavaVM* globalVm = NULL;
+JavaVM *globalVm = NULL;
 struct JavaVMInitializer {
-  JavaVMInitializer(JavaVM* vm) {
+  JavaVMInitializer(JavaVM *vm) {
     if (!vm) {
       logErrorMessageAndDie(
           "You cannot pass a NULL JavaVM to ensureInitialized");
@@ -26,7 +26,7 @@ struct JavaVMInitializer {
 };
 } // namespace
 
-jint ensureInitialized(JNIEnv** env, JavaVM* vm) {
+jint ensureInitialized(JNIEnv **env, JavaVM *vm) {
   static JavaVMInitializer init(vm);
 
   if (!env) {
@@ -35,7 +35,7 @@ jint ensureInitialized(JNIEnv** env, JavaVM* vm) {
         "routine");
   }
 
-  if (vm->GetEnv(reinterpret_cast<void**>(env), JNI_VERSION_1_6) != JNI_OK) {
+  if (vm->GetEnv(reinterpret_cast<void **>(env), JNI_VERSION_1_6) != JNI_OK) {
     logErrorMessageAndDie(
         "Error retrieving JNIEnv during initialization of vanillajni");
   }
@@ -44,9 +44,9 @@ jint ensureInitialized(JNIEnv** env, JavaVM* vm) {
 }
 
 // TODO why we need JNIEXPORT for getCurrentEnv ?
-JNIEXPORT JNIEnv* getCurrentEnv() {
-  JNIEnv* env;
-  jint ret = globalVm->GetEnv((void**) &env, JNI_VERSION_1_6);
+JNIEXPORT JNIEnv *getCurrentEnv() {
+  JNIEnv *env;
+  jint ret = globalVm->GetEnv((void **)&env, JNI_VERSION_1_6);
   if (ret != JNI_OK) {
     logErrorMessageAndDie(
         "There was an error retrieving the current JNIEnv. Make sure the "
@@ -55,7 +55,7 @@ JNIEXPORT JNIEnv* getCurrentEnv() {
   return env;
 }
 
-void logErrorMessageAndDie(const char* message) {
+void logErrorMessageAndDie(const char *message) {
   VANILLAJNI_LOG_ERROR(
       "VanillaJni",
       "Aborting due to error detected in native code: %s",
@@ -63,7 +63,7 @@ void logErrorMessageAndDie(const char* message) {
   VANILLAJNI_DIE();
 }
 
-void assertNoPendingJniException(JNIEnv* env) {
+void assertNoPendingJniException(JNIEnv *env) {
   if (env->ExceptionCheck() == JNI_FALSE) {
     return;
   }
@@ -76,7 +76,7 @@ void assertNoPendingJniException(JNIEnv* env) {
   throw YogaJniException(throwable);
 }
 
-void assertNoPendingJniExceptionIf(JNIEnv* env, bool condition) {
+void assertNoPendingJniExceptionIf(JNIEnv *env, bool condition) {
   if (!condition) {
     return;
   }

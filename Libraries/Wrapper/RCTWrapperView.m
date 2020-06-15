@@ -14,8 +14,7 @@
   __weak RCTBridge *_bridge;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if (self = [super initWithFrame:CGRectZero]) {
     _bridge = bridge;
     __weak __typeof(self) weakSelf = self;
@@ -29,10 +28,7 @@
 
       CGSize size = [strongSelf sizeThatFits:maximumSize];
 
-      return CGSizeMake(
-        MAX(size.width, minimumSize.width),
-        MAX(size.height, minimumSize.height)
-      );
+      return CGSizeMake(MAX(size.width, minimumSize.width), MAX(size.height, minimumSize.height));
     };
   }
 
@@ -41,13 +37,11 @@
 
 #pragma mark - `contentView`
 
-- (nullable UIView *)contentView
-{
+- (nullable UIView *)contentView {
   return self.subviews.firstObject;
 }
 
-- (void)setContentView:(UIView *)contentView
-{
+- (void)setContentView:(UIView *)contentView {
   while (self.subviews.firstObject) {
     [self.subviews.firstObject removeFromSuperview];
   }
@@ -65,14 +59,12 @@
 
 #pragma mark - Layout
 
-- (void)setNeedsLayout
-{
+- (void)setNeedsLayout {
   [super setNeedsLayout];
   [self invalidateIntrinsicContentSize];
 }
 
-- (void)invalidateIntrinsicContentSize
-{
+- (void)invalidateIntrinsicContentSize {
   [super invalidateIntrinsicContentSize];
 
   // Setting `intrinsicContentSize` dirties the Yoga node and
@@ -80,13 +72,11 @@
   [_bridge.uiManager setIntrinsicContentSize:self.intrinsicContentSize forView:self];
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   return [self sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   UIView *contentView = self.contentView;
   if (!contentView) {
     return [super sizeThatFits:size];

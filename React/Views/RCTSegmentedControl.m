@@ -13,8 +13,7 @@
 
 @implementation RCTSegmentedControl
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if ((self = [super initWithFrame:frame])) {
     _selectedIndex = self.selectedSegmentIndex;
     [self addTarget:self action:@selector(didChange) forControlEvents:UIControlEventValueChanged];
@@ -22,8 +21,7 @@
   return self;
 }
 
-- (void)setValues:(NSArray<NSString *> *)values
-{
+- (void)setValues:(NSArray<NSString *> *)values {
   _values = [values copy];
   [self removeAllSegments];
   for (NSString *value in values) {
@@ -32,14 +30,12 @@
   super.selectedSegmentIndex = _selectedIndex;
 }
 
-- (void)setSelectedIndex:(NSInteger)selectedIndex
-{
+- (void)setSelectedIndex:(NSInteger)selectedIndex {
   _selectedIndex = selectedIndex;
   super.selectedSegmentIndex = selectedIndex;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && defined(__IPHONE_13_0) && \
     __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
   if (@available(iOS 13.0, *)) {
@@ -48,8 +44,7 @@
 #endif
 }
 
-- (void)setTextColor:(UIColor *)textColor
-{
+- (void)setTextColor:(UIColor *)textColor {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && defined(__IPHONE_13_0) && \
     __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
   if (@available(iOS 13.0, *)) {
@@ -58,8 +53,7 @@
 #endif
 }
 
-- (void)setTintColor:(UIColor *)tintColor
-{
+- (void)setTintColor:(UIColor *)tintColor {
   [super setTintColor:tintColor];
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && defined(__IPHONE_13_0) && \
     __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
@@ -72,8 +66,7 @@
 #endif
 }
 
-- (void)didChange
-{
+- (void)didChange {
   _selectedIndex = self.selectedSegmentIndex;
   if (_onChange) {
     _onChange(@{@"value" : [self titleForSegmentAtIndex:_selectedIndex], @"selectedSegmentIndex" : @(_selectedIndex)});

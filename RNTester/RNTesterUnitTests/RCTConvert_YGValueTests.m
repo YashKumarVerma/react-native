@@ -15,21 +15,18 @@
 
 @implementation RCTConvert_YGValueTests
 
-- (void)testUndefined
-{
+- (void)testUndefined {
   YGValue value = [RCTConvert YGValue:nil];
   XCTAssertEqual(value.unit, YGUnitUndefined);
 }
 
-- (void)testNumberPoints
-{
+- (void)testNumberPoints {
   YGValue value = [RCTConvert YGValue:@100];
   XCTAssertEqual(value.unit, YGUnitPoint);
   XCTAssertEqual(value.value, 100);
 }
 
-- (void)testStringPercent
-{
+- (void)testStringPercent {
   YGValue value = [RCTConvert YGValue:@"100%"];
   XCTAssertEqual(value.unit, YGUnitPercent);
   XCTAssertEqual(value.value, 100);

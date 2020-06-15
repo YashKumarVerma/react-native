@@ -105,8 +105,7 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   BOOL _isPresented;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const ModalHostViewProps>();
     _props = defaultProps;
@@ -120,8 +119,7 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   return self;
 }
 
-- (void)ensurePresentedOnlyIfNeeded
-{
+- (void)ensurePresentedOnlyIfNeeded {
   BOOL shouldBePresented = !_isPresented && self.window;
   if (shouldBePresented) {
     UIViewController *controller = [self reactViewController];
@@ -147,22 +145,19 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   }
 }
 
-- (void)didMoveToWindow
-{
+- (void)didMoveToWindow {
   [super didMoveToWindow];
   [self ensurePresentedOnlyIfNeeded];
 }
 
-- (void)didMoveToSuperview
-{
+- (void)didMoveToSuperview {
   [super didMoveToSuperview];
   [self ensurePresentedOnlyIfNeeded];
 }
 
 #pragma mark - RCTFabricModalHostViewControllerDelegate
 
-- (void)boundsDidChange:(CGRect)newBounds
-{
+- (void)boundsDidChange:(CGRect)newBounds {
   if (_eventEmitter) {
     assert(std::dynamic_pointer_cast<ModalHostViewEventEmitter const>(_eventEmitter));
 
@@ -178,20 +173,17 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<ModalHostViewComponentDescriptor>();
 }
 
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
   _state.reset();
   _isPresented = NO;
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   const auto &newProps = *std::static_pointer_cast<const ModalHostViewProps>(props);
 
 #if !TARGET_OS_TV
@@ -208,18 +200,15 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
 }
 
 - (void)updateState:(facebook::react::State::Shared const &)state
-           oldState:(facebook::react::State::Shared const &)oldState
-{
+           oldState:(facebook::react::State::Shared const &)oldState {
   _state = std::static_pointer_cast<const ModalHostViewShadowNode::ConcreteState>(state);
 }
 
-- (void)mountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index
-{
+- (void)mountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index {
   [_viewController.view insertSubview:childComponentView atIndex:index];
 }
 
-- (void)unmountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index
-{
+- (void)unmountChildComponentView:(UIView<RCTComponentViewProtocol> *)childComponentView index:(NSInteger)index {
   [childComponentView removeFromSuperview];
 }
 

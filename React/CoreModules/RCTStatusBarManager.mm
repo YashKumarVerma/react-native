@@ -17,8 +17,7 @@
 
 @implementation RCTConvert (UIStatusBar)
 
-+ (UIStatusBarStyle)UIStatusBarStyle:(id)json RCT_DYNAMIC
-{
++ (UIStatusBarStyle)UIStatusBarStyle:(id)json RCT_DYNAMIC {
   static NSDictionary *mapping;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -84,20 +83,17 @@ static BOOL RCTViewControllerBasedStatusBarAppearance()
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (NSArray<NSString *> *)supportedEvents
-{
+- (NSArray<NSString *> *)supportedEvents {
   return @[ @"statusBarFrameDidChange", @"statusBarFrameWillChange" ];
 }
 
 #if !TARGET_OS_TV
 
-- (void)startObserving
-{
+- (void)startObserving {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self
          selector:@selector(applicationDidChangeStatusBarFrame:)
@@ -109,18 +105,15 @@ RCT_EXPORT_MODULE()
            object:nil];
 }
 
-- (void)stopObserving
-{
+- (void)stopObserving {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (void)emitEvent:(NSString *)eventName forNotification:(NSNotification *)notification
-{
+- (void)emitEvent:(NSString *)eventName forNotification:(NSNotification *)notification {
   CGRect frame = [notification.userInfo[UIApplicationStatusBarFrameUserInfoKey] CGRectValue];
   NSDictionary *event = @{
     @"frame" : @{
@@ -133,13 +126,11 @@ RCT_EXPORT_MODULE()
   [self sendEventWithName:eventName body:event];
 }
 
-- (void)applicationDidChangeStatusBarFrame:(NSNotification *)notification
-{
+- (void)applicationDidChangeStatusBarFrame:(NSNotification *)notification {
   [self emitEvent:@"statusBarFrameDidChange" forNotification:notification];
 }
 
-- (void)applicationWillChangeStatusBarFrame:(NSNotification *)notification
-{
+- (void)applicationWillChangeStatusBarFrame:(NSNotification *)notification {
   [self emitEvent:@"statusBarFrameWillChange" forNotification:notification];
 }
 
@@ -183,8 +174,7 @@ RCT_EXPORT_METHOD(setNetworkActivityIndicatorVisible : (BOOL)visible)
   RCTSharedApplication().networkActivityIndicatorVisible = visible;
 }
 
-- (facebook::react::ModuleConstants<JS::NativeStatusBarManagerIOS::Constants>)getConstants
-{
+- (facebook::react::ModuleConstants<JS::NativeStatusBarManagerIOS::Constants>)getConstants {
   __block facebook::react::ModuleConstants<JS::NativeStatusBarManagerIOS::Constants> constants;
   RCTUnsafeExecuteOnMainQueueSync(^{
     constants = facebook::react::typedConstants<JS::NativeStatusBarManagerIOS::Constants>({
@@ -196,14 +186,12 @@ RCT_EXPORT_METHOD(setNetworkActivityIndicatorVisible : (BOOL)visible)
   return constants;
 }
 
-- (facebook::react::ModuleConstants<JS::NativeStatusBarManagerIOS::Constants>)constantsToExport
-{
+- (facebook::react::ModuleConstants<JS::NativeStatusBarManagerIOS::Constants>)constantsToExport {
   return (facebook::react::ModuleConstants<JS::NativeStatusBarManagerIOS::Constants>)[self getConstants];
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeStatusBarManagerIOSSpecJSI>(params);
 }
 

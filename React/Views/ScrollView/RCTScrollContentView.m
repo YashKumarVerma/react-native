@@ -14,8 +14,7 @@
 
 @implementation RCTScrollContentView
 
-- (void)reactSetFrame:(CGRect)frame
-{
+- (void)reactSetFrame:(CGRect)frame {
   [super reactSetFrame:frame];
 
   RCTScrollView *scrollView = (RCTScrollView *)self.superview.superview;

@@ -33,8 +33,7 @@ using namespace facebook::react;
   RCTImageResponseObserverProxy _imageResponseObserverProxy;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static auto const defaultProps = std::make_shared<ImageProps const>();
     _props = defaultProps;
@@ -55,13 +54,11 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<ImageComponentDescriptor>();
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   auto const &oldImageProps = *std::static_pointer_cast<ImageProps const>(_props);
   auto const &newImageProps = *std::static_pointer_cast<ImageProps const>(props);
 
@@ -84,8 +81,7 @@ using namespace facebook::react;
   [super updateProps:props oldProps:oldProps];
 }
 
-- (void)updateState:(State::Shared const &)state oldState:(State::Shared const &)oldState
-{
+- (void)updateState:(State::Shared const &)state oldState:(State::Shared const &)oldState {
   _state = std::static_pointer_cast<ImageShadowNode::ConcreteState const>(state);
   auto _oldState = std::static_pointer_cast<ImageShadowNode::ConcreteState const>(oldState);
   auto data = _state->getData();
@@ -111,8 +107,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)setCoordinator:(ImageResponseObserverCoordinator const *)coordinator
-{
+- (void)setCoordinator:(ImageResponseObserverCoordinator const *)coordinator {
   if (_coordinator) {
     _coordinator->removeObserver(_imageResponseObserverProxy);
   }
@@ -122,23 +117,20 @@ using namespace facebook::react;
   }
 }
 
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
   self.coordinator = nullptr;
   _imageView.image = nil;
   _state.reset();
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   self.coordinator = nullptr;
 }
 
 #pragma mark - RCTImageResponseDelegate
 
-- (void)didReceiveImage:(UIImage *)image fromObserver:(void const *)observer
-{
+- (void)didReceiveImage:(UIImage *)image fromObserver:(void const *)observer {
   if (!_eventEmitter || !_state) {
     // Notifications are delivered asynchronously and might arrive after the view is already recycled.
     // In the future, we should incorporate an `EventEmitter` into a separate object owned by `ImageRequest` or `State`.
@@ -191,8 +183,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)didReceiveProgress:(float)progress fromObserver:(void const *)observer
-{
+- (void)didReceiveProgress:(float)progress fromObserver:(void const *)observer {
   if (!_eventEmitter) {
     return;
   }
@@ -200,8 +191,7 @@ using namespace facebook::react;
   std::static_pointer_cast<ImageEventEmitter const>(_eventEmitter)->onProgress(progress);
 }
 
-- (void)didReceiveFailureFromObserver:(void const *)observer
-{
+- (void)didReceiveFailureFromObserver:(void const *)observer {
   _imageView.image = nil;
 
   if (!_eventEmitter) {

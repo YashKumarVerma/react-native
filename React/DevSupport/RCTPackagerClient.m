@@ -20,8 +20,7 @@ const int RCT_PACKAGER_CLIENT_PROTOCOL_VERSION = 2;
   __weak RCTReconnectingWebSocket *_socket;
 }
 
-- (instancetype)initWithId:(id)msgId socket:(RCTReconnectingWebSocket *)socket
-{
+- (instancetype)initWithId:(id)msgId socket:(RCTReconnectingWebSocket *)socket {
   if (self = [super init]) {
     _msgId = msgId;
     _socket = socket;
@@ -29,8 +28,7 @@ const int RCT_PACKAGER_CLIENT_PROTOCOL_VERSION = 2;
   return self;
 }
 
-- (void)respondWithResult:(id)result
-{
+- (void)respondWithResult:(id)result {
   NSDictionary<NSString *, id> *msg = @{
     @"version" : @(RCT_PACKAGER_CLIENT_PROTOCOL_VERSION),
     @"id" : _msgId,
@@ -45,8 +43,7 @@ const int RCT_PACKAGER_CLIENT_PROTOCOL_VERSION = 2;
   }
 }
 
-- (void)respondWithError:(id)error
-{
+- (void)respondWithError:(id)error {
   NSDictionary<NSString *, id> *msg = @{
     @"version" : @(RCT_PACKAGER_CLIENT_PROTOCOL_VERSION),
     @"id" : _msgId,

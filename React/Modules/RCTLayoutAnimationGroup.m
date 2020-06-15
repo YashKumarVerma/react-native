@@ -15,8 +15,7 @@
 - (instancetype)initWithCreatingLayoutAnimation:(RCTLayoutAnimation *)creatingLayoutAnimation
                         updatingLayoutAnimation:(RCTLayoutAnimation *)updatingLayoutAnimation
                         deletingLayoutAnimation:(RCTLayoutAnimation *)deletingLayoutAnimation
-                                       callback:(RCTResponseSenderBlock)callback
-{
+                                       callback:(RCTResponseSenderBlock)callback {
   if (self = [super init]) {
     _creatingLayoutAnimation = creatingLayoutAnimation;
     _updatingLayoutAnimation = updatingLayoutAnimation;
@@ -27,8 +26,7 @@
   return self;
 }
 
-- (instancetype)initWithConfig:(NSDictionary *)config callback:(RCTResponseSenderBlock)callback
-{
+- (instancetype)initWithConfig:(NSDictionary *)config callback:(RCTResponseSenderBlock)callback {
   if (!config) {
     return nil;
   }
@@ -50,8 +48,7 @@
   return self;
 }
 
-- (BOOL)isEqual:(RCTLayoutAnimationGroup *)layoutAnimation
-{
+- (BOOL)isEqual:(RCTLayoutAnimationGroup *)layoutAnimation {
   RCTLayoutAnimation *creatingLayoutAnimation = layoutAnimation.creatingLayoutAnimation;
   RCTLayoutAnimation *updatingLayoutAnimation = layoutAnimation.updatingLayoutAnimation;
   RCTLayoutAnimation *deletingLayoutAnimation = layoutAnimation.deletingLayoutAnimation;
@@ -64,8 +61,7 @@
        [_deletingLayoutAnimation isEqual:deletingLayoutAnimation]);
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return
       [NSString stringWithFormat:
                     @"<%@: %p; creatingLayoutAnimation: %@; updatingLayoutAnimation: %@; deletingLayoutAnimation: %@>",

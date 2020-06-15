@@ -14,27 +14,21 @@
   CGSize _intrinsicContentSize;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     self.backgroundColor = [UIColor whiteColor];
 
     _intrinsicContentSize = CGSizeMake(64, 64);
-    _timer = [NSTimer scheduledTimerWithTimeInterval:1.0
-                                              target:self
-                                            selector:@selector(tick)
-                                            userInfo:nil
-                                             repeats:YES];
+    _timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tick) userInfo:nil repeats:YES];
 
-    UITapGestureRecognizer *gestureRecognizer =
-      [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tick)];
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                        action:@selector(tick)];
     [self addGestureRecognizer:gestureRecognizer];
   }
   return self;
 }
 
-- (void)tick
-{
+- (void)tick {
   _intrinsicContentSize.width = 32 + arc4random() % 128;
   _intrinsicContentSize.height = 32 + arc4random() % 128;
 
@@ -42,17 +36,12 @@
   [self.superview setNeedsLayout];
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   return _intrinsicContentSize;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
-  return CGSizeMake(
-    MIN(size.width, _intrinsicContentSize.width),
-    MIN(size.height, _intrinsicContentSize.height)
-  );
+- (CGSize)sizeThatFits:(CGSize)size {
+  return CGSizeMake(MIN(size.width, _intrinsicContentSize.width), MIN(size.height, _intrinsicContentSize.height));
 }
 
 @end

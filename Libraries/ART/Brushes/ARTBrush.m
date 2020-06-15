@@ -11,20 +11,17 @@
 
 @implementation ARTBrush
 
-- (instancetype)initWithArray:(NSArray *)data
-{
+- (instancetype)initWithArray:(NSArray *)data {
   return [super init];
 }
 
-RCT_NOT_IMPLEMENTED(- (instancetype)init)
+RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (BOOL)applyFillColor:(CGContextRef)context
-{
+- (BOOL)applyFillColor:(CGContextRef)context {
   return NO;
 }
 
-- (void)paint:(CGContextRef)context
-{
+- (void)paint:(CGContextRef)context {
   // abstract
 }
 

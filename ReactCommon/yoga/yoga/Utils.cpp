@@ -32,7 +32,7 @@ float YGFloatMin(const float a, const float b) {
   return yoga::isUndefined(a) ? b : a;
 }
 
-bool YGValueEqual(const YGValue& a, const YGValue& b) {
+bool YGValueEqual(const YGValue &a, const YGValue &b) {
   if (a.unit != b.unit) {
     return false;
   }
@@ -73,6 +73,6 @@ YGFloatOptional YGFloatOptionalMax(YGFloatOptional op1, YGFloatOptional op2) {
   return op1.isUndefined() ? op2 : op1;
 }
 
-void throwLogicalErrorWithMessage(const char* message) {
+void throwLogicalErrorWithMessage(const char *message) {
   throw std::logic_error(message);
 }

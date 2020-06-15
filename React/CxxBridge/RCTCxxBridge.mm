@@ -207,23 +207,19 @@ struct RCTInstanceCallback : public InstanceCallback {
 @synthesize performanceLogger = _performanceLogger;
 @synthesize valid = _valid;
 
-- (void)setRCTTurboModuleLookupDelegate:(id<RCTTurboModuleLookupDelegate>)turboModuleLookupDelegate
-{
+- (void)setRCTTurboModuleLookupDelegate:(id<RCTTurboModuleLookupDelegate>)turboModuleLookupDelegate {
   _turboModuleLookupDelegate = turboModuleLookupDelegate;
 }
 
-- (std::shared_ptr<MessageQueueThread>)jsMessageThread
-{
+- (std::shared_ptr<MessageQueueThread>)jsMessageThread {
   return _jsMessageThread;
 }
 
-- (BOOL)isInspectable
-{
+- (BOOL)isInspectable {
   return _reactInstance ? _reactInstance->isInspectable() : NO;
 }
 
-- (instancetype)initWithParentBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithParentBridge:(RCTBridge *)bridge {
   RCTAssertParam(bridge);
 
   if ((self = [super initWithDelegate:bridge.delegate
@@ -257,13 +253,11 @@ struct RCTInstanceCallback : public InstanceCallback {
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-+ (void)runRunLoop
-{
++ (void)runRunLoop {
   @autoreleasepool {
     RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge runJSRunLoop] setup", nil);
 
@@ -287,16 +281,14 @@ struct RCTInstanceCallback : public InstanceCallback {
   }
 }
 
-- (void)_tryAndHandleError:(dispatch_block_t)block
-{
+- (void)_tryAndHandleError:(dispatch_block_t)block {
   NSError *error = tryAndReturnError(block);
   if (error) {
     [self handleError:error];
   }
 }
 
-- (void)handleMemoryWarning
-{
+- (void)handleMemoryWarning {
   if (!_valid || !_loading) {
     return;
   }
@@ -314,8 +306,7 @@ struct RCTInstanceCallback : public InstanceCallback {
  * If we're not on the JS thread, the block is dispatched to that thread. Any errors encountered while executing
  * the block will go through handleError:
  */
-- (void)ensureOnJavaScriptThread:(dispatch_block_t)block
-{
+- (void)ensureOnJavaScriptThread:(dispatch_block_t)block {
   RCTAssert(_jsThread, @"This method must not be called before the JS thread is created");
 
   // This does not use _jsMessageThread because it may be called early before the runloop reference is captured
@@ -329,8 +320,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   }
 }
 
-- (void)start
-{
+- (void)start {
   RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge start]", nil);
 
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTJavaScriptWillStartLoadingNotification
@@ -419,8 +409,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
-- (void)loadSource:(RCTSourceLoadBlock)_onSourceLoad onProgress:(RCTSourceLoadProgressBlock)onProgress
-{
+- (void)loadSource:(RCTSourceLoadBlock)_onSourceLoad onProgress:(RCTSourceLoadProgressBlock)onProgress {
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   [center postNotificationName:RCTBridgeWillDownloadScriptNotification object:_parentBridge];
   [_performanceLogger markStartForTag:RCTPLScriptDownload];
@@ -468,8 +457,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   }
 }
 
-- (NSArray<Class> *)moduleClasses
-{
+- (NSArray<Class> *)moduleClasses {
   if (RCT_DEBUG && _valid && _moduleClassesByID == nil) {
     RCTLogError(
         @"Bridge modules have not yet been initialized. You may be "
@@ -481,18 +469,15 @@ struct RCTInstanceCallback : public InstanceCallback {
 /**
  * Used by RCTUIManager
  */
-- (RCTModuleData *)moduleDataForName:(NSString *)moduleName
-{
+- (RCTModuleData *)moduleDataForName:(NSString *)moduleName {
   return _moduleDataByName[moduleName];
 }
 
-- (id)moduleForName:(NSString *)moduleName
-{
+- (id)moduleForName:(NSString *)moduleName {
   return [self moduleForName:moduleName lazilyLoadIfNecessary:NO];
 }
 
-- (id)moduleForName:(NSString *)moduleName lazilyLoadIfNecessary:(BOOL)lazilyLoad
-{
+- (id)moduleForName:(NSString *)moduleName lazilyLoadIfNecessary:(BOOL)lazilyLoad {
   if (RCTTurboModuleEnabled() && _turboModuleLookupDelegate) {
     const char *moduleNameCStr = [moduleName UTF8String];
     if (lazilyLoad || [_turboModuleLookupDelegate moduleIsInitialized:moduleNameCStr]) {
@@ -543,8 +528,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   return moduleData.instance;
 }
 
-- (BOOL)moduleIsInitialized:(Class)moduleClass
-{
+- (BOOL)moduleIsInitialized:(Class)moduleClass {
   NSString *moduleName = RCTBridgeModuleNameForClass(moduleClass);
   if (_moduleDataByName[moduleName].hasInstance) {
     return YES;
@@ -557,13 +541,11 @@ struct RCTInstanceCallback : public InstanceCallback {
   return NO;
 }
 
-- (id)moduleForClass:(Class)moduleClass
-{
+- (id)moduleForClass:(Class)moduleClass {
   return [self moduleForName:RCTBridgeModuleNameForClass(moduleClass) lazilyLoadIfNecessary:YES];
 }
 
-- (std::shared_ptr<ModuleRegistry>)_buildModuleRegistryUnlocked
-{
+- (std::shared_ptr<ModuleRegistry>)_buildModuleRegistryUnlocked {
   if (!self.valid) {
     return {};
   }
@@ -587,8 +569,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   return registry;
 }
 
-- (void)_initializeBridge:(std::shared_ptr<JSExecutorFactory>)executorFactory
-{
+- (void)_initializeBridge:(std::shared_ptr<JSExecutorFactory>)executorFactory {
   if (!self.valid) {
     return;
   }
@@ -619,8 +600,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
-- (void)_initializeBridgeLocked:(std::shared_ptr<JSExecutorFactory>)executorFactory
-{
+- (void)_initializeBridgeLocked:(std::shared_ptr<JSExecutorFactory>)executorFactory {
   std::lock_guard<std::mutex> guard(_moduleRegistryLock);
 
   // This is async, but any calls into JS are blocked by the m_syncReady CV in Instance
@@ -632,8 +612,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   _moduleRegistryCreated = YES;
 }
 
-- (void)updateModuleWithInstance:(id<RCTBridgeModule>)instance
-{
+- (void)updateModuleWithInstance:(id<RCTBridgeModule>)instance {
   NSString *const moduleName = RCTBridgeModuleNameForClass([instance class]);
   if (moduleName) {
     RCTModuleData *const moduleData = _moduleDataByName[moduleName];
@@ -643,14 +622,12 @@ struct RCTInstanceCallback : public InstanceCallback {
   }
 }
 
-- (NSArray<RCTModuleData *> *)registerModulesForClasses:(NSArray<Class> *)moduleClasses
-{
+- (NSArray<RCTModuleData *> *)registerModulesForClasses:(NSArray<Class> *)moduleClasses {
   return [self _registerModulesForClasses:moduleClasses lazilyDiscovered:NO];
 }
 
 - (NSArray<RCTModuleData *> *)_registerModulesForClasses:(NSArray<Class> *)moduleClasses
-                                        lazilyDiscovered:(BOOL)lazilyDiscovered
-{
+                                        lazilyDiscovered:(BOOL)lazilyDiscovered {
   RCT_PROFILE_BEGIN_EVENT(
       RCTProfileTagAlways, @"-[RCTCxxBridge initModulesWithDispatchGroup:] autoexported moduleData", nil);
 
@@ -700,8 +677,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   return moduleDataByID;
 }
 
-- (void)registerExtraModules
-{
+- (void)registerExtraModules {
   RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge initModulesWithDispatchGroup:] extraModules", nil);
 
   NSArray<id<RCTBridgeModule>> *extraModules = nil;
@@ -759,8 +735,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
-- (void)registerExtraLazyModules
-{
+- (void)registerExtraLazyModules {
 #if RCT_DEBUG
   // This is debug-only and only when Chrome is attached, since it expects all modules to be already
   // available on start up. Otherwise, we can let the lazy module discovery to load them on demand.
@@ -813,8 +788,7 @@ struct RCTInstanceCallback : public InstanceCallback {
 
 - (NSArray<RCTModuleData *> *)_initializeModules:(NSArray<Class> *)modules
                                withDispatchGroup:(dispatch_group_t)dispatchGroup
-                                lazilyDiscovered:(BOOL)lazilyDiscovered
-{
+                                lazilyDiscovered:(BOOL)lazilyDiscovered {
   // Set up moduleData for automatically-exported modules
   NSArray<RCTModuleData *> *moduleDataById = [self _registerModulesForClasses:modules
                                                              lazilyDiscovered:lazilyDiscovered];
@@ -866,8 +840,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   return moduleDataById;
 }
 
-- (void)registerAdditionalModuleClasses:(NSArray<Class> *)modules
-{
+- (void)registerAdditionalModuleClasses:(NSArray<Class> *)modules {
   std::lock_guard<std::mutex> guard(_moduleRegistryLock);
   if (_moduleRegistryCreated) {
     NSArray<RCTModuleData *> *newModules = [self _initializeModules:modules
@@ -881,8 +854,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   }
 }
 
-- (void)_prepareModulesWithDispatchGroup:(dispatch_group_t)dispatchGroup
-{
+- (void)_prepareModulesWithDispatchGroup:(dispatch_group_t)dispatchGroup {
   RCT_PROFILE_BEGIN_EVENT(0, @"-[RCTCxxBridge _prepareModulesWithDispatchGroup]", nil);
 
   BOOL initializeImmediately = NO;
@@ -930,13 +902,11 @@ struct RCTInstanceCallback : public InstanceCallback {
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"");
 }
 
-- (void)registerModuleForFrameUpdates:(id<RCTBridgeModule>)module withModuleData:(RCTModuleData *)moduleData
-{
+- (void)registerModuleForFrameUpdates:(id<RCTBridgeModule>)module withModuleData:(RCTModuleData *)moduleData {
   [_displayLink registerModuleForFrameUpdates:module withModuleData:moduleData];
 }
 
-- (void)executeSourceCode:(NSData *)sourceCode sync:(BOOL)sync
-{
+- (void)executeSourceCode:(NSData *)sourceCode sync:(BOOL)sync {
   // This will get called from whatever thread was actually executing JS.
   dispatch_block_t completion = ^{
     // Log start up metrics early before processing any other js calls
@@ -972,8 +942,7 @@ struct RCTInstanceCallback : public InstanceCallback {
 #if RCT_DEV_MENU
 - (void)loadAndExecuteSplitBundleURL:(NSURL *)bundleURL
                              onError:(RCTLoadAndExecuteErrorBlock)onError
-                          onComplete:(dispatch_block_t)onComplete
-{
+                          onComplete:(dispatch_block_t)onComplete {
   __weak __typeof(self) weakSelf = self;
   [RCTJavaScriptLoader loadBundleAtURL:bundleURL
       onProgress:^(RCTLoadingProgress *progressData) {
@@ -1004,13 +973,11 @@ struct RCTInstanceCallback : public InstanceCallback {
 #else
 - (void)loadAndExecuteSplitBundleURL:(NSURL *)bundleURL
                              onError:(RCTLoadAndExecuteErrorBlock)onError
-                          onComplete:(dispatch_block_t)onComplete
-{
+                          onComplete:(dispatch_block_t)onComplete {
 }
 #endif
 
-- (void)handleError:(NSError *)error
-{
+- (void)handleError:(NSError *)error {
   // This is generally called when the infrastructure throws an
   // exception while calling JS.  Most product exceptions will not go
   // through this method, but through RCTExceptionManager.
@@ -1084,12 +1051,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 /**
  * Prevent super from calling setUp (that'd create another batchedBridge)
  */
-- (void)setUp
-{
+- (void)setUp {
 }
 
-- (void)reload
-{
+- (void)reload {
   if (!_valid) {
     RCTLogWarn(
         @"Attempting to reload bridge before it's valid: %@. Try restarting the development server if connected.",
@@ -1098,8 +1063,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   RCTTriggerReloadCommandListeners(@"Unknown from cxx bridge");
 }
 
-- (void)reloadWithReason:(NSString *)reason
-{
+- (void)reloadWithReason:(NSString *)reason {
   if (!_valid) {
     RCTLogWarn(
         @"Attempting to reload bridge before it's valid: %@. Try restarting the development server if connected.",
@@ -1108,35 +1072,29 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   RCTTriggerReloadCommandListeners(reason);
 }
 
-- (Class)executorClass
-{
+- (Class)executorClass {
   return _parentBridge.executorClass;
 }
 
-- (void)setExecutorClass:(Class)executorClass
-{
+- (void)setExecutorClass:(Class)executorClass {
   RCTAssertMainQueue();
 
   _parentBridge.executorClass = executorClass;
 }
 
-- (NSURL *)bundleURL
-{
+- (NSURL *)bundleURL {
   return _parentBridge.bundleURL;
 }
 
-- (void)setBundleURL:(NSURL *)bundleURL
-{
+- (void)setBundleURL:(NSURL *)bundleURL {
   _parentBridge.bundleURL = bundleURL;
 }
 
-- (id<RCTBridgeDelegate>)delegate
-{
+- (id<RCTBridgeDelegate>)delegate {
   return _parentBridge.delegate;
 }
 
-- (void)dispatchBlock:(dispatch_block_t)block queue:(dispatch_queue_t)queue
-{
+- (void)dispatchBlock:(dispatch_block_t)block queue:(dispatch_queue_t)queue {
   if (queue == RCTJSThread) {
     [self ensureOnJavaScriptThread:block];
   } else if (queue) {
@@ -1146,8 +1104,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 
 #pragma mark - RCTInvalidating
 
-- (void)invalidate
-{
+- (void)invalidate {
   if (_didInvalidate) {
     return;
   }
@@ -1224,8 +1181,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }];
 }
 
-- (void)logMessage:(NSString *)message level:(NSString *)level
-{
+- (void)logMessage:(NSString *)message level:(NSString *)level {
   if (RCT_DEBUG && _valid) {
     [self enqueueJSCall:@"RCTLog" method:@"logIfNoNativeHook" args:@[ level, message ] completion:NULL];
   }
@@ -1233,8 +1189,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 
 #pragma mark - RCTBridge methods
 
-- (void)_runAfterLoad:(RCTPendingCall)block
-{
+- (void)_runAfterLoad:(RCTPendingCall)block {
   // Ordering here is tricky.  Ideally, the C++ bridge would provide
   // functionality to defer calls until after the app is loaded.  Until that
   // happens, we do this.  _pendingCount keeps a count of blocks which have
@@ -1272,8 +1227,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }
 }
 
-- (void)logStartupFinish
-{
+- (void)logStartupFinish {
   // Log metrics about native requires during the bridge startup.
   uint64_t nativeRequiresCount = [_performanceLogger valueForTag:RCTPLRAMNativeRequiresCount];
   [_performanceLogger setValue:nativeRequiresCount forTag:RCTPLRAMStartupNativeRequiresCount];
@@ -1283,8 +1237,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   [_performanceLogger markStopForTag:RCTPLBridgeStartup];
 }
 
-- (void)_flushPendingCalls
-{
+- (void)_flushPendingCalls {
   RCT_PROFILE_BEGIN_EVENT(0, @"Processing pendingCalls", @{@"count" : [@(_pendingCalls.count) stringValue]});
   // Phase B: _flushPendingCalls happens.  Each block in _pendingCalls is
   // executed, adding work to the queue, and _pendingCount is decremented.
@@ -1305,8 +1258,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 - (void)enqueueJSCall:(NSString *)module
                method:(NSString *)method
                  args:(NSArray *)args
-           completion:(dispatch_block_t)completion
-{
+           completion:(dispatch_block_t)completion {
   if (!self.valid) {
     return;
   }
@@ -1347,8 +1299,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 /**
  * Called by RCTModuleMethod from any thread.
  */
-- (void)enqueueCallback:(NSNumber *)cbID args:(NSArray *)args
-{
+- (void)enqueueCallback:(NSNumber *)cbID args:(NSArray *)args {
   if (!self.valid) {
     return;
   }
@@ -1375,16 +1326,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 /**
  * Private hack to support `setTimeout(fn, 0)`
  */
-- (void)_immediatelyCallTimer:(NSNumber *)timer
-{
+- (void)_immediatelyCallTimer:(NSNumber *)timer {
   if (_reactInstance) {
     _reactInstance->callJSFunction(
         "JSTimers", "callTimers", folly::dynamic::array(folly::dynamic::array([timer doubleValue])));
   }
 }
 
-- (void)enqueueApplicationScript:(NSData *)script url:(NSURL *)url onComplete:(dispatch_block_t)onComplete
-{
+- (void)enqueueApplicationScript:(NSData *)script url:(NSURL *)url onComplete:(dispatch_block_t)onComplete {
   RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTCxxBridge enqueueApplicationScript]", nil);
 
   [self executeApplicationScript:script url:url async:YES];
@@ -1398,13 +1347,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }
 }
 
-- (void)executeApplicationScriptSync:(NSData *)script url:(NSURL *)url
-{
+- (void)executeApplicationScriptSync:(NSData *)script url:(NSURL *)url {
   [self executeApplicationScript:script url:url async:NO];
 }
 
-- (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async
-{
+- (void)executeApplicationScript:(NSData *)script url:(NSURL *)url async:(BOOL)async {
   [self _tryAndHandleError:^{
     NSString *sourceUrlStr = deriveSourceURL(url);
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTJavaScriptWillStartExecutingNotification
@@ -1434,8 +1381,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }];
 }
 
-- (void)registerSegmentWithId:(NSUInteger)segmentId path:(NSString *)path
-{
+- (void)registerSegmentWithId:(NSUInteger)segmentId path:(NSString *)path {
   if (_reactInstance) {
     _reactInstance->registerBundle(static_cast<uint32_t>(segmentId), path.UTF8String);
   }
@@ -1443,8 +1389,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 
 #pragma mark - Payload Processing
 
-- (void)partialBatchDidFlush
-{
+- (void)partialBatchDidFlush {
   for (RCTModuleData *moduleData in _moduleDataByID) {
     if (moduleData.implementsPartialBatchDidFlush) {
       [self
@@ -1456,8 +1401,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }
 }
 
-- (void)batchDidComplete
-{
+- (void)batchDidComplete {
   // TODO #12592471: batchDidComplete is only used by RCTUIManager,
   // can we eliminate this special case?
   for (RCTModuleData *moduleData in _moduleDataByID) {
@@ -1471,8 +1415,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }
 }
 
-- (void)startProfiling
-{
+- (void)startProfiling {
   RCTAssertMainQueue();
 
   [self ensureOnJavaScriptThread:^{
@@ -1485,8 +1428,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }];
 }
 
-- (void)stopProfiling:(void (^)(NSData *))callback
-{
+- (void)stopProfiling:(void (^)(NSData *))callback {
   RCTAssertMainQueue();
 
   [self ensureOnJavaScriptThread:^{
@@ -1506,13 +1448,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   }];
 }
 
-- (BOOL)isBatchActive
-{
+- (BOOL)isBatchActive {
   return _reactInstance ? _reactInstance->isBatchActive() : NO;
 }
 
-- (void *)runtime
-{
+- (void *)runtime {
   if (!_reactInstance) {
     return nullptr;
   }
@@ -1520,8 +1460,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
   return _reactInstance->getJavaScriptContext();
 }
 
-- (void)invokeAsync:(std::function<void()> &&)func
-{
+- (void)invokeAsync:(std::function<void()> &&)func {
   __block auto retainedFunc = std::move(func);
   __weak __typeof(self) weakSelf = self;
   [self _runAfterLoad:^{
@@ -1535,13 +1474,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithBundleURL
 
 #pragma mark - RCTBridge (RCTTurboModule)
 
-- (std::shared_ptr<CallInvoker>)jsCallInvoker
-{
+- (std::shared_ptr<CallInvoker>)jsCallInvoker {
   return _reactInstance ? _reactInstance->getJSCallInvoker() : nullptr;
 }
 
-- (std::shared_ptr<CallInvoker>)decorateNativeCallInvoker:(std::shared_ptr<CallInvoker>)nativeInvoker
-{
+- (std::shared_ptr<CallInvoker>)decorateNativeCallInvoker:(std::shared_ptr<CallInvoker>)nativeInvoker {
   return _reactInstance ? _reactInstance->getDecoratedNativeCallInvoker(nativeInvoker) : nullptr;
 }
 

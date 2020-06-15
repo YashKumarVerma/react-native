@@ -17,8 +17,7 @@
   UIEdgeInsets _currentSafeAreaInsets;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if (self = [super initWithFrame:CGRectZero]) {
     _bridge = bridge;
     _emulateUnlessSupported = YES; // The default.
@@ -30,8 +29,7 @@
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)decoder)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 
-- (NSString *)description
-{
+- (NSString *)description {
   NSString *superDescription = [super description];
 
   // Cutting the last `>` character.
@@ -45,13 +43,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
                                     NSStringFromUIEdgeInsets(_currentSafeAreaInsets)];
 }
 
-- (BOOL)isSupportedByOS
-{
+- (BOOL)isSupportedByOS {
   return [self respondsToSelector:@selector(safeAreaInsets)];
 }
 
-- (UIEdgeInsets)safeAreaInsetsIfSupportedAndEnabled
-{
+- (UIEdgeInsets)safeAreaInsetsIfSupportedAndEnabled {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
   if (self.isSupportedByOS) {
     if (@available(iOS 11.0, *)) {
@@ -62,8 +58,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
   return self.emulateUnlessSupported ? self.emulatedSafeAreaInsets : UIEdgeInsetsZero;
 }
 
-- (UIEdgeInsets)emulatedSafeAreaInsets
-{
+- (UIEdgeInsets)emulatedSafeAreaInsets {
   UIViewController *vc = self.reactViewController;
 
   if (!vc) {
@@ -93,18 +88,15 @@ static BOOL UIEdgeInsetsEqualToEdgeInsetsWithThreshold(UIEdgeInsets insets1, UIE
       ABS(insets1.top - insets2.top) <= threshold && ABS(insets1.bottom - insets2.bottom) <= threshold;
 }
 
-- (void)safeAreaInsetsDidChange
-{
+- (void)safeAreaInsetsDidChange {
   [self invalidateSafeAreaInsets];
 }
 
-- (void)invalidateSafeAreaInsets
-{
+- (void)invalidateSafeAreaInsets {
   [self setSafeAreaInsets:self.safeAreaInsetsIfSupportedAndEnabled];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   [super layoutSubviews];
 
   if (!self.isSupportedByOS && self.emulateUnlessSupported) {
@@ -112,8 +104,7 @@ static BOOL UIEdgeInsetsEqualToEdgeInsetsWithThreshold(UIEdgeInsets insets1, UIE
   }
 }
 
-- (void)setSafeAreaInsets:(UIEdgeInsets)safeAreaInsets
-{
+- (void)setSafeAreaInsets:(UIEdgeInsets)safeAreaInsets {
   if (UIEdgeInsetsEqualToEdgeInsetsWithThreshold(safeAreaInsets, _currentSafeAreaInsets, 1.0 / RCTScreenScale())) {
     return;
   }
@@ -124,8 +115,7 @@ static BOOL UIEdgeInsetsEqualToEdgeInsetsWithThreshold(UIEdgeInsets insets1, UIE
   [_bridge.uiManager setLocalData:localData forView:self];
 }
 
-- (void)setEmulateUnlessSupported:(BOOL)emulateUnlessSupported
-{
+- (void)setEmulateUnlessSupported:(BOOL)emulateUnlessSupported {
   if (_emulateUnlessSupported == emulateUnlessSupported) {
     return;
   }

@@ -11,9 +11,9 @@
 #import <React/RCTConvert.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTImageBlurUtils.h>
+#import <React/RCTImageLoaderWithAttributionProtocol.h>
 #import <React/RCTImageSource.h>
 #import <React/RCTImageUtils.h>
-#import <React/RCTImageLoaderWithAttributionProtocol.h>
 #import <React/RCTUIImageViewAnimated.h>
 #import <React/RCTUtils.h>
 #import <React/UIView+React.h>
@@ -31,7 +31,7 @@ static BOOL RCTShouldReloadImageForSizeChange(CGSize currentSize, CGSize idealSi
   CGFloat heightMultiplier = idealSize.height / currentSize.height;
 
   return widthMultiplier > upscaleThreshold || widthMultiplier < downscaleThreshold ||
-    heightMultiplier > upscaleThreshold || heightMultiplier < downscaleThreshold;
+      heightMultiplier > upscaleThreshold || heightMultiplier < downscaleThreshold;
 }
 
 /**
@@ -41,11 +41,11 @@ static BOOL RCTShouldReloadImageForSizeChange(CGSize currentSize, CGSize idealSi
 static NSDictionary *onLoadParamsForSource(RCTImageSource *source)
 {
   NSDictionary *dict = @{
-    @"width": @(source.size.width),
-    @"height": @(source.size.height),
-    @"url": source.request.URL.absoluteString,
+    @"width" : @(source.size.width),
+    @"height" : @(source.size.height),
+    @"url" : source.request.URL.absoluteString,
   };
-  return @{ @"source": dict };
+  return @{@"source" : dict};
 }
 
 @interface RCTImageView ()
@@ -59,8 +59,7 @@ static NSDictionary *onLoadParamsForSource(RCTImageSource *source)
 
 @end
 
-@implementation RCTImageView
-{
+@implementation RCTImageView {
   // Weak reference back to the bridge, for image loading
   __weak RCTBridge *_bridge;
 
@@ -84,8 +83,7 @@ static NSDictionary *onLoadParamsForSource(RCTImageSource *source)
   RCTImageURLLoaderRequest *_loaderRequest;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if ((self = [super initWithFrame:CGRectZero])) {
     _bridge = bridge;
     _imageView = [[RCTUIImageViewAnimated alloc] init];
@@ -114,14 +112,13 @@ static NSDictionary *onLoadParamsForSource(RCTImageSource *source)
   return self;
 }
 
-RCT_NOT_IMPLEMENTED(- (instancetype)init)
+RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
+RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
-RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
+RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 
-- (void)updateWithImage:(UIImage *)image
-{
+- (void)updateWithImage:(UIImage *)image {
   if (!image) {
     _imageView.image = nil;
     return;
@@ -146,8 +143,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   _imageView.image = image;
 }
 
-- (void)setImage:(UIImage *)image
-{
+- (void)setImage:(UIImage *)image {
   image = image ?: _defaultImage;
   if (image != self.image) {
     [self updateWithImage:image];
@@ -158,16 +154,14 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   return _imageView.image;
 }
 
-- (void)setBlurRadius:(CGFloat)blurRadius
-{
+- (void)setBlurRadius:(CGFloat)blurRadius {
   if (blurRadius != _blurRadius) {
     _blurRadius = blurRadius;
     _needsReload = YES;
   }
 }
 
-- (void)setCapInsets:(UIEdgeInsets)capInsets
-{
+- (void)setCapInsets:(UIEdgeInsets)capInsets {
   if (!UIEdgeInsetsEqualToEdgeInsets(_capInsets, capInsets)) {
     if (UIEdgeInsetsEqualToEdgeInsets(_capInsets, UIEdgeInsetsZero) ||
         UIEdgeInsetsEqualToEdgeInsets(capInsets, UIEdgeInsetsZero)) {
@@ -181,24 +175,21 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   }
 }
 
-- (void)setRenderingMode:(UIImageRenderingMode)renderingMode
-{
+- (void)setRenderingMode:(UIImageRenderingMode)renderingMode {
   if (_renderingMode != renderingMode) {
     _renderingMode = renderingMode;
     [self updateWithImage:self.image];
   }
 }
 
-- (void)setImageSources:(NSArray<RCTImageSource *> *)imageSources
-{
+- (void)setImageSources:(NSArray<RCTImageSource *> *)imageSources {
   if (![imageSources isEqual:_imageSources]) {
     _imageSources = [imageSources copy];
     _needsReload = YES;
   }
 }
 
-- (void)setResizeMode:(RCTResizeMode)resizeMode
-{
+- (void)setResizeMode:(RCTResizeMode)resizeMode {
   if (_resizeMode != resizeMode) {
     _resizeMode = resizeMode;
 
@@ -217,28 +208,25 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
 }
 
 - (void)setInternal_analyticTag:(NSString *)internal_analyticTag {
-    if (_internal_analyticTag != internal_analyticTag) {
-        _internal_analyticTag = internal_analyticTag;
-        _needsReload = YES;
-    }
+  if (_internal_analyticTag != internal_analyticTag) {
+    _internal_analyticTag = internal_analyticTag;
+    _needsReload = YES;
+  }
 }
 
-- (void)cancelImageLoad
-{
+- (void)cancelImageLoad {
   [_loaderRequest cancel];
   _pendingImageSource = nil;
 }
 
-- (void)cancelAndClearImageLoad
-{
+- (void)cancelAndClearImageLoad {
   [self cancelImageLoad];
 
   [_imageLoader trackURLImageRequestDidDestroy:_loaderRequest];
   _loaderRequest = nil;
 }
 
-- (void)clearImageIfDetached
-{
+- (void)clearImageIfDetached {
   if (!self.window) {
     [self cancelAndClearImageLoad];
     self.image = nil;
@@ -246,13 +234,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   }
 }
 
-- (BOOL)hasMultipleSources
-{
+- (BOOL)hasMultipleSources {
   return _imageSources.count > 1;
 }
 
-- (RCTImageSource *)imageSourceForSize:(CGSize)size
-{
+- (RCTImageSource *)imageSourceForSize:(CGSize)size {
   if (![self hasMultipleSources]) {
     return _imageSources.firstObject;
   }
@@ -269,8 +255,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   CGFloat bestFit = CGFLOAT_MAX;
   for (RCTImageSource *source in _imageSources) {
     CGSize imgSize = source.size;
-    const CGFloat imagePixels =
-      imgSize.width * imgSize.height * source.scale * source.scale;
+    const CGFloat imagePixels = imgSize.width * imgSize.height * source.scale * source.scale;
     const CGFloat fit = ABS(1 - (imagePixels / targetImagePixels));
 
     if (fit < bestFit) {
@@ -281,23 +266,19 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   return bestSource;
 }
 
-- (BOOL)shouldReloadImageSourceAfterResize
-{
+- (BOOL)shouldReloadImageSourceAfterResize {
   // If capInsets are set, image doesn't need reloading when resized
   return UIEdgeInsetsEqualToEdgeInsets(_capInsets, UIEdgeInsetsZero);
 }
 
-- (BOOL)shouldChangeImageSource
-{
+- (BOOL)shouldChangeImageSource {
   // We need to reload if the desired image source is different from the current image
   // source AND the image load that's pending
   RCTImageSource *desiredImageSource = [self imageSourceForSize:self.frame.size];
-  return ![desiredImageSource isEqual:_imageSource] &&
-         ![desiredImageSource isEqual:_pendingImageSource];
+  return ![desiredImageSource isEqual:_imageSource] && ![desiredImageSource isEqual:_pendingImageSource];
 }
 
-- (void)reloadImage
-{
+- (void)reloadImage {
   [self cancelAndClearImageLoad];
   _needsReload = NO;
 
@@ -313,8 +294,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
     if (_onProgress) {
       progressHandler = ^(int64_t loaded, int64_t total) {
         self->_onProgress(@{
-          @"loaded": @((double)loaded),
-          @"total": @((double)total),
+          @"loaded" : @((double)loaded),
+          @"total" : @((double)total),
         });
       };
     }
@@ -340,28 +321,29 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
       _imageLoader = [_bridge moduleForName:@"ImageLoader" lazilyLoadIfNecessary:YES];
     }
 
-    RCTImageURLLoaderRequest *loaderRequest = [_imageLoader loadImageWithURLRequest:source.request
-                                                                               size:imageSize
-                                                                              scale:imageScale
-                                                                           clipped:NO
-                                                                        resizeMode:_resizeMode
-                                                                          priority:RCTImageLoaderPriorityImmediate
-                                                                       attribution:{
-                                                                                   .nativeViewTag = [self.reactTag intValue],
-                                                                                   .surfaceId = [self.rootTag intValue],
-                                                                                   .analyticTag = self.internal_analyticTag
-                                                                                   }
-                                                                     progressBlock:progressHandler
-                                                                  partialLoadBlock:partialLoadHandler
-                                                                   completionBlock:completionHandler];
+    RCTImageURLLoaderRequest *loaderRequest =
+        [_imageLoader loadImageWithURLRequest:source.request
+                                         size:imageSize
+                                        scale:imageScale
+                                      clipped:NO
+                                   resizeMode:_resizeMode
+                                     priority:RCTImageLoaderPriorityImmediate
+                                  attribution:{.nativeViewTag = [self.reactTag intValue],
+                                               .surfaceId = [self.rootTag intValue],
+                                               .analyticTag = self.internal_analyticTag}
+                                progressBlock:progressHandler
+                             partialLoadBlock:partialLoadHandler
+                              completionBlock:completionHandler];
     _loaderRequest = loaderRequest;
   } else {
     [self cancelAndClearImageLoad];
   }
 }
 
-- (void)imageLoaderLoadedImage:(UIImage *)loadedImage error:(NSError *)error forImageSource:(RCTImageSource *)source partial:(BOOL)isPartialLoad
-{
+- (void)imageLoaderLoadedImage:(UIImage *)loadedImage
+                         error:(NSError *)error
+                forImageSource:(RCTImageSource *)source
+                       partial:(BOOL)isPartialLoad {
   if (![source isEqual:_pendingImageSource]) {
     // Bail out if source has changed since we started loading
     return;
@@ -373,7 +355,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
     });
 
     if (_onError) {
-      _onError(@{ @"error": error.localizedDescription });
+      _onError(@{@"error" : error.localizedDescription});
     }
     if (_onLoadEnd) {
       _onLoadEnd(nil);
@@ -423,8 +405,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   }
 }
 
-- (void)reactSetFrame:(CGRect)frame
-{
+- (void)reactSetFrame:(CGRect)frame {
   [super reactSetFrame:frame];
 
   // If we didn't load an image yet, or the new frame triggers a different image source
@@ -435,8 +416,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   } else if ([self shouldReloadImageSourceAfterResize]) {
     CGSize imageSize = self.image.size;
     CGFloat imageScale = self.image.scale;
-    CGSize idealSize = RCTTargetSize(imageSize, imageScale, frame.size, RCTScreenScale(),
-                                     (RCTResizeMode)self.contentMode, YES);
+    CGSize idealSize =
+        RCTTargetSize(imageSize, imageScale, frame.size, RCTScreenScale(), (RCTResizeMode)self.contentMode, YES);
 
     // Don't reload if the current image or target image size is close enough
     if (!RCTShouldReloadImageForSizeChange(imageSize, idealSize) ||
@@ -451,7 +432,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
       return;
     }
 
-    RCTLogInfo(@"Reloading image %@ as size %@", _imageSource.request.URL.absoluteString, NSStringFromCGSize(idealSize));
+    RCTLogInfo(
+        @"Reloading image %@ as size %@", _imageSource.request.URL.absoluteString, NSStringFromCGSize(idealSize));
 
     // If the existing image or an image being loaded are not the right
     // size, reload the asset in case there is a better size available.
@@ -460,15 +442,13 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
   }
 }
 
-- (void)didSetProps:(NSArray<NSString *> *)changedProps
-{
+- (void)didSetProps:(NSArray<NSString *> *)changedProps {
   if (_needsReload) {
     [self reloadImage];
   }
 }
 
-- (void)didMoveToWindow
-{
+- (void)didMoveToWindow {
   [super didMoveToWindow];
 
   if (!self.window) {

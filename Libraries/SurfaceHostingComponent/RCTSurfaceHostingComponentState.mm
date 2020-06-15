@@ -9,16 +9,11 @@
 
 @implementation RCTSurfaceHostingComponentState
 
-+ (instancetype)newWithStage:(RCTSurfaceStage)stage
-               intrinsicSize:(CGSize)intrinsicSize
-{
++ (instancetype)newWithStage:(RCTSurfaceStage)stage intrinsicSize:(CGSize)intrinsicSize {
   return [[self alloc] initWithStage:stage intrinsicSize:intrinsicSize];
 }
 
-
-- (instancetype)initWithStage:(RCTSurfaceStage)stage
-                intrinsicSize:(CGSize)intrinsicSize
-{
+- (instancetype)initWithStage:(RCTSurfaceStage)stage intrinsicSize:(CGSize)intrinsicSize {
   if (self = [super init]) {
     _stage = stage;
     _intrinsicSize = intrinsicSize;
@@ -27,15 +22,12 @@
   return self;
 }
 
-- (BOOL)isEqual:(RCTSurfaceHostingComponentState *)other
-{
+- (BOOL)isEqual:(RCTSurfaceHostingComponentState *)other {
   if (other == self) {
     return YES;
   }
 
-  return
-    _stage == other->_stage &&
-    CGSizeEqualToSize(_intrinsicSize, other->_intrinsicSize);
+  return _stage == other->_stage && CGSizeEqualToSize(_intrinsicSize, other->_intrinsicSize);
 }
 
 @end

@@ -20,8 +20,7 @@
 - (instancetype)initWithFrame:(CGRect)frame
                        bridge:(RCTBridge *)bridge
                      reactTag:(NSNumber *)reactTag
-               sizeFlexiblity:(RCTRootViewSizeFlexibility)sizeFlexibility
-{
+               sizeFlexiblity:(RCTRootViewSizeFlexibility)sizeFlexibility {
   if ((self = [super initWithFrame:frame])) {
     _bridge = bridge;
     self.reactTag = reactTag;
@@ -36,14 +35,12 @@
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (nonnull NSCoder *)aDecoder)
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   [super layoutSubviews];
   [self updateAvailableSize];
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
   [super insertReactSubview:subview atIndex:atIndex];
   [_bridge.performanceLogger markStopForTag:RCTPLTTI];
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -54,8 +51,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (nonnull NSCoder *)aDecoder)
   });
 }
 
-- (void)setSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility
-{
+- (void)setSizeFlexibility:(RCTRootViewSizeFlexibility)sizeFlexibility {
   if (_sizeFlexibility == sizeFlexibility) {
     return;
   }
@@ -64,16 +60,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (nonnull NSCoder *)aDecoder)
   [self setNeedsLayout];
 }
 
-- (CGSize)availableSize
-{
+- (CGSize)availableSize {
   CGSize size = self.bounds.size;
   return CGSizeMake(
       _sizeFlexibility & RCTRootViewSizeFlexibilityWidth ? INFINITY : size.width,
       _sizeFlexibility & RCTRootViewSizeFlexibilityHeight ? INFINITY : size.height);
 }
 
-- (void)updateAvailableSize
-{
+- (void)updateAvailableSize {
   if (!self.reactTag || !_bridge.isValid) {
     return;
   }
@@ -81,8 +75,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (nonnull NSCoder *)aDecoder)
   [_bridge.uiManager setAvailableSize:self.availableSize forRootView:self];
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
   // The root content view itself should never receive touches
   UIView *hitView = [super hitTest:point withEvent:event];
   if (_passThroughTouches && hitView == self) {
@@ -91,8 +84,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (nonnull NSCoder *)aDecoder)
   return hitView;
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   if (self.userInteractionEnabled) {
     self.userInteractionEnabled = NO;
     [(RCTRootView *)self.superview contentViewInvalidated];

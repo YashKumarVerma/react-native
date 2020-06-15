@@ -103,8 +103,7 @@ class LayoutAnimationDelegateProxy : public LayoutAnimationStatusDelegate, publi
   BOOL _layoutAnimationsEnabled;
 }
 
-- (instancetype)initWithToolbox:(facebook::react::SchedulerToolbox)toolbox
-{
+- (instancetype)initWithToolbox:(facebook::react::SchedulerToolbox)toolbox {
   if (self = [super init]) {
     auto reactNativeConfig =
         toolbox.contextContainer->at<std::shared_ptr<const ReactNativeConfig>>("ReactNativeConfig");
@@ -127,13 +126,11 @@ class LayoutAnimationDelegateProxy : public LayoutAnimationStatusDelegate, publi
   return self;
 }
 
-- (void)animationTick
-{
+- (void)animationTick {
   _scheduler->animationTick();
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   if (_animationDriver) {
     _animationDriver->setLayoutAnimationStatusDelegate(nullptr);
   }
@@ -144,8 +141,7 @@ class LayoutAnimationDelegateProxy : public LayoutAnimationStatusDelegate, publi
                        moduleName:(NSString *)moduleName
                      initialProps:(NSDictionary *)initialProps
                 layoutConstraints:(LayoutConstraints)layoutConstraints
-                    layoutContext:(LayoutContext)layoutContext
-{
+                    layoutContext:(LayoutContext)layoutContext {
   SystraceSection s("-[RCTScheduler startSurfaceWithSurfaceId:...]");
 
   auto props = convertIdToFollyDynamic(initialProps);
@@ -155,47 +151,40 @@ class LayoutAnimationDelegateProxy : public LayoutAnimationStatusDelegate, publi
       surfaceId, props.getDefault("navigationConfig").getDefault("initialUITemplate", "").getString());
 }
 
-- (void)stopSurfaceWithSurfaceId:(SurfaceId)surfaceId
-{
+- (void)stopSurfaceWithSurfaceId:(SurfaceId)surfaceId {
   SystraceSection s("-[RCTScheduler stopSurfaceWithSurfaceId:]");
   _scheduler->stopSurface(surfaceId);
 }
 
 - (CGSize)measureSurfaceWithLayoutConstraints:(LayoutConstraints)layoutConstraints
                                 layoutContext:(LayoutContext)layoutContext
-                                    surfaceId:(SurfaceId)surfaceId
-{
+                                    surfaceId:(SurfaceId)surfaceId {
   SystraceSection s("-[RCTScheduler measureSurfaceWithLayoutConstraints:]");
   return RCTCGSizeFromSize(_scheduler->measureSurface(surfaceId, layoutConstraints, layoutContext));
 }
 
 - (void)constraintSurfaceLayoutWithLayoutConstraints:(LayoutConstraints)layoutConstraints
                                        layoutContext:(LayoutContext)layoutContext
-                                           surfaceId:(SurfaceId)surfaceId
-{
+                                           surfaceId:(SurfaceId)surfaceId {
   SystraceSection s("-[RCTScheduler constraintSurfaceLayoutWithLayoutConstraints:]");
   _scheduler->constraintSurfaceLayout(surfaceId, layoutConstraints, layoutContext);
 }
 
-- (ComponentDescriptor const *)findComponentDescriptorByHandle_DO_NOT_USE_THIS_IS_BROKEN:(ComponentHandle)handle
-{
+- (ComponentDescriptor const *)findComponentDescriptorByHandle_DO_NOT_USE_THIS_IS_BROKEN:(ComponentHandle)handle {
   return _scheduler->findComponentDescriptorByHandle_DO_NOT_USE_THIS_IS_BROKEN(handle);
 }
 
-- (MountingCoordinator::Shared)mountingCoordinatorWithSurfaceId:(SurfaceId)surfaceId
-{
+- (MountingCoordinator::Shared)mountingCoordinatorWithSurfaceId:(SurfaceId)surfaceId {
   return _scheduler->findMountingCoordinator(surfaceId);
 }
 
-- (void)onAnimationStarted
-{
+- (void)onAnimationStarted {
   if (_uiRunLoopObserver) {
     _uiRunLoopObserver->enable();
   }
 }
 
-- (void)onAllAnimationsComplete
-{
+- (void)onAllAnimationsComplete {
   if (_uiRunLoopObserver) {
     _uiRunLoopObserver->disable();
   }

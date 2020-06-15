@@ -55,8 +55,7 @@ BOOL RCTIsMainQueueExecutionOfConstantsToExportDisabled()
 @synthesize instance = _instance;
 @synthesize methodQueue = _methodQueue;
 
-- (void)setUp
-{
+- (void)setUp {
   _implementsBatchDidComplete = [_moduleClass instancesRespondToSelector:@selector(batchDidComplete)];
   _implementsPartialBatchDidFlush = [_moduleClass instancesRespondToSelector:@selector(partialBatchDidFlush)];
 
@@ -97,8 +96,7 @@ BOOL RCTIsMainQueueExecutionOfConstantsToExportDisabled()
   }
 }
 
-- (instancetype)initWithModuleClass:(Class)moduleClass bridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithModuleClass:(Class)moduleClass bridge:(RCTBridge *)bridge {
   return [self initWithModuleClass:moduleClass
                     moduleProvider:^id<RCTBridgeModule> {
                       return [moduleClass new];
@@ -108,8 +106,7 @@ BOOL RCTIsMainQueueExecutionOfConstantsToExportDisabled()
 
 - (instancetype)initWithModuleClass:(Class)moduleClass
                      moduleProvider:(RCTBridgeModuleProvider)moduleProvider
-                             bridge:(RCTBridge *)bridge
-{
+                             bridge:(RCTBridge *)bridge {
   if (self = [super init]) {
     _bridge = bridge;
     _moduleClass = moduleClass;
@@ -119,8 +116,7 @@ BOOL RCTIsMainQueueExecutionOfConstantsToExportDisabled()
   return self;
 }
 
-- (instancetype)initWithModuleInstance:(id<RCTBridgeModule>)instance bridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithModuleInstance:(id<RCTBridgeModule>)instance bridge:(RCTBridge *)bridge {
   if (self = [super init]) {
     _bridge = bridge;
     _instance = instance;
@@ -134,8 +130,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
 
 #pragma mark - private setup methods
 
-- (void)setUpInstanceAndBridge:(int32_t)requestId
-{
+- (void)setUpInstanceAndBridge:(int32_t)requestId {
   NSString *moduleName = [self name];
 
   RCT_PROFILE_BEGIN_EVENT(
@@ -214,8 +209,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
   }
 }
 
-- (void)setBridgeForInstance
-{
+- (void)setBridgeForInstance {
   if ([_instance respondsToSelector:@selector(bridge)] && _instance.bridge != _bridge) {
     RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"[RCTModuleData setBridgeForInstance]", nil);
     @try {
@@ -231,8 +225,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
   }
 }
 
-- (void)finishSetupForInstance
-{
+- (void)finishSetupForInstance {
   if (!_setupComplete && _instance) {
     RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"[RCTModuleData finishSetupForInstance]", nil);
     _setupComplete = YES;
@@ -245,8 +238,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
   }
 }
 
-- (void)setUpMethodQueue
-{
+- (void)setUpMethodQueue {
   if (_instance && !_methodQueue && _bridge.valid) {
     RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"[RCTModuleData setUpMethodQueue]", nil);
     BOOL implementsMethodQueue = [_instance respondsToSelector:@selector(methodQueue)];
@@ -276,8 +268,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
   }
 }
 
-- (void)calculateMethods
-{
+- (void)calculateMethods {
   if (_methods && _methodsByName) {
     return;
   }
@@ -319,14 +310,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
 
 #pragma mark - public getters
 
-- (BOOL)hasInstance
-{
+- (BOOL)hasInstance {
   std::unique_lock<std::mutex> lock(_instanceLock);
   return _instance != nil;
 }
 
-- (id<RCTBridgeModule>)instance
-{
+- (id<RCTBridgeModule>)instance {
   NSString *moduleName = [self name];
   int32_t requestId = getUniqueId();
   BridgeNativeModulePerfLogger::moduleCreateStart([moduleName UTF8String], requestId);
@@ -365,25 +354,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
   return _instance;
 }
 
-- (NSString *)name
-{
+- (NSString *)name {
   return RCTBridgeModuleNameForClass(_moduleClass);
 }
 
-- (NSArray<id<RCTBridgeMethod>> *)methods
-{
+- (NSArray<id<RCTBridgeMethod>> *)methods {
   [self calculateMethods];
   return _methods;
 }
 
-- (NSDictionary<NSString *, id<RCTBridgeMethod>> *)methodsByName
-{
+- (NSDictionary<NSString *, id<RCTBridgeMethod>> *)methodsByName {
   [self calculateMethods];
   return _methodsByName;
 }
 
-- (void)gatherConstants
-{
+- (void)gatherConstants {
   NSString *moduleName = [self name];
 
   if (_hasConstantsToExport && !_constantsToExport) {
@@ -423,16 +408,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
   }
 }
 
-- (NSDictionary<NSString *, id> *)exportedConstants
-{
+- (NSDictionary<NSString *, id> *)exportedConstants {
   [self gatherConstants];
   NSDictionary<NSString *, id> *constants = _constantsToExport;
   _constantsToExport = nil; // Not needed anymore
   return constants;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   if (_bridge.valid) {
     id instance = self.instance;
     RCTAssert(_methodQueue != nullptr, @"Module %@ has no methodQueue (instance: %@)", self, instance);
@@ -440,13 +423,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init);
   return _methodQueue;
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   _methodQueue = nil;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString stringWithFormat:@"<%@: %p; name=\"%@\">", [self class], self, self.name];
 }
 

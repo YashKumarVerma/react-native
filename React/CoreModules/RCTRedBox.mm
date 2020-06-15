@@ -37,25 +37,21 @@
 
 @implementation UIButton (RCTRedBox)
 
-- (RCTRedBoxButtonPressHandler)rct_handler
-{
+- (RCTRedBoxButtonPressHandler)rct_handler {
   return objc_getAssociatedObject(self, @selector(rct_handler));
 }
 
-- (void)setRct_handler:(RCTRedBoxButtonPressHandler)rct_handler
-{
+- (void)setRct_handler:(RCTRedBoxButtonPressHandler)rct_handler {
   objc_setAssociatedObject(self, @selector(rct_handler), rct_handler, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)rct_callBlock
-{
+- (void)rct_callBlock {
   if (self.rct_handler) {
     self.rct_handler();
   }
 }
 
-- (void)rct_addBlock:(RCTRedBoxButtonPressHandler)handler forControlEvents:(UIControlEvents)controlEvents
-{
+- (void)rct_addBlock:(RCTRedBoxButtonPressHandler)handler forControlEvents:(UIControlEvents)controlEvents {
   self.rct_handler = handler;
   [self addTarget:self action:@selector(rct_callBlock) forControlEvents:controlEvents];
 }
@@ -84,8 +80,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
            customButtonTitles:(NSArray<NSString *> *)customButtonTitles
-         customButtonHandlers:(NSArray<RCTRedBoxButtonPressHandler> *)customButtonHandlers
-{
+         customButtonHandlers:(NSArray<RCTRedBoxButtonPressHandler> *)customButtonHandlers {
   if (self = [super init]) {
     _lastErrorCookie = -1;
 
@@ -180,8 +175,7 @@
 - (UIButton *)redBoxButton:(NSString *)title
     accessibilityIdentifier:(NSString *)accessibilityIdentifier
                    selector:(SEL)selector
-                      block:(RCTRedBoxButtonPressHandler)block
-{
+                      block:(RCTRedBoxButtonPressHandler)block {
   UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
   button.autoresizingMask =
       UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -201,8 +195,7 @@
   return button;
 }
 
-- (NSInteger)bottomSafeViewHeight
-{
+- (NSInteger)bottomSafeViewHeight {
   if (@available(iOS 11.0, *)) {
     return RCTSharedApplication().delegate.window.safeAreaInsets.bottom;
   } else {
@@ -212,14 +205,12 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
-- (void)dealloc
-{
+- (void)dealloc {
   _stackTraceTableView.dataSource = nil;
   _stackTraceTableView.delegate = nil;
 }
 
-- (NSString *)stripAnsi:(NSString *)text
-{
+- (NSString *)stripAnsi:(NSString *)text {
   NSError *error = nil;
   NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\x1b\\[[0-9;]*m"
                                                                          options:NSRegularExpressionCaseInsensitive
@@ -230,8 +221,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 - (void)showErrorMessage:(NSString *)message
                withStack:(NSArray<RCTJSStackFrame *> *)stack
                 isUpdate:(BOOL)isUpdate
-             errorCookie:(int)errorCookie
-{
+             errorCookie:(int)errorCookie {
   // Remove ANSI color codes from the message
   NSString *messageWithoutAnsi = [self stripAnsi:message];
 
@@ -260,23 +250,19 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (void)dismiss
-{
+- (void)dismiss {
   [self.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)reload
-{
+- (void)reload {
   [_actionDelegate reloadFromRedBoxWindow:self];
 }
 
-- (void)showExtraDataViewController
-{
+- (void)showExtraDataViewController {
   [_actionDelegate loadExtraDataViewController];
 }
 
-- (void)copyStack
-{
+- (void)copyStack {
   NSMutableString *fullStackTrace;
 
   if (_lastErrorMessage != nil) {
@@ -298,8 +284,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #endif
 }
 
-- (NSString *)formatFrameSource:(RCTJSStackFrame *)stackFrame
-{
+- (NSString *)formatFrameSource:(RCTJSStackFrame *)stackFrame {
   NSString *fileName = RCTNilIfNull(stackFrame.file) ? [stackFrame.file lastPathComponent] : @"<unknown file>";
   NSString *lineInfo = [NSString stringWithFormat:@"%@:%lld", fileName, (long long)stackFrame.lineNumber];
 
@@ -311,18 +296,15 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark - TableView
 
-- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView {
   return 2;
 }
 
-- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   return section == 0 ? 1 : _lastStackTrace.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   if (indexPath.section == 0) {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"msg-cell"];
     return [self reuseCell:cell forErrorMessage:_lastErrorMessage];
@@ -333,8 +315,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return [self reuseCell:cell forStackFrame:stackFrame];
 }
 
-- (UITableViewCell *)reuseCell:(UITableViewCell *)cell forErrorMessage:(NSString *)message
-{
+- (UITableViewCell *)reuseCell:(UITableViewCell *)cell forErrorMessage:(NSString *)message {
   if (!cell) {
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"msg-cell"];
     cell.textLabel.accessibilityIdentifier = @"redbox-error";
@@ -352,8 +333,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return cell;
 }
 
-- (UITableViewCell *)reuseCell:(UITableViewCell *)cell forStackFrame:(RCTJSStackFrame *)stackFrame
-{
+- (UITableViewCell *)reuseCell:(UITableViewCell *)cell forStackFrame:(RCTJSStackFrame *)stackFrame {
   if (!cell) {
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
     cell.textLabel.font = [UIFont fontWithName:@"Menlo-Regular" size:14];
@@ -379,8 +359,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
   if (indexPath.section == 0) {
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -398,8 +377,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   if (indexPath.section == 1) {
     NSUInteger row = indexPath.row;
     RCTJSStackFrame *stackFrame = _lastStackTrace[row];
@@ -410,8 +388,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #pragma mark - Key commands
 
-- (NSArray<UIKeyCommand *> *)keyCommands
-{
+- (NSArray<UIKeyCommand *> *)keyCommands {
   // NOTE: We could use RCTKeyCommands for this, but since
   // we control this window, we can use the standard, non-hacky
   // mechanism instead
@@ -436,8 +413,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   ];
 }
 
-- (BOOL)canBecomeFirstResponder
-{
+- (BOOL)canBecomeFirstResponder {
   return YES;
 }
 
@@ -462,8 +438,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 RCT_EXPORT_MODULE()
 
-- (void)registerErrorCustomizer:(id<RCTErrorCustomizer>)errorCustomizer
-{
+- (void)registerErrorCustomizer:(id<RCTErrorCustomizer>)errorCustomizer {
   dispatch_async(dispatch_get_main_queue(), ^{
     if (!self->_errorCustomizers) {
       self->_errorCustomizers = [NSMutableArray array];
@@ -475,8 +450,7 @@ RCT_EXPORT_MODULE()
 }
 
 // WARNING: Should only be called from the main thread/dispatch queue.
-- (RCTErrorInfo *)_customizeError:(RCTErrorInfo *)error
-{
+- (RCTErrorInfo *)_customizeError:(RCTErrorInfo *)error {
   RCTAssertMainQueue();
   if (!self->_errorCustomizers) {
     return error;
@@ -490,29 +464,25 @@ RCT_EXPORT_MODULE()
   return error;
 }
 
-- (void)showError:(NSError *)error
-{
+- (void)showError:(NSError *)error {
   [self showErrorMessage:error.localizedDescription
              withDetails:error.localizedFailureReason
                    stack:error.userInfo[RCTJSStackTraceKey]
              errorCookie:-1];
 }
 
-- (void)showErrorMessage:(NSString *)message
-{
+- (void)showErrorMessage:(NSString *)message {
   [self showErrorMessage:message withParsedStack:nil isUpdate:NO errorCookie:-1];
 }
 
-- (void)showErrorMessage:(NSString *)message withDetails:(NSString *)details
-{
+- (void)showErrorMessage:(NSString *)message withDetails:(NSString *)details {
   [self showErrorMessage:message withDetails:details stack:nil errorCookie:-1];
 }
 
 - (void)showErrorMessage:(NSString *)message
              withDetails:(NSString *)details
                    stack:(NSArray<RCTJSStackFrame *> *)stack
-             errorCookie:(int)errorCookie
-{
+             errorCookie:(int)errorCookie {
   NSString *combinedMessage = message;
   if (details) {
     combinedMessage = [NSString stringWithFormat:@"%@\n\n%@", message, details];
@@ -520,72 +490,61 @@ RCT_EXPORT_MODULE()
   [self showErrorMessage:combinedMessage withParsedStack:stack isUpdate:NO errorCookie:errorCookie];
 }
 
-- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack
-{
+- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack {
   [self showErrorMessage:message withRawStack:rawStack errorCookie:-1];
 }
 
-- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack errorCookie:(int)errorCookie
-{
+- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack errorCookie:(int)errorCookie {
   NSArray<RCTJSStackFrame *> *stack = [RCTJSStackFrame stackFramesWithLines:rawStack];
   [self showErrorMessage:message withParsedStack:stack isUpdate:NO errorCookie:errorCookie];
 }
 
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack
-{
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack {
   [self showErrorMessage:message withStack:stack errorCookie:-1];
 }
 
-- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack
-{
+- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack {
   [self updateErrorMessage:message withStack:stack errorCookie:-1];
 }
 
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie
-{
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie {
   [self showErrorMessage:message
          withParsedStack:[RCTJSStackFrame stackFramesWithDictionaries:stack]
                 isUpdate:NO
              errorCookie:errorCookie];
 }
 
-- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie
-{
+- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie {
   [self showErrorMessage:message
          withParsedStack:[RCTJSStackFrame stackFramesWithDictionaries:stack]
                 isUpdate:YES
              errorCookie:errorCookie];
 }
 
-- (void)showErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-{
+- (void)showErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack {
   [self showErrorMessage:message withParsedStack:stack errorCookie:-1];
 }
 
-- (void)updateErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-{
+- (void)updateErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack {
   [self updateErrorMessage:message withParsedStack:stack errorCookie:-1];
 }
 
 - (void)showErrorMessage:(NSString *)message
          withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-             errorCookie:(int)errorCookie
-{
+             errorCookie:(int)errorCookie {
   [self showErrorMessage:message withParsedStack:stack isUpdate:NO errorCookie:errorCookie];
 }
 
 - (void)updateErrorMessage:(NSString *)message
            withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-               errorCookie:(int)errorCookie
-{
+               errorCookie:(int)errorCookie {
   [self showErrorMessage:message withParsedStack:stack isUpdate:YES errorCookie:errorCookie];
 }
 
 - (void)showErrorMessage:(NSString *)message
          withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
                 isUpdate:(BOOL)isUpdate
-             errorCookie:(int)errorCookie
-{
+             errorCookie:(int)errorCookie {
   dispatch_async(dispatch_get_main_queue(), ^{
     if (self->_extraDataViewController == nil) {
       self->_extraDataViewController = [RCTRedBoxExtraDataViewController new];
@@ -613,8 +572,7 @@ RCT_EXPORT_MODULE()
   });
 }
 
-- (void)loadExtraDataViewController
-{
+- (void)loadExtraDataViewController {
   dispatch_async(dispatch_get_main_queue(), ^{
     // Make sure the CMD+E shortcut doesn't call this twice
     if (self->_extraDataViewController != nil && ![self->_window.rootViewController presentedViewController]) {
@@ -637,13 +595,11 @@ RCT_EXPORT_METHOD(dismiss)
   });
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   [self dismiss];
 }
 
-- (void)redBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(RCTJSStackFrame *)stackFrame
-{
+- (void)redBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow openStackFrameInEditor:(RCTJSStackFrame *)stackFrame {
   NSURL *const bundleURL = _overrideBundleURL ?: _bridge.bundleURL;
   if (![bundleURL.scheme hasPrefix:@"http"]) {
     RCTLogWarn(@"Cannot open stack frame in editor because you're not connected to the packager.");
@@ -662,14 +618,12 @@ RCT_EXPORT_METHOD(dismiss)
   [[[NSURLSession sharedSession] dataTaskWithRequest:request] resume];
 }
 
-- (void)reload
-{
+- (void)reload {
   // Window is not used and can be nil
   [self reloadFromRedBoxWindow:nil];
 }
 
-- (void)reloadFromRedBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow
-{
+- (void)reloadFromRedBoxWindow:(__unused RCTRedBoxWindow *)redBoxWindow {
   if (_overrideReloadAction) {
     _overrideReloadAction();
   } else {
@@ -678,8 +632,7 @@ RCT_EXPORT_METHOD(dismiss)
   [self dismiss];
 }
 
-- (void)addCustomButton:(NSString *)title onPressHandler:(RCTRedBoxButtonPressHandler)handler
-{
+- (void)addCustomButton:(NSString *)title onPressHandler:(RCTRedBoxButtonPressHandler)handler {
   if (!_customButtonTitles) {
     _customButtonTitles = [NSMutableArray new];
     _customButtonHandlers = [NSMutableArray new];
@@ -690,8 +643,7 @@ RCT_EXPORT_METHOD(dismiss)
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeRedBoxSpecJSI>(params);
 }
 
@@ -699,8 +651,7 @@ RCT_EXPORT_METHOD(dismiss)
 
 @implementation RCTBridge (RCTRedBox)
 
-- (RCTRedBox *)redBox
-{
+- (RCTRedBox *)redBox {
   return RCTRedBoxGetEnabled() ? [self moduleForClass:[RCTRedBox class]] : nil;
 }
 
@@ -713,70 +664,51 @@ RCT_EXPORT_METHOD(dismiss)
 
 @implementation RCTRedBox
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return nil;
 }
-- (void)registerErrorCustomizer:(id<RCTErrorCustomizer>)errorCustomizer
-{
+- (void)registerErrorCustomizer:(id<RCTErrorCustomizer>)errorCustomizer {
 }
-- (void)showError:(NSError *)error
-{
+- (void)showError:(NSError *)error {
 }
-- (void)showErrorMessage:(NSString *)message
-{
+- (void)showErrorMessage:(NSString *)message {
 }
-- (void)showErrorMessage:(NSString *)message withDetails:(NSString *)details
-{
+- (void)showErrorMessage:(NSString *)message withDetails:(NSString *)details {
 }
-- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack
-{
+- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack {
 }
-- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack errorCookie:(int)errorCookie
-{
+- (void)showErrorMessage:(NSString *)message withRawStack:(NSString *)rawStack errorCookie:(int)errorCookie {
 }
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack
-{
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack {
 }
-- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack
-{
+- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack {
 }
-- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie
-{
+- (void)showErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie {
 }
-- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie
-{
+- (void)updateErrorMessage:(NSString *)message withStack:(NSArray<NSDictionary *> *)stack errorCookie:(int)errorCookie {
 }
-- (void)showErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-{
+- (void)showErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack {
 }
-- (void)updateErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-{
+- (void)updateErrorMessage:(NSString *)message withParsedStack:(NSArray<RCTJSStackFrame *> *)stack {
 }
 - (void)showErrorMessage:(NSString *)message
          withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-             errorCookie:(int)errorCookie
-{
+             errorCookie:(int)errorCookie {
 }
 - (void)updateErrorMessage:(NSString *)message
            withParsedStack:(NSArray<RCTJSStackFrame *> *)stack
-               errorCookie:(int)errorCookie
-{
+               errorCookie:(int)errorCookie {
 }
-- (void)setExtraData:(NSDictionary *)extraData forIdentifier:(NSString *)identifier
-{
+- (void)setExtraData:(NSDictionary *)extraData forIdentifier:(NSString *)identifier {
 }
 
-- (void)dismiss
-{
+- (void)dismiss {
 }
 
-- (void)addCustomButton:(NSString *)title onPressHandler:(RCTRedBoxButtonPressHandler)handler
-{
+- (void)addCustomButton:(NSString *)title onPressHandler:(RCTRedBoxButtonPressHandler)handler {
 }
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeRedBoxSpecJSI>(params);
 }
 
@@ -784,8 +716,7 @@ RCT_EXPORT_METHOD(dismiss)
 
 @implementation RCTBridge (RCTRedBox)
 
-- (RCTRedBox *)redBox
-{
+- (RCTRedBox *)redBox {
   return nil;
 }
 

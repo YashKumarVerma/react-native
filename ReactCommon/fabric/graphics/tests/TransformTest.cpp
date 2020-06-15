@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/graphics/Transform.h>
 #include <gtest/gtest.h>
 #include <math.h>
+#include <react/graphics/Transform.h>
 
 using namespace facebook::react;
 

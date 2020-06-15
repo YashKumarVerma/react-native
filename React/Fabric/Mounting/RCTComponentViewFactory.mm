@@ -48,8 +48,7 @@ static Class<RCTComponentViewProtocol> RCTComponentViewClassWithName(const char 
   better::shared_mutex _mutex;
 }
 
-+ (RCTComponentViewFactory *)standardComponentViewFactory
-{
++ (RCTComponentViewFactory *)standardComponentViewFactory {
   RCTComponentViewFactory *componentViewFactory = [[RCTComponentViewFactory alloc] init];
 
   [componentViewFactory registerComponentViewClass:[RCTRootComponentView class]];
@@ -100,8 +99,7 @@ static Class<RCTComponentViewProtocol> RCTComponentViewClassWithName(const char 
   return componentViewFactory;
 }
 
-- (RCTComponentViewClassDescriptor)_componentViewClassDescriptorFromClass:(Class<RCTComponentViewProtocol>)viewClass
-{
+- (RCTComponentViewClassDescriptor)_componentViewClassDescriptorFromClass:(Class<RCTComponentViewProtocol>)viewClass {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
   return RCTComponentViewClassDescriptor
@@ -115,8 +113,7 @@ static Class<RCTComponentViewProtocol> RCTComponentViewClassWithName(const char 
 #pragma clang diagnostic pop
 }
 
-- (void)registerComponentViewClass:(Class<RCTComponentViewProtocol>)componentViewClass
-{
+- (void)registerComponentViewClass:(Class<RCTComponentViewProtocol>)componentViewClass {
   std::unique_lock<better::shared_mutex> lock(_mutex);
 
   auto componentDescriptorProvider = [componentViewClass componentDescriptorProvider];
@@ -130,8 +127,7 @@ static Class<RCTComponentViewProtocol> RCTComponentViewClassWithName(const char 
   }
 }
 
-- (RCTComponentViewDescriptor)createComponentViewWithComponentHandle:(facebook::react::ComponentHandle)componentHandle
-{
+- (RCTComponentViewDescriptor)createComponentViewWithComponentHandle:(facebook::react::ComponentHandle)componentHandle {
   RCTAssertMainQueue();
   std::shared_lock<better::shared_mutex> lock(_mutex);
 
@@ -152,8 +148,7 @@ static Class<RCTComponentViewProtocol> RCTComponentViewClassWithName(const char 
 }
 
 - (facebook::react::ComponentDescriptorRegistry::Shared)createComponentDescriptorRegistryWithParameters:
-    (facebook::react::ComponentDescriptorParameters)parameters
-{
+    (facebook::react::ComponentDescriptorParameters)parameters {
   std::shared_lock<better::shared_mutex> lock(_mutex);
 
   return _providerRegistry.createComponentDescriptorRegistry(parameters);

@@ -40,8 +40,7 @@ static SEL selectorForType(NSString *type)
 
 @synthesize manager = _manager;
 
-- (instancetype)initWithManagerClass:(Class)managerClass bridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithManagerClass:(Class)managerClass bridge:(RCTBridge *)bridge {
   if ((self = [super init])) {
     _bridge = bridge;
     _managerClass = managerClass;
@@ -53,8 +52,7 @@ static SEL selectorForType(NSString *type)
   return self;
 }
 
-- (RCTViewManager *)manager
-{
+- (RCTViewManager *)manager {
   if (!_manager) {
     _manager = [_bridge moduleForClass:_managerClass];
   }
@@ -63,8 +61,7 @@ static SEL selectorForType(NSString *type)
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (UIView *)createViewWithTag:(NSNumber *)tag rootTag:(NSNumber *)rootTag
-{
+- (UIView *)createViewWithTag:(NSNumber *)tag rootTag:(NSNumber *)rootTag {
   RCTAssertMainQueue();
 
   UIView *view = [self.manager view];
@@ -78,16 +75,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return view;
 }
 
-- (RCTShadowView *)createShadowViewWithTag:(NSNumber *)tag
-{
+- (RCTShadowView *)createShadowViewWithTag:(NSNumber *)tag {
   RCTShadowView *shadowView = [self.manager shadowView];
   shadowView.reactTag = tag;
   shadowView.viewName = _name;
   return shadowView;
 }
 
-- (void)callCustomSetter:(SEL)setter onView:(id<RCTComponent>)view withProp:(id)json isShadowView:(BOOL)isShadowView
-{
+- (void)callCustomSetter:(SEL)setter onView:(id<RCTComponent>)view withProp:(id)json isShadowView:(BOOL)isShadowView {
   json = RCTNilIfNull(json);
   if (!isShadowView) {
     if (!json && !_defaultView) {
@@ -197,8 +192,7 @@ static RCTPropBlock createNSInvocationSetter(NSMethodSignature *typeSignature, S
   };
 }
 
-- (RCTPropBlock)createPropBlock:(NSString *)name isShadowView:(BOOL)isShadowView
-{
+- (RCTPropBlock)createPropBlock:(NSString *)name isShadowView:(BOOL)isShadowView {
   // Get type
   SEL type = NULL;
   NSString *keyPath = nil;
@@ -322,8 +316,7 @@ static RCTPropBlock createNSInvocationSetter(NSMethodSignature *typeSignature, S
   }
 }
 
-- (RCTPropBlock)propBlockForKey:(NSString *)name isShadowView:(BOOL)isShadowView
-{
+- (RCTPropBlock)propBlockForKey:(NSString *)name isShadowView:(BOOL)isShadowView {
   RCTPropBlockDictionary *propBlocks = isShadowView ? _shadowPropBlocks : _viewPropBlocks;
   RCTPropBlock propBlock = propBlocks[name];
   if (!propBlock) {
@@ -348,8 +341,7 @@ static RCTPropBlock createNSInvocationSetter(NSMethodSignature *typeSignature, S
   return propBlock;
 }
 
-- (void)setProps:(NSDictionary<NSString *, id> *)props forView:(id<RCTComponent>)view
-{
+- (void)setProps:(NSDictionary<NSString *, id> *)props forView:(id<RCTComponent>)view {
   if (!view) {
     return;
   }
@@ -359,8 +351,7 @@ static RCTPropBlock createNSInvocationSetter(NSMethodSignature *typeSignature, S
   }];
 }
 
-- (void)setProps:(NSDictionary<NSString *, id> *)props forShadowView:(RCTShadowView *)shadowView
-{
+- (void)setProps:(NSDictionary<NSString *, id> *)props forShadowView:(RCTShadowView *)shadowView {
   if (!shadowView) {
     return;
   }
@@ -370,8 +361,7 @@ static RCTPropBlock createNSInvocationSetter(NSMethodSignature *typeSignature, S
   }];
 }
 
-- (NSDictionary<NSString *, id> *)viewConfig
-{
+- (NSDictionary<NSString *, id> *)viewConfig {
   NSMutableArray<NSString *> *bubblingEvents = [NSMutableArray new];
   NSMutableArray<NSString *> *directEvents = [NSMutableArray new];
 

@@ -21,8 +21,7 @@ using namespace facebook::react;
   EdgeInsets _lastPaddingStateWasUpdatedWith;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static auto const defaultProps = std::make_shared<SafeAreaViewProps const>();
     _props = defaultProps;
@@ -32,8 +31,7 @@ using namespace facebook::react;
   return self;
 }
 
-- (UIEdgeInsets)_safeAreaInsets
-{
+- (UIEdgeInsets)_safeAreaInsets {
   if (@available(iOS 11.0, tvOS 11.0, *)) {
     return self.safeAreaInsets;
   }
@@ -41,15 +39,13 @@ using namespace facebook::react;
   return UIEdgeInsetsZero;
 }
 
-- (void)safeAreaInsetsDidChange
-{
+- (void)safeAreaInsetsDidChange {
   [super safeAreaInsetsDidChange];
 
   [self _updateStateIfNecessary];
 }
 
-- (void)_updateStateIfNecessary
-{
+- (void)_updateStateIfNecessary {
   if (!_state) {
     return;
   }
@@ -76,21 +72,18 @@ using namespace facebook::react;
 #pragma mark - RCTComponentViewProtocol
 
 - (void)updateState:(facebook::react::State::Shared const &)state
-           oldState:(facebook::react::State::Shared const &)oldState
-{
+           oldState:(facebook::react::State::Shared const &)oldState {
   _state = std::static_pointer_cast<SafeAreaViewShadowNode::ConcreteState const>(state);
   [self _updateStateIfNecessary];
 }
 
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
   _state.reset();
   _lastPaddingStateWasUpdatedWith = {};
 }
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<SafeAreaViewComponentDescriptor>();
 }
 

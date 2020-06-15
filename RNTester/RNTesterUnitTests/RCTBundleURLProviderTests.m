@@ -40,8 +40,7 @@ static NSURL *ipBundleURL()
 
 @implementation NSBundle (RCTBundleURLProviderTests)
 
-- (NSURL *)RCT_URLForResource:(NSString *)name withExtension:(NSString *)ext
-{
+- (NSURL *)RCT_URLForResource:(NSString *)name withExtension:(NSString *)ext {
   // Ensure that test files is always reported as existing
   if ([[name stringByAppendingFormat:@".%@", ext] isEqualToString:mainBundle]) {
     return [[self bundleURL] URLByAppendingPathComponent:mainBundle];
@@ -56,24 +55,21 @@ static NSURL *ipBundleURL()
 
 @implementation RCTBundleURLProviderTests
 
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
 
   RCTSwapInstanceMethods(
       [NSBundle class], @selector(URLForResource:withExtension:), @selector(RCT_URLForResource:withExtension:));
 }
 
-- (void)tearDown
-{
+- (void)tearDown {
   RCTSwapInstanceMethods(
       [NSBundle class], @selector(URLForResource:withExtension:), @selector(RCT_URLForResource:withExtension:));
 
   [super tearDown];
 }
 
-- (void)testBundleURL
-{
+- (void)testBundleURL {
   RCTBundleURLProvider *settings = [RCTBundleURLProvider sharedSettings];
   settings.jsLocation = nil;
   NSURL *URL = [settings jsBundleURLForBundleRoot:testFile fallbackResource:nil];
@@ -84,16 +80,14 @@ static NSURL *ipBundleURL()
   }
 }
 
-- (void)testLocalhostURL
-{
+- (void)testLocalhostURL {
   RCTBundleURLProvider *settings = [RCTBundleURLProvider sharedSettings];
   settings.jsLocation = @"localhost";
   NSURL *URL = [settings jsBundleURLForBundleRoot:testFile fallbackResource:nil];
   XCTAssertEqualObjects(URL, localhostBundleURL());
 }
 
-- (void)testIPURL
-{
+- (void)testIPURL {
   RCTBundleURLProvider *settings = [RCTBundleURLProvider sharedSettings];
   settings.jsLocation = @"192.168.1.1";
   NSURL *URL = [settings jsBundleURLForBundleRoot:testFile fallbackResource:nil];

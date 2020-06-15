@@ -9,8 +9,7 @@
 
 @implementation RCTTextSelection
 
-- (instancetype)initWithStart:(NSInteger)start end:(NSInteger)end
-{
+- (instancetype)initWithStart:(NSInteger)start end:(NSInteger)end {
   if (self = [super init]) {
     _start = start;
     _end = end;
@@ -22,8 +21,7 @@
 
 @implementation RCTConvert (RCTTextSelection)
 
-+ (RCTTextSelection *)RCTTextSelection:(id)json
-{
++ (RCTTextSelection *)RCTTextSelection:(id)json {
   if ([json isKindOfClass:[NSDictionary class]]) {
     NSInteger start = [self NSInteger:json[@"start"]];
     NSInteger end = [self NSInteger:json[@"end"]];

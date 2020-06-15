@@ -27,8 +27,7 @@ NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
 
 @implementation UIWindow (RCTDevMenu)
 
-- (void)RCT_motionEnded:(__unused UIEventSubtype)motion withEvent:(UIEvent *)event
-{
+- (void)RCT_motionEnded:(__unused UIEventSubtype)motion withEvent:(UIEvent *)event {
   if (event.subtype == UIEventSubtypeMotionShake) {
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTShowDevMenuNotification object:nil];
   }
@@ -41,8 +40,7 @@ NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
   dispatch_block_t _handler;
 }
 
-- (instancetype)initWithTitleBlock:(RCTDevMenuItemTitleBlock)titleBlock handler:(dispatch_block_t)handler
-{
+- (instancetype)initWithTitleBlock:(RCTDevMenuItemTitleBlock)titleBlock handler:(dispatch_block_t)handler {
   if ((self = [super init])) {
     _titleBlock = [titleBlock copy];
     _handler = [handler copy];
@@ -52,13 +50,11 @@ NSString *const RCTShowDevMenuNotification = @"RCTShowDevMenuNotification";
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-+ (instancetype)buttonItemWithTitleBlock:(NSString * (^)(void))titleBlock handler:(dispatch_block_t)handler
-{
++ (instancetype)buttonItemWithTitleBlock:(NSString * (^)(void))titleBlock handler:(dispatch_block_t)handler {
   return [[self alloc] initWithTitleBlock:titleBlock handler:handler];
 }
 
-+ (instancetype)buttonItemWithTitle:(NSString *)title handler:(dispatch_block_t)handler
-{
++ (instancetype)buttonItemWithTitle:(NSString *)title handler:(dispatch_block_t)handler {
   return [[self alloc]
       initWithTitleBlock:^NSString * {
         return title;
@@ -66,15 +62,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
                  handler:handler];
 }
 
-- (void)callHandler
-{
+- (void)callHandler {
   if (_handler) {
     _handler();
   }
 }
 
-- (NSString *)title
-{
+- (NSString *)title {
   if (_titleBlock) {
     return _titleBlock();
   }
@@ -98,21 +92,18 @@ typedef void (^RCTDevMenuAlertActionHandler)(UIAlertAction *action);
 
 RCT_EXPORT_MODULE()
 
-+ (void)initialize
-{
++ (void)initialize {
   // We're swizzling here because it's poor form to override methods in a category,
   // however UIWindow doesn't actually implement motionEnded:withEvent:, so there's
   // no need to call the original implementation.
   RCTSwapInstanceMethods([UIWindow class], @selector(motionEnded:withEvent:), @selector(RCT_motionEnded:withEvent:));
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if ((self = [super init])) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(showOnShake)
@@ -149,28 +140,24 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   _presentedItems = nil;
   [_actionSheet dismissViewControllerAnimated:YES
                                    completion:^(void){
                                    }];
 }
 
-- (void)showOnShake
-{
+- (void)showOnShake {
   if ([_bridge.devSettings isShakeToShowDevMenuEnabled]) {
     [self show];
   }
 }
 
-- (void)toggle
-{
+- (void)toggle {
   if (_actionSheet) {
     [_actionSheet dismissViewControllerAnimated:YES
                                      completion:^(void){
@@ -181,31 +168,26 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (BOOL)isActionSheetShown
-{
+- (BOOL)isActionSheetShown {
   return _actionSheet != nil;
 }
 
-- (void)addItem:(NSString *)title handler:(void (^)(void))handler
-{
+- (void)addItem:(NSString *)title handler:(void (^)(void))handler {
   [self addItem:[RCTDevMenuItem buttonItemWithTitle:title handler:handler]];
 }
 
-- (void)addItem:(RCTDevMenuItem *)item
-{
+- (void)addItem:(RCTDevMenuItem *)item {
   [_extraMenuItems addObject:item];
 }
 
-- (void)setDefaultJSBundle
-{
+- (void)setDefaultJSBundle {
   [[RCTBundleURLProvider sharedSettings] resetToDefaults];
   self->_bridge.bundleURL = [[RCTBundleURLProvider sharedSettings] jsBundleURLForFallbackResource:nil
                                                                                 fallbackExtension:nil];
   RCTTriggerReloadCommandListeners(@"Dev menu - reset to default");
 }
 
-- (NSArray<RCTDevMenuItem *> *)_menuItemsToPresent
-{
+- (NSArray<RCTDevMenuItem *> *)_menuItemsToPresent {
   NSMutableArray<RCTDevMenuItem *> *items = [NSMutableArray new];
 
   // Add built-in items
@@ -451,8 +433,7 @@ RCT_EXPORT_METHOD(show)
   [_bridge enqueueJSCall:@"RCTNativeAppEventEmitter" method:@"emit" args:@[ @"RCTDevMenuShown" ] completion:NULL];
 }
 
-- (RCTDevMenuAlertActionHandler)alertActionHandlerForDevItem:(RCTDevMenuItem *__nullable)item
-{
+- (RCTDevMenuAlertActionHandler)alertActionHandlerForDevItem:(RCTDevMenuItem *__nullable)item {
   return ^(__unused UIAlertAction *action) {
     if (item) {
       [item callHandler];
@@ -467,13 +448,11 @@ RCT_EXPORT_METHOD(show)
 #define WARN_DEPRECATED_DEV_MENU_EXPORT() \
   RCTLogWarn(@"Using deprecated method %s, use RCTDevSettings instead", __func__)
 
-- (void)setShakeToShow:(BOOL)shakeToShow
-{
+- (void)setShakeToShow:(BOOL)shakeToShow {
   _bridge.devSettings.isShakeToShowDevMenuEnabled = shakeToShow;
 }
 
-- (BOOL)shakeToShow
-{
+- (BOOL)shakeToShow {
   return _bridge.devSettings.isShakeToShowDevMenuEnabled;
 }
 
@@ -495,8 +474,7 @@ RCT_EXPORT_METHOD(setProfilingEnabled : (BOOL)enabled)
   _bridge.devSettings.isProfilingEnabled = enabled;
 }
 
-- (BOOL)profilingEnabled
-{
+- (BOOL)profilingEnabled {
   return _bridge.devSettings.isProfilingEnabled;
 }
 
@@ -506,14 +484,12 @@ RCT_EXPORT_METHOD(setHotLoadingEnabled : (BOOL)enabled)
   _bridge.devSettings.isHotLoadingEnabled = enabled;
 }
 
-- (BOOL)hotLoadingEnabled
-{
+- (BOOL)hotLoadingEnabled {
   return _bridge.devSettings.isHotLoadingEnabled;
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeDevMenuSpecJSI>(params);
 }
 
@@ -526,35 +502,27 @@ RCT_EXPORT_METHOD(setHotLoadingEnabled : (BOOL)enabled)
 
 @implementation RCTDevMenu
 
-- (void)show
-{
+- (void)show {
 }
-- (void)reload
-{
+- (void)reload {
 }
-- (void)addItem:(NSString *)title handler:(dispatch_block_t)handler
-{
+- (void)addItem:(NSString *)title handler:(dispatch_block_t)handler {
 }
-- (void)addItem:(RCTDevMenu *)item
-{
+- (void)addItem:(RCTDevMenu *)item {
 }
 
-- (void)debugRemotely:(BOOL)enableDebug
-{
+- (void)debugRemotely:(BOOL)enableDebug {
 }
 
-- (BOOL)isActionSheetShown
-{
+- (BOOL)isActionSheetShown {
   return NO;
 }
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return @"DevMenu";
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeDevMenuSpecJSI>(params);
 }
 
@@ -562,12 +530,10 @@ RCT_EXPORT_METHOD(setHotLoadingEnabled : (BOOL)enabled)
 
 @implementation RCTDevMenuItem
 
-+ (instancetype)buttonItemWithTitle:(NSString *)title handler:(void (^)(void))handler
-{
++ (instancetype)buttonItemWithTitle:(NSString *)title handler:(void (^)(void))handler {
   return nil;
 }
-+ (instancetype)buttonItemWithTitleBlock:(NSString * (^)(void))titleBlock handler:(void (^)(void))handler
-{
++ (instancetype)buttonItemWithTitleBlock:(NSString * (^)(void))titleBlock handler:(void (^)(void))handler {
   return nil;
 }
 
@@ -577,8 +543,7 @@ RCT_EXPORT_METHOD(setHotLoadingEnabled : (BOOL)enabled)
 
 @implementation RCTBridge (RCTDevMenu)
 
-- (RCTDevMenu *)devMenu
-{
+- (RCTDevMenu *)devMenu {
 #if RCT_DEV_MENU
   return [self moduleForClass:[RCTDevMenu class]];
 #else

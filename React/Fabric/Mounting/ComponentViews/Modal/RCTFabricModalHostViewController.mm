@@ -15,8 +15,7 @@
   RCTSurfaceTouchHandler *_touchHandler;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (!(self = [super init])) {
     return nil;
   }
@@ -25,8 +24,7 @@
   return self;
 }
 
-- (void)viewDidLayoutSubviews
-{
+- (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
   if (!CGRectEqualToRect(_lastViewBounds, self.view.bounds)) {
     [_delegate boundsDidChange:self.view.bounds];
@@ -34,31 +32,26 @@
   }
 }
 
-- (void)loadView
-{
+- (void)loadView {
   [super loadView];
   [_touchHandler attachToView:self.view];
 }
 
 #if !TARGET_OS_TV
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
+- (UIStatusBarStyle)preferredStatusBarStyle {
   return [RCTSharedApplication() statusBarStyle];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
+- (void)viewDidDisappear:(BOOL)animated {
   [super viewDidDisappear:animated];
   _lastViewBounds = CGRectZero;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
+- (BOOL)prefersStatusBarHidden {
   return [RCTSharedApplication() isStatusBarHidden];
 }
 
-- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)())completion
-{
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)())completion {
   UIView *snapshot = [self.view snapshotViewAfterScreenUpdates:NO];
   [self.view addSubview:snapshot];
 
@@ -72,8 +65,7 @@
 }
 
 #if RCT_DEV
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
   UIInterfaceOrientationMask appSupportedOrientationsMask =
       [RCTSharedApplication() supportedInterfaceOrientationsForWindow:[RCTSharedApplication() keyWindow]];
   if (!(_supportedInterfaceOrientations & appSupportedOrientationsMask)) {

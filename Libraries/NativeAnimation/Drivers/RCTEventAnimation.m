@@ -7,14 +7,11 @@
 
 #import <React/RCTEventAnimation.h>
 
-@implementation RCTEventAnimation
-{
+@implementation RCTEventAnimation {
   NSArray<NSString *> *_eventPath;
 }
 
-- (instancetype)initWithEventPath:(NSArray<NSString *> *)eventPath
-                        valueNode:(RCTValueAnimatedNode *)valueNode
-{
+- (instancetype)initWithEventPath:(NSArray<NSString *> *)eventPath valueNode:(RCTValueAnimatedNode *)valueNode {
   if ((self = [super init])) {
     _eventPath = eventPath;
     _valueNode = valueNode;
@@ -22,8 +19,7 @@
   return self;
 }
 
-- (void)updateWithEvent:(id<RCTEvent>)event
-{
+- (void)updateWithEvent:(id<RCTEvent>)event {
   NSArray *args = event.arguments;
   // Supported events args are in the following order: viewTag, eventName, eventData.
   id currentValue = args[2];

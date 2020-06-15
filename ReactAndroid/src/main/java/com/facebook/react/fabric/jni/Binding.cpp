@@ -829,9 +829,7 @@ void Binding::schedulerDidFinishTransaction(
 
         break;
       }
-      default: {
-        break;
-      }
+      default: { break; }
     }
   }
 

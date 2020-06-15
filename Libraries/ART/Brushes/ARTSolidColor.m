@@ -11,26 +11,22 @@
 
 #import "RCTConvert+ART.h"
 
-@implementation ARTSolidColor
-{
+@implementation ARTSolidColor {
   CGColorRef _color;
 }
 
-- (instancetype)initWithArray:(NSArray<NSNumber *> *)array
-{
+- (instancetype)initWithArray:(NSArray<NSNumber *> *)array {
   if ((self = [super initWithArray:array])) {
     _color = CGColorRetain([RCTConvert CGColor:array offset:1]);
   }
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   CGColorRelease(_color);
 }
 
-- (BOOL)applyFillColor:(CGContextRef)context
-{
+- (BOOL)applyFillColor:(CGContextRef)context {
   CGContextSetFillColorWithColor(context, _color);
   return YES;
 }

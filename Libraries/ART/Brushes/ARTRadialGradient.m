@@ -11,8 +11,7 @@
 
 #import "RCTConvert+ART.h"
 
-@implementation ARTRadialGradient
-{
+@implementation ARTRadialGradient {
   CGGradientRef _gradient;
   CGPoint _focusPoint;
   CGPoint _centerPoint;
@@ -20,12 +19,10 @@
   CGFloat _radiusRatio;
 }
 
-- (instancetype)initWithArray:(NSArray<NSNumber *> *)array
-{
+- (instancetype)initWithArray:(NSArray<NSNumber *> *)array {
   if ((self = [super initWithArray:array])) {
     if (array.count < 7) {
-      RCTLogError(@"-[%@ %@] expects 7 elements, received %@",
-                  self.class, NSStringFromSelector(_cmd), array);
+      RCTLogError(@"-[%@ %@] expects 7 elements, received %@", self.class, NSStringFromSelector(_cmd), array);
       return nil;
     }
     _radius = [RCTConvert CGFloat:array[3]];
@@ -39,13 +36,11 @@
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   CGGradientRelease(_gradient);
 }
 
-- (void)paint:(CGContextRef)context
-{
+- (void)paint:(CGContextRef)context {
   CGAffineTransform transform = CGAffineTransformMakeScale(1, _radiusRatio);
   CGContextConcatCTM(context, transform);
   CGGradientDrawingOptions extendOptions = kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation;

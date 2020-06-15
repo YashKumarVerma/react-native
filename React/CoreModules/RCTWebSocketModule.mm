@@ -18,13 +18,11 @@
 
 @implementation RCTSRWebSocket (React)
 
-- (NSNumber *)reactTag
-{
+- (NSNumber *)reactTag {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setReactTag:(NSNumber *)reactTag
-{
+- (void)setReactTag:(NSNumber *)reactTag {
   objc_setAssociatedObject(self, @selector(reactTag), reactTag, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
@@ -41,18 +39,15 @@
 
 RCT_EXPORT_MODULE()
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (NSArray *)supportedEvents
-{
+- (NSArray *)supportedEvents {
   return @[ @"websocketMessage", @"websocketOpen", @"websocketFailed", @"websocketClosed" ];
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   _contentHandlers = nil;
   for (RCTSRWebSocket *socket in _sockets.allValues) {
     socket.delegate = nil;
@@ -109,8 +104,7 @@ RCT_EXPORT_METHOD(sendBinary : (NSString *)base64String forSocketID : (double)so
   [self sendData:[[NSData alloc] initWithBase64EncodedString:base64String options:0] forSocketID:@(socketID)];
 }
 
-- (void)sendData:(NSData *)data forSocketID:(NSNumber *__nonnull)socketID
-{
+- (void)sendData:(NSData *)data forSocketID:(NSNumber *__nonnull)socketID {
   [_sockets[socketID] send:data];
 }
 
@@ -125,8 +119,7 @@ RCT_EXPORT_METHOD(close : (double)code reason : (NSString *)reason socketID : (d
   [_sockets removeObjectForKey:@(socketID)];
 }
 
-- (void)setContentHandler:(id<RCTWebSocketContentHandler>)handler forSocketID:(NSString *)socketID
-{
+- (void)setContentHandler:(id<RCTWebSocketContentHandler>)handler forSocketID:(NSString *)socketID {
   if (!_contentHandlers) {
     _contentHandlers = [NSMutableDictionary new];
   }
@@ -135,8 +128,7 @@ RCT_EXPORT_METHOD(close : (double)code reason : (NSString *)reason socketID : (d
 
 #pragma mark - RCTSRWebSocketDelegate methods
 
-- (void)webSocket:(RCTSRWebSocket *)webSocket didReceiveMessage:(id)message
-{
+- (void)webSocket:(RCTSRWebSocket *)webSocket didReceiveMessage:(id)message {
   NSString *type;
 
   NSNumber *socketID = [webSocket reactTag];
@@ -155,14 +147,12 @@ RCT_EXPORT_METHOD(close : (double)code reason : (NSString *)reason socketID : (d
   [self sendEventWithName:@"websocketMessage" body:@{@"data" : message, @"type" : type, @"id" : webSocket.reactTag}];
 }
 
-- (void)webSocketDidOpen:(RCTSRWebSocket *)webSocket
-{
+- (void)webSocketDidOpen:(RCTSRWebSocket *)webSocket {
   [self sendEventWithName:@"websocketOpen"
                      body:@{@"id" : webSocket.reactTag, @"protocol" : webSocket.protocol ? webSocket.protocol : @""}];
 }
 
-- (void)webSocket:(RCTSRWebSocket *)webSocket didFailWithError:(NSError *)error
-{
+- (void)webSocket:(RCTSRWebSocket *)webSocket didFailWithError:(NSError *)error {
   NSNumber *socketID = [webSocket reactTag];
   _contentHandlers[socketID] = nil;
   _sockets[socketID] = nil;
@@ -172,8 +162,7 @@ RCT_EXPORT_METHOD(close : (double)code reason : (NSString *)reason socketID : (d
 - (void)webSocket:(RCTSRWebSocket *)webSocket
     didCloseWithCode:(NSInteger)code
               reason:(NSString *)reason
-            wasClean:(BOOL)wasClean
-{
+            wasClean:(BOOL)wasClean {
   NSNumber *socketID = [webSocket reactTag];
   _contentHandlers[socketID] = nil;
   _sockets[socketID] = nil;
@@ -187,8 +176,7 @@ RCT_EXPORT_METHOD(close : (double)code reason : (NSString *)reason socketID : (d
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeWebSocketModuleSpecJSI>(params);
 }
 
@@ -196,8 +184,7 @@ RCT_EXPORT_METHOD(close : (double)code reason : (NSString *)reason socketID : (d
 
 @implementation RCTBridge (RCTWebSocketModule)
 
-- (RCTWebSocketModule *)webSocketModule
-{
+- (RCTWebSocketModule *)webSocketModule {
   return [self moduleForClass:[RCTWebSocketModule class]];
 }
 

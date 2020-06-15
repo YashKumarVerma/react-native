@@ -20,18 +20,15 @@ using namespace facebook::react;
   std::unique_ptr<facebook::xplat::module::CxxModule> _module;
 }
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return @"";
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
-- (void)lazyInit
-{
+- (void)lazyInit {
   if (!_module) {
     _module = [self createModule];
 
@@ -45,14 +42,12 @@ using namespace facebook::react;
   }
 }
 
-- (std::unique_ptr<facebook::xplat::module::CxxModule>)createModule
-{
+- (std::unique_ptr<facebook::xplat::module::CxxModule>)createModule {
   RCTAssert(NO, @"Subclass %@ must override createModule", [self class]);
   return nullptr;
 }
 
-- (NSArray<id<RCTBridgeMethod>> *)methodsToExport
-{
+- (NSArray<id<RCTBridgeMethod>> *)methodsToExport {
   [self lazyInit];
   if (!_module) {
     return nil;
@@ -65,13 +60,11 @@ using namespace facebook::react;
   return moduleMethods;
 }
 
-- (NSDictionary<NSString *, id> *)constantsToExport
-{
+- (NSDictionary<NSString *, id> *)constantsToExport {
   return [self getConstants];
 }
 
-- (NSDictionary<NSString *, id> *)getConstants
-{
+- (NSDictionary<NSString *, id> *)getConstants {
   [self lazyInit];
   if (!_module) {
     return nil;

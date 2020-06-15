@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#import <React/RCTNativeAnimatedNodesManager.h>
 #import <React/RCTTrackingAnimatedNode.h>
 #import <React/RCTValueAnimatedNode.h>
-#import <React/RCTNativeAnimatedNodesManager.h>
 
 @implementation RCTTrackingAnimatedNode {
   NSNumber *_animationId;
@@ -16,9 +16,7 @@
   NSMutableDictionary *_animationConfig;
 }
 
-- (instancetype)initWithTag:(NSNumber *)tag
-                     config:(NSDictionary<NSString *, id> *)config
-{
+- (instancetype)initWithTag:(NSNumber *)tag config:(NSDictionary<NSString *, id> *)config {
   if ((self = [super initWithTag:tag config:config])) {
     _animationId = config[@"animationId"];
     _toValueNodeTag = config[@"toValue"];
@@ -28,25 +26,19 @@
   return self;
 }
 
-- (void)onDetachedFromNode:(RCTAnimatedNode *)parent
-{
+- (void)onDetachedFromNode:(RCTAnimatedNode *)parent {
   [self.manager stopAnimation:_animationId];
   [super onDetachedFromNode:parent];
 }
 
-- (void)performUpdate
-{
+- (void)performUpdate {
   [super performUpdate];
 
   // change animation config's "toValue" to reflect updated value of the parent node
   RCTValueAnimatedNode *node = (RCTValueAnimatedNode *)[self.parentNodes objectForKey:_toValueNodeTag];
   _animationConfig[@"toValue"] = @(node.value);
 
-  [self.manager startAnimatingNode:_animationId
-                           nodeTag:_valueNodeTag
-                            config:_animationConfig
-                       endCallback:nil];
+  [self.manager startAnimatingNode:_animationId nodeTag:_valueNodeTag config:_animationConfig endCallback:nil];
 }
 
 @end
-

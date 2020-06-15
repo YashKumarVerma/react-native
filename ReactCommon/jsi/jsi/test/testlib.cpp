@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <jsi/test/testlib.h>
 #include <gtest/gtest.h>
 #include <jsi/decorator.h>
 #include <jsi/jsi.h>
+#include <jsi/test/testlib.h>
 
 #include <stdlib.h>
 #include <chrono>
@@ -178,11 +178,11 @@ TEST_P(JSITest, ObjectTest) {
 
 TEST_P(JSITest, HostObjectTest) {
   class ConstantHostObject : public HostObject {
-    Value get(Runtime&, const PropNameID& sym) override {
+    Value get(Runtime &, const PropNameID &sym) override {
       return 9000;
     }
 
-    void set(Runtime&, const PropNameID&, const Value&) override {}
+    void set(Runtime &, const PropNameID &, const Value &) override {}
   };
 
   Object cho =
@@ -194,23 +194,23 @@ TEST_P(JSITest, HostObjectTest) {
   EXPECT_TRUE(cho.getHostObject<ConstantHostObject>(rt).get() != nullptr);
 
   struct SameRuntimeHostObject : HostObject {
-    SameRuntimeHostObject(Runtime& rt) : rt_(rt){};
+    SameRuntimeHostObject(Runtime &rt) : rt_(rt){};
 
-    Value get(Runtime& rt, const PropNameID& sym) override {
+    Value get(Runtime &rt, const PropNameID &sym) override {
       EXPECT_EQ(&rt, &rt_);
       return Value();
     }
 
-    void set(Runtime& rt, const PropNameID& name, const Value& value) override {
+    void set(Runtime &rt, const PropNameID &name, const Value &value) override {
       EXPECT_EQ(&rt, &rt_);
     }
 
-    std::vector<PropNameID> getPropertyNames(Runtime& rt) override {
+    std::vector<PropNameID> getPropertyNames(Runtime &rt) override {
       EXPECT_EQ(&rt, &rt_);
       return {};
     }
 
-    Runtime& rt_;
+    Runtime &rt_;
   };
 
   Object srho = Object::createFromHostObject(
@@ -223,11 +223,11 @@ TEST_P(JSITest, HostObjectTest) {
   function("function (obj) { for (k in obj) {} }").call(rt, srho);
 
   class TwiceHostObject : public HostObject {
-    Value get(Runtime& rt, const PropNameID& sym) override {
+    Value get(Runtime &rt, const PropNameID &sym) override {
       return String::createFromUtf8(rt, sym.utf8(rt) + sym.utf8(rt));
     }
 
-    void set(Runtime&, const PropNameID&, const Value&) override {}
+    void set(Runtime &, const PropNameID &, const Value &) override {}
   };
 
   Object tho =
@@ -248,7 +248,7 @@ TEST_P(JSITest, HostObjectTest) {
   EXPECT_TRUE(tho.getHostObject<TwiceHostObject>(rt).get() != nullptr);
 
   class PropNameIDHostObject : public HostObject {
-    Value get(Runtime& rt, const PropNameID& sym) override {
+    Value get(Runtime &rt, const PropNameID &sym) override {
       if (PropNameID::compare(rt, sym, PropNameID::forAscii(rt, "undef"))) {
         return Value::undefined();
       } else {
@@ -257,7 +257,7 @@ TEST_P(JSITest, HostObjectTest) {
       }
     }
 
-    void set(Runtime&, const PropNameID&, const Value&) override {}
+    void set(Runtime &, const PropNameID &, const Value &) override {}
   };
 
   Object sho = Object::createFromHostObject(
@@ -275,19 +275,19 @@ TEST_P(JSITest, HostObjectTest) {
 
   class BagHostObject : public HostObject {
    public:
-    const std::string& getThing() {
+    const std::string &getThing() {
       return bag_["thing"];
     }
 
    private:
-    Value get(Runtime& rt, const PropNameID& sym) override {
+    Value get(Runtime &rt, const PropNameID &sym) override {
       if (sym.utf8(rt) == "thing") {
         return String::createFromUtf8(rt, bag_[sym.utf8(rt)]);
       }
       return Value::undefined();
     }
 
-    void set(Runtime& rt, const PropNameID& sym, const Value& val) override {
+    void set(Runtime &rt, const PropNameID &sym, const Value &val) override {
       std::string key(sym.utf8(rt));
       if (key == "thing") {
         bag_[key] = val.toString(rt).utf8(rt);
@@ -312,11 +312,11 @@ TEST_P(JSITest, HostObjectTest) {
   EXPECT_EQ(shbho->getThing(), "hello");
 
   class ThrowingHostObject : public HostObject {
-    Value get(Runtime& rt, const PropNameID& sym) override {
+    Value get(Runtime &rt, const PropNameID &sym) override {
       throw std::runtime_error("Cannot get");
     }
 
-    void set(Runtime& rt, const PropNameID& sym, const Value& val) override {
+    void set(Runtime &rt, const PropNameID &sym, const Value &val) override {
       throw std::runtime_error("Cannot set");
     }
   };
@@ -327,14 +327,14 @@ TEST_P(JSITest, HostObjectTest) {
   std::string exc;
   try {
     function("function (obj) { return obj.thing; }").call(rt, thro);
-  } catch (const JSError& ex) {
+  } catch (const JSError &ex) {
     exc = ex.what();
   }
   EXPECT_NE(exc.find("Cannot get"), std::string::npos);
   exc = "";
   try {
     function("function (obj) { obj.thing = 'hello'; }").call(rt, thro);
-  } catch (const JSError& ex) {
+  } catch (const JSError &ex) {
     exc = ex.what();
   }
   EXPECT_NE(exc.find("Cannot set"), std::string::npos);
@@ -350,13 +350,13 @@ TEST_P(JSITest, HostObjectTest) {
   std::string nopExc;
   try {
     function("function (obj) { obj.thing = 'pika'; }").call(rt, nopHo);
-  } catch (const JSError& ex) {
+  } catch (const JSError &ex) {
     nopExc = ex.what();
   }
   EXPECT_NE(nopExc.find("TypeError: "), std::string::npos);
 
   class HostObjectWithPropertyNames : public HostObject {
-    std::vector<PropNameID> getPropertyNames(Runtime& rt) override {
+    std::vector<PropNameID> getPropertyNames(Runtime &rt) override {
       return PropNameID::names(
           rt, "a_prop", "1", "false", "a_prop", "3", "c_prop");
     }
@@ -538,11 +538,11 @@ TEST_P(JSITest, FunctionThisTest) {
   jsObject.setProperty(rt, "a", String::createFromUtf8(rt, "a_property"));
 
   class APropertyHostObject : public HostObject {
-    Value get(Runtime& rt, const PropNameID& sym) override {
+    Value get(Runtime &rt, const PropNameID &sym) override {
       return String::createFromUtf8(rt, "a_property");
     }
 
-    void set(Runtime&, const PropNameID&, const Value&) override {}
+    void set(Runtime &, const PropNameID &, const Value &) override {}
   };
   Object hostObject =
       Object::createFromHostObject(rt, std::make_shared<APropertyHostObject>());
@@ -609,7 +609,7 @@ TEST_P(JSITest, HostFunctionTest) {
       PropNameID::forAscii(rt, "plusOne"),
       2,
       [one, savedRt = &rt](
-          Runtime& rt, const Value& thisVal, const Value* args, size_t count) {
+          Runtime &rt, const Value &thisVal, const Value *args, size_t count) {
         EXPECT_EQ(savedRt, &rt);
         // We don't know if we're in strict mode or not, so it's either global
         // or undefined.
@@ -628,7 +628,7 @@ TEST_P(JSITest, HostFunctionTest) {
       rt,
       PropNameID::forAscii(rt, "dot"),
       2,
-      [](Runtime& rt, const Value& thisVal, const Value* args, size_t count) {
+      [](Runtime &rt, const Value &thisVal, const Value *args, size_t count) {
         EXPECT_TRUE(
             Value::strictEquals(rt, thisVal, rt.global()) ||
             thisVal.isUndefined());
@@ -638,7 +638,7 @@ TEST_P(JSITest, HostFunctionTest) {
         std::string ret = args[0].getString(rt).utf8(rt) + "." +
             args[1].getString(rt).utf8(rt);
         return String::createFromUtf8(
-            rt, reinterpret_cast<const uint8_t*>(ret.data()), ret.size());
+            rt, reinterpret_cast<const uint8_t *>(ret.data()), ret.size());
       });
 
   rt.global().setProperty(rt, "cons", dot);
@@ -661,11 +661,11 @@ TEST_P(JSITest, HostFunctionTest) {
       rt,
       PropNameID::forAscii(rt, "coolify"),
       0,
-      [](Runtime& rt, const Value& thisVal, const Value* args, size_t count) {
+      [](Runtime &rt, const Value &thisVal, const Value *args, size_t count) {
         EXPECT_EQ(count, 0);
         std::string ret = thisVal.toString(rt).utf8(rt) + " is cool";
         return String::createFromUtf8(
-            rt, reinterpret_cast<const uint8_t*>(ret.data()), ret.size());
+            rt, reinterpret_cast<const uint8_t *>(ret.data()), ret.size());
       });
   rt.global().setProperty(rt, "coolify", coolify);
   EXPECT_TRUE(eval("coolify.name == 'coolify'").getBool());
@@ -681,7 +681,7 @@ TEST_P(JSITest, HostFunctionTest) {
       rt,
       PropNameID::forAscii(rt, "lookAtMe"),
       0,
-      [](Runtime& rt, const Value& thisVal, const Value* args, size_t count)
+      [](Runtime &rt, const Value &thisVal, const Value *args, size_t count)
           -> Value {
         EXPECT_TRUE(thisVal.isObject());
         EXPECT_EQ(
@@ -699,7 +699,7 @@ TEST_P(JSITest, HostFunctionTest) {
     Callable(std::string s) : str(s) {}
 
     Value
-    operator()(Runtime& rt, const Value&, const Value* args, size_t count) {
+    operator()(Runtime &rt, const Value &, const Value *args, size_t count) {
       if (count != 1) {
         return Value();
       }
@@ -734,9 +734,9 @@ TEST_P(JSITest, HostFunctionTest) {
           PropNameID::forAscii(rt, "getter"),
           1,
           [&strval](
-              Runtime& rt,
-              const Value& thisVal,
-              const Value* args,
+              Runtime &rt,
+              const Value &thisVal,
+              const Value *args,
               size_t count) -> Value {
             return String::createFromUtf8(rt, strval);
           }));
@@ -865,7 +865,7 @@ TEST_P(JSITest, EqualsTest) {
       rt,
       PropNameID::forAscii(rt, "noop"),
       0,
-      [](const Runtime&, const Value&, const Value*, size_t) {
+      [](const Runtime &, const Value &, const Value *, size_t) {
         return Value();
       });
   auto noopDup = Value(rt, noop).getObject(rt);
@@ -897,7 +897,7 @@ TEST_P(JSITest, ExceptionStackTraceTest) {
   try {
     rt.evaluateJavaScript(
         std::make_unique<StringBuffer>(invokeUndefinedScript), "");
-  } catch (JSError& e) {
+  } catch (JSError &e) {
     stack = e.getStack();
   }
   EXPECT_NE(stack.find("world"), std::string::npos);
@@ -931,7 +931,7 @@ TEST_P(JSITest, PreparedJavaScriptURLInBacktrace) {
 
 namespace {
 
-unsigned countOccurences(const std::string& of, const std::string& in) {
+unsigned countOccurences(const std::string &of, const std::string &in) {
   unsigned occurences = 0;
   std::string::size_type lastOccurence = -1;
   while ((lastOccurence = in.find(of, lastOccurence + 1)) !=
@@ -959,13 +959,13 @@ TEST_P(JSITest, JSErrorsArePropagatedNicely) {
       PropNameID::forAscii(rt, "callback"),
       0,
       [&sometimesThrows, &callsBeforeError](
-          Runtime& rt, const Value& thisVal, const Value* args, size_t count) {
+          Runtime &rt, const Value &thisVal, const Value *args, size_t count) {
         return sometimesThrows.call(rt, --callsBeforeError == 0, args[0]);
       });
 
   try {
     sometimesThrows.call(rt, false, callback);
-  } catch (JSError& error) {
+  } catch (JSError &error) {
     EXPECT_EQ(error.getMessage(), "Omg, what a nasty exception");
     EXPECT_EQ(countOccurences("sometimesThrows", error.getStack()), 6);
 
@@ -986,7 +986,7 @@ TEST_P(JSITest, JSErrorDoesNotInfinitelyRecurse) {
   try {
     rt.global().getPropertyAsFunction(rt, "NotAFunction");
     FAIL() << "expected exception";
-  } catch (const JSError& ex) {
+  } catch (const JSError &ex) {
     EXPECT_EQ(
         ex.getMessage(),
         "callGlobalFunction: JS global property 'Error' is undefined, "
@@ -999,7 +999,7 @@ TEST_P(JSITest, JSErrorDoesNotInfinitelyRecurse) {
   // a catchable string.  Not an Error (because that's broken), or as
   // a C++ failure.
 
-  auto fails = [](Runtime& rt, const Value&, const Value*, size_t) -> Value {
+  auto fails = [](Runtime &rt, const Value &, const Value *, size_t) -> Value {
     return rt.global().getPropertyAsObject(rt, "NotAProperty");
   };
   EXPECT_EQ(
@@ -1025,9 +1025,9 @@ TEST_P(JSITest, JSErrorStackOverflowHandling) {
           PropNameID::forAscii(rt, "callSomething"),
           0,
           [this](
-              Runtime& rt2,
-              const Value& thisVal,
-              const Value* args,
+              Runtime &rt2,
+              const Value &thisVal,
+              const Value *args,
               size_t count) {
             EXPECT_EQ(&rt, &rt2);
             return function("function() { return 0; }").call(rt);
@@ -1035,7 +1035,7 @@ TEST_P(JSITest, JSErrorStackOverflowHandling) {
   try {
     eval("(function f() { callSomething(); f.apply(); })()");
     FAIL();
-  } catch (const JSError& ex) {
+  } catch (const JSError &ex) {
     EXPECT_NE(std::string(ex.what()).find("exceeded"), std::string::npos);
   }
 }
@@ -1061,7 +1061,7 @@ TEST_P(JSITest, HostObjectWithValueMembers) {
    public:
     Bag() = default;
 
-    const Value& operator[](const std::string& name) const {
+    const Value &operator[](const std::string &name) const {
       auto iter = data_.find(name);
       if (iter == data_.end()) {
         return undef_;
@@ -1070,11 +1070,11 @@ TEST_P(JSITest, HostObjectWithValueMembers) {
     }
 
    protected:
-    Value get(Runtime& rt, const PropNameID& name) override {
+    Value get(Runtime &rt, const PropNameID &name) override {
       return Value(rt, (*this)[name.utf8(rt)]);
     }
 
-    void set(Runtime& rt, const PropNameID& name, const Value& val) override {
+    void set(Runtime &rt, const PropNameID &name, const Value &val) override {
       data_.emplace(name.utf8(rt), Value(rt, val));
     }
 
@@ -1083,7 +1083,7 @@ TEST_P(JSITest, HostObjectWithValueMembers) {
   };
 
   auto sharedBag = std::make_shared<Bag>();
-  auto& bag = *sharedBag;
+  auto &bag = *sharedBag;
   Object jsbag = Object::createFromHostObject(rt, std::move(sharedBag));
   auto set = function(
       "function (o) {"
@@ -1209,8 +1209,8 @@ TEST_P(JSITest, MultiDecoratorTest) {
       mrt,
       PropNameID::forAscii(mrt, "expectNestOne"),
       0,
-      [](Runtime& rt, const Value& thisVal, const Value* args, size_t count) {
-        MultiRuntime* funcmrt = dynamic_cast<MultiRuntime*>(&rt);
+      [](Runtime &rt, const Value &thisVal, const Value *args, size_t count) {
+        MultiRuntime *funcmrt = dynamic_cast<MultiRuntime *>(&rt);
         EXPECT_NE(funcmrt, nullptr);
         EXPECT_EQ(funcmrt->count(), 3);
         EXPECT_EQ(funcmrt->nest(), 1);
@@ -1328,14 +1328,14 @@ TEST_P(JSITest, JSErrorTest) {
 
 class RD1 : public RuntimeDecorator<Runtime, Runtime> {
  public:
-  RD1(Runtime& plain) : RuntimeDecorator(plain) {}
+  RD1(Runtime &plain) : RuntimeDecorator(plain) {}
 
   Object createObject(std::shared_ptr<HostObject> ho) {
     class DHO1 : public DecoratedHostObject {
      public:
       using DecoratedHostObject::DecoratedHostObject;
 
-      Value get(Runtime& rt, const PropNameID& name) override {
+      Value get(Runtime &rt, const PropNameID &name) override {
         numGets++;
         return DecoratedHostObject::get(rt, name);
       }
@@ -1349,14 +1349,14 @@ class RD1 : public RuntimeDecorator<Runtime, Runtime> {
 
 class RD2 : public RuntimeDecorator<Runtime, Runtime> {
  public:
-  RD2(Runtime& plain) : RuntimeDecorator(plain) {}
+  RD2(Runtime &plain) : RuntimeDecorator(plain) {}
 
   Object createObject(std::shared_ptr<HostObject> ho) {
     class DHO2 : public DecoratedHostObject {
      public:
       using DecoratedHostObject::DecoratedHostObject;
 
-      Value get(Runtime& rt, const PropNameID& name) override {
+      Value get(Runtime &rt, const PropNameID &name) override {
         numGets++;
         return DecoratedHostObject::get(rt, name);
       }
@@ -1370,16 +1370,16 @@ class RD2 : public RuntimeDecorator<Runtime, Runtime> {
 
 class HO : public HostObject {
  public:
-  explicit HO(Runtime* expectedRT) : expectedRT_(expectedRT) {}
+  explicit HO(Runtime *expectedRT) : expectedRT_(expectedRT) {}
 
-  Value get(Runtime& rt, const PropNameID& name) override {
+  Value get(Runtime &rt, const PropNameID &name) override {
     EXPECT_EQ(expectedRT_, &rt);
     return Value(17.0);
   }
 
  private:
   // The runtime we expect to be called with.
-  Runtime* expectedRT_;
+  Runtime *expectedRT_;
 };
 
 unsigned RD1::numGets = 0;

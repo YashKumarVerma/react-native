@@ -17,8 +17,7 @@ typedef NS_OPTIONS(NSInteger, RCTTextSizeComparisonOptions) {
 
 - (void)scaleFontSizeToFitSize:(CGSize)size
                minimumFontSize:(CGFloat)minimumFontSize
-               maximumFontSize:(CGFloat)maximumFontSize
-{
+               maximumFontSize:(CGFloat)maximumFontSize {
   CGFloat bottomRatio = 1.0 / 128.0;
   CGFloat topRatio = 128.0;
   CGFloat ratio = 1.0;
@@ -56,8 +55,7 @@ typedef NS_OPTIONS(NSInteger, RCTTextSizeComparisonOptions) {
   }
 }
 
-- (RCTTextSizeComparisonOptions)compareToSize:(CGSize)size thresholdRatio:(CGFloat)thresholdRatio
-{
+- (RCTTextSizeComparisonOptions)compareToSize:(CGSize)size thresholdRatio:(CGFloat)thresholdRatio {
   NSLayoutManager *layoutManager = self.layoutManagers.firstObject;
   NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
 
@@ -94,8 +92,7 @@ typedef NS_OPTIONS(NSInteger, RCTTextSizeComparisonOptions) {
 
 - (void)scaleFontSizeWithRatio:(CGFloat)ratio
                minimumFontSize:(CGFloat)minimumFontSize
-               maximumFontSize:(CGFloat)maximumFontSize
-{
+               maximumFontSize:(CGFloat)maximumFontSize {
   [self beginEditing];
 
   [self enumerateAttribute:NSFontAttributeName

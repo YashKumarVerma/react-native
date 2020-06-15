@@ -23,8 +23,7 @@
   UIColor *_titleColor;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if ((self = [super init])) {
     [self addTarget:self action:@selector(refreshControlValueChanged) forControlEvents:UIControlEventValueChanged];
     _currentRefreshingStateClock = 1;
@@ -37,8 +36,7 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   [super layoutSubviews];
 
   // Fix for bug #7976
@@ -55,8 +53,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   _isInitialRender = false;
 }
 
-- (void)beginRefreshingProgrammatically
-{
+- (void)beginRefreshingProgrammatically {
   UInt64 beginRefreshingTimestamp = _currentRefreshingStateTimestamp;
   _refreshingProgrammatically = YES;
   // When using begin refreshing we need to adjust the ScrollView content offset manually.
@@ -81,8 +78,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
       }];
 }
 
-- (void)endRefreshingProgrammatically
-{
+- (void)endRefreshingProgrammatically {
   // The contentOffset of the scrollview MUST be greater than the contentInset before calling
   // endRefreshing otherwise the next pull to refresh will not work properly.
   UIScrollView *scrollView = (UIScrollView *)self.superview;
@@ -106,25 +102,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (NSString *)title
-{
+- (NSString *)title {
   return _title;
 }
 
-- (void)setTitle:(NSString *)title
-{
+- (void)setTitle:(NSString *)title {
   _title = title;
   [self _updateTitle];
 }
 
-- (void)setTitleColor:(UIColor *)color
-{
+- (void)setTitleColor:(UIColor *)color {
   _titleColor = color;
   [self _updateTitle];
 }
 
-- (void)_updateTitle
-{
+- (void)_updateTitle {
   if (!_title) {
     return;
   }
@@ -137,8 +129,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   self.attributedTitle = [[NSAttributedString alloc] initWithString:_title attributes:attributes];
 }
 
-- (void)setRefreshing:(BOOL)refreshing
-{
+- (void)setRefreshing:(BOOL)refreshing {
   if (_currentRefreshingState != refreshing) {
     [self setCurrentRefreshingState:refreshing];
 
@@ -152,14 +143,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 }
 
-- (void)setCurrentRefreshingState:(BOOL)refreshing
-{
+- (void)setCurrentRefreshingState:(BOOL)refreshing {
   _currentRefreshingState = refreshing;
   _currentRefreshingStateTimestamp = _currentRefreshingStateClock++;
 }
 
-- (void)refreshControlValueChanged
-{
+- (void)refreshControlValueChanged {
   [self setCurrentRefreshingState:super.refreshing];
   _refreshingProgrammatically = NO;
 

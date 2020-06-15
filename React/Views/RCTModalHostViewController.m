@@ -18,8 +18,7 @@
 #endif
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (!(self = [super init])) {
     return nil;
   }
@@ -39,8 +38,7 @@
   return self;
 }
 
-- (void)viewDidLayoutSubviews
-{
+- (void)viewDidLayoutSubviews {
   [super viewDidLayoutSubviews];
 
   if (self.boundsDidChangeBlock && !CGRectEqualToRect(_lastViewFrame, self.view.frame)) {
@@ -50,19 +48,16 @@
 }
 
 #if !TARGET_OS_TV
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
+- (UIStatusBarStyle)preferredStatusBarStyle {
   return _preferredStatusBarStyle;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
+- (BOOL)prefersStatusBarHidden {
   return _preferredStatusBarHidden;
 }
 
 #if RCT_DEV
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
   UIInterfaceOrientationMask appSupportedOrientationsMask =
       [RCTSharedApplication() supportedInterfaceOrientationsForWindow:[RCTSharedApplication() keyWindow]];
   if (!(_supportedInterfaceOrientations & appSupportedOrientationsMask)) {

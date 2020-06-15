@@ -65,8 +65,7 @@ static IInspector *getInstance()
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-+ (NSArray<RCTInspectorPage *> *)pages
-{
++ (NSArray<RCTInspectorPage *> *)pages {
   std::vector<InspectorPage> pages = getInstance()->getPages();
   NSMutableArray<RCTInspectorPage *> *array = [NSMutableArray arrayWithCapacity:pages.size()];
   for (size_t i = 0; i < pages.size(); i++) {
@@ -79,8 +78,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 }
 
 + (RCTInspectorLocalConnection *)connectPage:(NSInteger)pageId
-                         forRemoteConnection:(RCTInspectorRemoteConnection *)remote
-{
+                         forRemoteConnection:(RCTInspectorRemoteConnection *)remote {
   auto localConnection = getInstance()->connect((int)pageId, std::make_unique<RemoteConnection>(remote));
   return [[RCTInspectorLocalConnection alloc] initWithConnection:std::move(localConnection)];
 }
@@ -91,8 +89,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (instancetype)initWithId:(NSInteger)id title:(NSString *)title vm:(NSString *)vm
-{
+- (instancetype)initWithId:(NSInteger)id title:(NSString *)title vm:(NSString *)vm {
   if (self = [super init]) {
     _id = id;
     _title = title;
@@ -107,21 +104,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (instancetype)initWithConnection:(std::unique_ptr<ILocalConnection>)connection
-{
+- (instancetype)initWithConnection:(std::unique_ptr<ILocalConnection>)connection {
   if (self = [super init]) {
     _connection = std::move(connection);
   }
   return self;
 }
 
-- (void)sendMessage:(NSString *)message
-{
+- (void)sendMessage:(NSString *)message {
   _connection->sendMessage([message UTF8String]);
 }
 
-- (void)disconnect
-{
+- (void)disconnect {
   _connection->disconnect();
 }
 

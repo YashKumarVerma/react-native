@@ -72,18 +72,15 @@ NSString *RCTColorSchemePreference(UITraitCollection *traitCollection)
 
 RCT_EXPORT_MODULE(Appearance)
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeAppearanceSpecJSI>(params);
 }
 
@@ -93,8 +90,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSString *, getColorScheme)
   return _currentColorScheme;
 }
 
-- (void)appearanceChanged:(NSNotification *)notification
-{
+- (void)appearanceChanged:(NSNotification *)notification {
   NSDictionary *userInfo = [notification userInfo];
   UITraitCollection *traitCollection = nil;
   if (userInfo) {
@@ -109,13 +105,11 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSString *, getColorScheme)
 
 #pragma mark - RCTEventEmitter
 
-- (NSArray<NSString *> *)supportedEvents
-{
+- (NSArray<NSString *> *)supportedEvents {
   return @[ @"appearanceChanged" ];
 }
 
-- (void)startObserving
-{
+- (void)startObserving {
   if (@available(iOS 13.0, *)) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appearanceChanged:)
@@ -124,8 +118,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSString *, getColorScheme)
   }
 }
 
-- (void)stopObserving
-{
+- (void)stopObserving {
   if (@available(iOS 13.0, *)) {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
   }

@@ -9,8 +9,7 @@
 
 @implementation RCTSafeAreaViewLocalData
 
-- (instancetype)initWithInsets:(UIEdgeInsets)insets
-{
+- (instancetype)initWithInsets:(UIEdgeInsets)insets {
   if (self = [super init]) {
     _insets = insets;
   }

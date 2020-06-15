@@ -12,8 +12,7 @@
 
 @implementation RCTRootShadowView
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _baseDirection = [[RCTI18nUtil sharedInstance] isRTL] ? YGDirectionRTL : YGDirectionLTR;
     _minimumSize = CGSizeZero;
@@ -23,8 +22,7 @@
   return self;
 }
 
-- (void)layoutWithAffectedShadowViews:(NSHashTable<RCTShadowView *> *)affectedShadowViews
-{
+- (void)layoutWithAffectedShadowViews:(NSHashTable<RCTShadowView *> *)affectedShadowViews {
   NSHashTable<NSString *> *other = [NSHashTable new];
 
   RCTLayoutContext layoutContext = {};

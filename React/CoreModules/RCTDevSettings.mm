@@ -63,13 +63,11 @@ void RCTDevSettingsSetEnabled(BOOL enabled)
   NSUserDefaults *_userDefaults;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   return [self initWithDefaultValues:nil];
 }
 
-- (instancetype)initWithDefaultValues:(NSDictionary *)defaultValues
-{
+- (instancetype)initWithDefaultValues:(NSDictionary *)defaultValues {
   if (self = [super init]) {
     _userDefaults = [NSUserDefaults standardUserDefaults];
     if (defaultValues) {
@@ -79,8 +77,7 @@ void RCTDevSettingsSetEnabled(BOOL enabled)
   return self;
 }
 
-- (void)updateSettingWithValue:(id)value forKey:(NSString *)key
-{
+- (void)updateSettingWithValue:(id)value forKey:(NSString *)key {
   RCTAssert((key != nil), @"%@", [NSString stringWithFormat:@"%@: Tried to update nil key", [self class]]);
 
   id currentValue = [self settingForKey:key];
@@ -95,13 +92,11 @@ void RCTDevSettingsSetEnabled(BOOL enabled)
   [_userDefaults setObject:_settings forKey:kRCTDevSettingsUserDefaultsKey];
 }
 
-- (id)settingForKey:(NSString *)key
-{
+- (id)settingForKey:(NSString *)key {
   return _settings[key];
 }
 
-- (void)_reloadWithDefaults:(NSDictionary *)defaultValues
-{
+- (void)_reloadWithDefaults:(NSDictionary *)defaultValues {
   NSDictionary *existingSettings = [_userDefaults objectForKey:kRCTDevSettingsUserDefaultsKey];
   _settings = existingSettings ? [existingSettings mutableCopy] : [NSMutableDictionary dictionary];
   for (NSString *key in [defaultValues keyEnumerator]) {
@@ -130,8 +125,7 @@ void RCTDevSettingsSetEnabled(BOOL enabled)
 
 RCT_EXPORT_MODULE()
 
-- (instancetype)init
-{
+- (instancetype)init {
   // Default behavior is to use NSUserDefaults with shake and hot loading enabled.
   NSDictionary *defaultValues = @{
     kRCTDevSettingShakeToShowDevMenu : @YES,
@@ -142,13 +136,11 @@ RCT_EXPORT_MODULE()
   return [self initWithDataSource:dataSource];
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
-- (instancetype)initWithDataSource:(id<RCTDevSettingsDataSource>)dataSource
-{
+- (instancetype)initWithDataSource:(id<RCTDevSettingsDataSource>)dataSource {
   if (self = [super init]) {
     _dataSource = dataSource;
 
@@ -160,8 +152,7 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   [super setBridge:bridge];
 
 #if ENABLE_PACKAGER_CONNECTION
@@ -195,35 +186,29 @@ RCT_EXPORT_MODULE()
   });
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
 #if ENABLE_PACKAGER_CONNECTION
   [[RCTPackagerConnection sharedPackagerConnection] removeHandler:_reloadToken];
 #endif
 }
 
-- (NSArray<NSString *> *)supportedEvents
-{
+- (NSArray<NSString *> *)supportedEvents {
   return @[ @"didPressMenuItem" ];
 }
 
-- (void)_updateSettingWithValue:(id)value forKey:(NSString *)key
-{
+- (void)_updateSettingWithValue:(id)value forKey:(NSString *)key {
   [_dataSource updateSettingWithValue:value forKey:key];
 }
 
-- (id)settingForKey:(NSString *)key
-{
+- (id)settingForKey:(NSString *)key {
   return [_dataSource settingForKey:key];
 }
 
-- (BOOL)isDeviceDebuggingAvailable
-{
+- (BOOL)isDeviceDebuggingAvailable {
 #if RCT_ENABLE_INSPECTOR
   return self.bridge.isInspectable;
 #else
@@ -231,8 +216,7 @@ RCT_EXPORT_MODULE()
 #endif // RCT_ENABLE_INSPECTOR
 }
 
-- (BOOL)isRemoteDebuggingAvailable
-{
+- (BOOL)isRemoteDebuggingAvailable {
   if (RCTTurboModuleEnabled()) {
     return NO;
   }
@@ -240,8 +224,7 @@ RCT_EXPORT_MODULE()
   return (jsDebuggingExecutorClass != nil);
 }
 
-- (BOOL)isHotLoadingAvailable
-{
+- (BOOL)isHotLoadingAvailable {
   return self.bridge.bundleURL && !self.bridge.bundleURL.fileURL; // Only works when running from server
 }
 
@@ -265,8 +248,7 @@ RCT_EXPORT_METHOD(setIsShakeToShowDevMenuEnabled : (BOOL)enabled)
   [self _updateSettingWithValue:@(enabled) forKey:kRCTDevSettingShakeToShowDevMenu];
 }
 
-- (BOOL)isShakeToShowDevMenuEnabled
-{
+- (BOOL)isShakeToShowDevMenuEnabled {
   return [[self settingForKey:kRCTDevSettingShakeToShowDevMenu] boolValue];
 }
 
@@ -276,13 +258,11 @@ RCT_EXPORT_METHOD(setIsDebuggingRemotely : (BOOL)enabled)
   [self _remoteDebugSettingDidChange];
 }
 
-- (BOOL)isDebuggingRemotely
-{
+- (BOOL)isDebuggingRemotely {
   return [[self settingForKey:kRCTDevSettingIsDebuggingRemotely] boolValue];
 }
 
-- (void)_remoteDebugSettingDidChange
-{
+- (void)_remoteDebugSettingDidChange {
   // This value is passed as a command-line argument, so fall back to reading from NSUserDefaults directly
   NSString *executorOverride = [[NSUserDefaults standardUserDefaults] stringForKey:kRCTDevSettingExecutorOverrideClass];
   Class executorOverrideClass = executorOverride ? NSClassFromString(executorOverride) : nil;
@@ -300,13 +280,11 @@ RCT_EXPORT_METHOD(setProfilingEnabled : (BOOL)enabled)
   [self _profilingSettingDidChange];
 }
 
-- (BOOL)isProfilingEnabled
-{
+- (BOOL)isProfilingEnabled {
   return [[self settingForKey:kRCTDevSettingProfilingEnabled] boolValue];
 }
 
-- (void)_profilingSettingDidChange
-{
+- (void)_profilingSettingDidChange {
   BOOL enabled = self.isProfilingEnabled;
   if (self.isHotLoadingAvailable && enabled != RCTProfileIsProfiling()) {
     if (enabled) {
@@ -336,8 +314,7 @@ RCT_EXPORT_METHOD(setHotLoadingEnabled : (BOOL)enabled)
   }
 }
 
-- (BOOL)isHotLoadingEnabled
-{
+- (BOOL)isHotLoadingEnabled {
   return [[self settingForKey:kRCTDevSettingHotLoadingEnabled] boolValue];
 }
 
@@ -364,23 +341,19 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
                                                            }]];
 }
 
-- (BOOL)isElementInspectorShown
-{
+- (BOOL)isElementInspectorShown {
   return [[self settingForKey:kRCTDevSettingIsInspectorShown] boolValue];
 }
 
-- (void)setIsPerfMonitorShown:(BOOL)isPerfMonitorShown
-{
+- (void)setIsPerfMonitorShown:(BOOL)isPerfMonitorShown {
   [self _updateSettingWithValue:@(isPerfMonitorShown) forKey:kRCTDevSettingIsPerfMonitorShown];
 }
 
-- (BOOL)isPerfMonitorShown
-{
+- (BOOL)isPerfMonitorShown {
   return [[self settingForKey:kRCTDevSettingIsPerfMonitorShown] boolValue];
 }
 
-- (void)setExecutorClass:(Class)executorClass
-{
+- (void)setExecutorClass:(Class)executorClass {
   _executorClass = executorClass;
   if (self.bridge.executorClass != executorClass) {
     // TODO (6929129): we can remove this special case test once we have better
@@ -396,15 +369,13 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
   }
 }
 
-- (void)addHandler:(id<RCTPackagerClientMethod>)handler forPackagerMethod:(NSString *)name
-{
+- (void)addHandler:(id<RCTPackagerClientMethod>)handler forPackagerMethod:(NSString *)name {
 #if ENABLE_PACKAGER_CONNECTION
   [[RCTPackagerConnection sharedPackagerConnection] addHandler:handler forMethod:name];
 #endif
 }
 
-- (void)setupHMRClientWithBundleURL:(NSURL *)bundleURL
-{
+- (void)setupHMRClientWithBundleURL:(NSURL *)bundleURL {
   if (bundleURL && !bundleURL.fileURL) { // isHotLoadingAvailable check
     NSString *const path = [bundleURL.path substringFromIndex:1]; // Strip initial slash.
     NSString *const host = bundleURL.host;
@@ -420,8 +391,7 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
   }
 }
 
-- (void)setupHMRClientWithAdditionalBundleURL:(NSURL *)bundleURL
-{
+- (void)setupHMRClientWithAdditionalBundleURL:(NSURL *)bundleURL {
   if (bundleURL && !bundleURL.fileURL) { // isHotLoadingAvailable check
     if (self.bridge) {
       [self.bridge enqueueJSCall:@"HMRClient"
@@ -440,14 +410,12 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
  *  Query the data source for all possible settings and make sure we're doing the right
  *  thing for the state of each setting.
  */
-- (void)_synchronizeAllSettings
-{
+- (void)_synchronizeAllSettings {
   [self _remoteDebugSettingDidChange];
   [self _profilingSettingDidChange];
 }
 
-- (void)jsLoaded:(NSNotification *)notification
-{
+- (void)jsLoaded:(NSNotification *)notification {
   if (notification.userInfo[@"bridge"] != self.bridge) {
     return;
   }
@@ -468,8 +436,7 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeDevSettingsSpecJSI>(params);
 }
 
@@ -482,63 +449,46 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
 
 @implementation RCTDevSettings
 
-- (instancetype)initWithDataSource:(id<RCTDevSettingsDataSource>)dataSource
-{
+- (instancetype)initWithDataSource:(id<RCTDevSettingsDataSource>)dataSource {
   return [super init];
 }
-- (BOOL)isHotLoadingAvailable
-{
+- (BOOL)isHotLoadingAvailable {
   return NO;
 }
-- (BOOL)isRemoteDebuggingAvailable
-{
+- (BOOL)isRemoteDebuggingAvailable {
   return NO;
 }
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
-- (id)settingForKey:(NSString *)key
-{
+- (id)settingForKey:(NSString *)key {
   return nil;
 }
-- (void)reload
-{
+- (void)reload {
 }
-- (void)reloadWithReason:(NSString *)reason
-{
+- (void)reloadWithReason:(NSString *)reason {
 }
-- (void)onFastRefresh
-{
+- (void)onFastRefresh {
 }
-- (void)setHotLoadingEnabled:(BOOL)isHotLoadingEnabled
-{
+- (void)setHotLoadingEnabled:(BOOL)isHotLoadingEnabled {
 }
-- (void)setIsDebuggingRemotely:(BOOL)isDebuggingRemotelyEnabled
-{
+- (void)setIsDebuggingRemotely:(BOOL)isDebuggingRemotelyEnabled {
 }
-- (void)setProfilingEnabled:(BOOL)isProfilingEnabled
-{
+- (void)setProfilingEnabled:(BOOL)isProfilingEnabled {
 }
-- (void)toggleElementInspector
-{
+- (void)toggleElementInspector {
 }
-- (void)setupHMRClientWithBundleURL:(NSURL *)bundleURL
-{
+- (void)setupHMRClientWithBundleURL:(NSURL *)bundleURL {
 }
-- (void)setupHMRClientWithAdditionalBundleURL:(NSURL *)bundleURL
-{
+- (void)setupHMRClientWithAdditionalBundleURL:(NSURL *)bundleURL {
 }
-- (void)addMenuItem:(NSString *)title
-{
+- (void)addMenuItem:(NSString *)title {
 }
-- (void)setIsShakeToShowDevMenuEnabled:(BOOL)enabled
-{
+- (void)setIsShakeToShowDevMenuEnabled:(BOOL)enabled {
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeDevSettingsSpecJSI>(params);
 }
 
@@ -548,8 +498,7 @@ RCT_EXPORT_METHOD(addMenuItem : (NSString *)title)
 
 @implementation RCTBridge (RCTDevSettings)
 
-- (RCTDevSettings *)devSettings
-{
+- (RCTDevSettings *)devSettings {
 #if RCT_DEV_MENU
   return devSettingsMenuEnabled ? [self moduleForClass:[RCTDevSettings class]] : nil;
 #else

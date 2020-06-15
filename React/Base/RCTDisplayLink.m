@@ -25,8 +25,7 @@
   NSRunLoop *_runLoop;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if ((self = [super init])) {
     _frameUpdateObservers = [NSMutableSet new];
     _jsDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(_jsThreadUpdate:)];
@@ -35,8 +34,7 @@
   return self;
 }
 
-- (void)registerModuleForFrameUpdates:(id<RCTBridgeModule>)module withModuleData:(RCTModuleData *)moduleData
-{
+- (void)registerModuleForFrameUpdates:(id<RCTBridgeModule>)module withModuleData:(RCTModuleData *)moduleData {
   if (![moduleData.moduleClass conformsToProtocol:@protocol(RCTFrameUpdateObserver)] ||
       [_frameUpdateObservers containsObject:moduleData]) {
     return;
@@ -78,24 +76,20 @@
   }
 }
 
-- (void)addToRunLoop:(NSRunLoop *)runLoop
-{
+- (void)addToRunLoop:(NSRunLoop *)runLoop {
   _runLoop = runLoop;
   [_jsDisplayLink addToRunLoop:runLoop forMode:NSRunLoopCommonModes];
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [self invalidate];
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   [_jsDisplayLink invalidate];
 }
 
-- (void)dispatchBlock:(dispatch_block_t)block queue:(dispatch_queue_t)queue
-{
+- (void)dispatchBlock:(dispatch_block_t)block queue:(dispatch_queue_t)queue {
   if (queue == RCTJSThread) {
     block();
   } else if (queue) {
@@ -103,8 +97,7 @@
   }
 }
 
-- (void)_jsThreadUpdate:(CADisplayLink *)displayLink
-{
+- (void)_jsThreadUpdate:(CADisplayLink *)displayLink {
   RCTAssertRunLoop();
 
   RCT_PROFILE_BEGIN_EVENT(RCTProfileTagAlways, @"-[RCTDisplayLink _jsThreadUpdate:]", nil);
@@ -134,8 +127,7 @@
   RCT_PROFILE_END_EVENT(RCTProfileTagAlways, @"objc_call");
 }
 
-- (void)updateJSDisplayLinkState
-{
+- (void)updateJSDisplayLinkState {
   RCTAssertRunLoop();
 
   BOOL pauseDisplayLink = YES;

@@ -11,8 +11,7 @@
 
 @implementation RCTErrorInfo
 
-- (instancetype)initWithErrorMessage:(NSString *)errorMessage stack:(NSArray<RCTJSStackFrame *> *)stack
-{
+- (instancetype)initWithErrorMessage:(NSString *)errorMessage stack:(NSArray<RCTJSStackFrame *> *)stack {
   self = [super init];
   if (self) {
     _errorMessage = [errorMessage copy];

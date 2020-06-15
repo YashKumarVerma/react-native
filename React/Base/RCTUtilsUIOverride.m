@@ -11,18 +11,15 @@
 
 static UIViewController *_presentedViewController = nil;
 
-+ (void)setPresentedViewController:(UIViewController *)presentedViewController
-{
++ (void)setPresentedViewController:(UIViewController *)presentedViewController {
   _presentedViewController = presentedViewController;
 }
 
-+ (UIViewController *)presentedViewController
-{
++ (UIViewController *)presentedViewController {
   return _presentedViewController;
 }
 
-+ (BOOL)hasPresentedViewController
-{
++ (BOOL)hasPresentedViewController {
   return _presentedViewController != nil;
 }
 

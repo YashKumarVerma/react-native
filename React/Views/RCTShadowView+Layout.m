@@ -15,8 +15,7 @@
 
 #pragma mark - Computed Layout-Inferred Metrics
 
-- (UIEdgeInsets)paddingAsInsets
-{
+- (UIEdgeInsets)paddingAsInsets {
   YGNodeRef yogaNode = self.yogaNode;
   return (UIEdgeInsets){RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetPadding(yogaNode, YGEdgeTop)),
                         RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetPadding(yogaNode, YGEdgeLeft)),
@@ -24,8 +23,7 @@
                         RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetPadding(yogaNode, YGEdgeRight))};
 }
 
-- (UIEdgeInsets)borderAsInsets
-{
+- (UIEdgeInsets)borderAsInsets {
   YGNodeRef yogaNode = self.yogaNode;
   return (UIEdgeInsets){RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetBorder(yogaNode, YGEdgeTop)),
                         RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetBorder(yogaNode, YGEdgeLeft)),
@@ -33,8 +31,7 @@
                         RCTCoreGraphicsFloatFromYogaFloat(YGNodeLayoutGetBorder(yogaNode, YGEdgeRight))};
 }
 
-- (UIEdgeInsets)compoundInsets
-{
+- (UIEdgeInsets)compoundInsets {
   UIEdgeInsets borderAsInsets = self.borderAsInsets;
   UIEdgeInsets paddingAsInsets = self.paddingAsInsets;
 
@@ -44,25 +41,21 @@
                         borderAsInsets.right + paddingAsInsets.right};
 }
 
-- (CGSize)availableSize
-{
+- (CGSize)availableSize {
   return self.layoutMetrics.contentFrame.size;
 }
 
-- (CGRect)contentFrame
-{
+- (CGRect)contentFrame {
   return self.layoutMetrics.contentFrame;
 }
 
 #pragma mark - Dirty Propagation Control
 
-- (void)dirtyLayout
-{
+- (void)dirtyLayout {
   // The default implementation does nothing.
 }
 
-- (void)clearLayout
-{
+- (void)clearLayout {
   // The default implementation does nothing.
 }
 

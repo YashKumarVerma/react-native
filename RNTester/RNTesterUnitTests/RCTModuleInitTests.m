@@ -27,7 +27,6 @@ RCT_EXPORT_MODULE()
 
 @end
 
-
 @interface RCTTestCustomInitModule : NSObject <RCTBridgeModule>
 
 @property (nonatomic, assign) BOOL initializedOnMainQueue;
@@ -41,8 +40,7 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_MODULE()
 
-- (id)init
-{
+- (id)init {
   if ((self = [super init])) {
     _initializedOnMainQueue = RCTIsMainQueue();
   }
@@ -50,7 +48,6 @@ RCT_EXPORT_MODULE()
 }
 
 @end
-
 
 @interface RCTTestCustomSetBridgeModule : NSObject <RCTBridgeModule>
 
@@ -65,14 +62,12 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_MODULE()
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   _bridge = bridge;
   _setBridgeOnMainQueue = RCTIsMainQueue();
 }
 
 @end
-
 
 @interface RCTTestExportConstantsModule : NSObject <RCTBridgeModule>
 
@@ -88,20 +83,17 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_MODULE()
 
-- (NSDictionary<NSString *, id> *)constantsToExport
-{
+- (NSDictionary<NSString *, id> *)constantsToExport {
   return [self getConstants];
 }
 
-- (NSDictionary<NSString *, id> *)getConstants
-{
+- (NSDictionary<NSString *, id> *)getConstants {
   _exportedConstants = YES;
   _exportedConstantsOnMainQueue = RCTIsMainQueue();
-  return @{ @"foo": @"bar" };
+  return @{@"foo" : @"bar"};
 }
 
 @end
-
 
 @interface RCTLazyInitModule : NSObject <RCTBridgeModule>
 @end
@@ -115,9 +107,7 @@ RCT_EXPORT_MODULE()
 
 @end
 
-
-@interface RCTModuleInitTests : XCTestCase <RCTBridgeDelegate>
-{
+@interface RCTModuleInitTests : XCTestCase <RCTBridgeDelegate> {
   RCTBridge *_bridge;
   BOOL _injectedModuleInitNotificationSent;
   BOOL _customInitModuleNotificationSent;
@@ -132,22 +122,22 @@ RCT_EXPORT_MODULE()
 
 @implementation RCTModuleInitTests
 
-- (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge
-{
+- (NSURL *)sourceURLForBridge:(__unused RCTBridge *)bridge {
   NSBundle *bundle = [NSBundle bundleForClass:[self class]];
   return [bundle URLForResource:@"RNTesterUnitTestsBundle" withExtension:@"js"];
 }
 
-- (NSArray *)extraModulesForBridge:(__unused RCTBridge *)bridge
-{
-  return @[_injectedModule];
+- (NSArray *)extraModulesForBridge:(__unused RCTBridge *)bridge {
+  return @[ _injectedModule ];
 }
 
-- (void)setUp
-{
+- (void)setUp {
   [super setUp];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moduleDidInit:) name:RCTDidInitializeModuleNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(moduleDidInit:)
+                                               name:RCTDidInitializeModuleNotification
+                                             object:nil];
 
   _injectedModuleInitNotificationSent = NO;
   _customInitModuleNotificationSent = NO;
@@ -159,8 +149,7 @@ RCT_EXPORT_MODULE()
   _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
 }
 
-- (void)tearDown
-{
+- (void)tearDown {
   [super tearDown];
 
   [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTDidInitializeModuleNotification object:nil];
@@ -169,8 +158,7 @@ RCT_EXPORT_MODULE()
   _bridge = nil;
 }
 
-- (void)moduleDidInit:(NSNotification *)note
-{
+- (void)moduleDidInit:(NSNotification *)note {
   id<RCTBridgeModule> module = note.userInfo[@"module"];
   if ([module isKindOfClass:[RCTTestInjectedModule class]]) {
     _injectedModuleInitNotificationSent = YES;
@@ -186,8 +174,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)testInjectedModulesInitializedDuringBridgeInit
-{
+- (void)testInjectedModulesInitializedDuringBridgeInit {
   XCTAssertEqual(_injectedModule, [_bridge moduleForClass:[RCTTestInjectedModule class]]);
   XCTAssertEqual(_injectedModule.bridge, _bridge.batchedBridge);
   XCTAssertNotNil(_injectedModule.methodQueue);
@@ -195,8 +182,7 @@ RCT_EXPORT_MODULE()
   XCTAssertTrue(_injectedModuleInitNotificationSent);
 }
 
-- (void)testCustomInitModuleInitializedAtBridgeStartup
-{
+- (void)testCustomInitModuleInitializedAtBridgeStartup {
   RCT_RUN_RUNLOOP_WHILE(!_customInitModuleNotificationSent);
   XCTAssertTrue(_customInitModuleNotificationSent);
   RCTTestCustomInitModule *module = [_bridge moduleForClass:[RCTTestCustomInitModule class]];
@@ -205,8 +191,7 @@ RCT_EXPORT_MODULE()
   XCTAssertNotNil(module.methodQueue);
 }
 
-- (void)testCustomSetBridgeModuleInitializedAtBridgeStartup
-{
+- (void)testCustomSetBridgeModuleInitializedAtBridgeStartup {
   XCTAssertFalse(_customSetBridgeModuleNotificationSent);
 
   __block RCTTestCustomSetBridgeModule *module;
@@ -221,8 +206,7 @@ RCT_EXPORT_MODULE()
   XCTAssertNotNil(module.methodQueue);
 }
 
-- (void)testExportConstantsModuleInitializedAtBridgeStartup
-{
+- (void)testExportConstantsModuleInitializedAtBridgeStartup {
   RCT_RUN_RUNLOOP_WHILE(!_exportConstantsModuleNotificationSent);
   XCTAssertTrue(_exportConstantsModuleNotificationSent);
   RCTTestExportConstantsModule *module = [_bridge moduleForClass:[RCTTestExportConstantsModule class]];
@@ -233,8 +217,7 @@ RCT_EXPORT_MODULE()
   XCTAssertNotNil(module.methodQueue);
 }
 
-- (void)testLazyInitModuleNotInitializedDuringBridgeInit
-{
+- (void)testLazyInitModuleNotInitializedDuringBridgeInit {
   XCTAssertFalse(_lazyInitModuleNotificationSent);
 
   __block RCTLazyInitModule *module;

@@ -18,13 +18,11 @@ using namespace facebook;
 
 RCT_EXPORT_MODULE();
 
-- (std::shared_ptr<react::TurboModule>)getTurboModuleWithJsInvoker:(std::shared_ptr<react::CallInvoker>)jsInvoker
-{
+- (std::shared_ptr<react::TurboModule>)getTurboModuleWithJsInvoker:(std::shared_ptr<react::CallInvoker>)jsInvoker {
   return std::make_shared<react::SampleTurboCxxModule>(jsInvoker);
 }
 
-- (std::unique_ptr<xplat::module::CxxModule>)createModule
-{
+- (std::unique_ptr<xplat::module::CxxModule>)createModule {
   return nullptr;
 }
 
@@ -34,8 +32,7 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_MODULE();
 
-- (std::unique_ptr<xplat::module::CxxModule>)createModule
-{
+- (std::unique_ptr<xplat::module::CxxModule>)createModule {
   return std::make_unique<react::SampleTurboCxxModuleLegacyImpl>();
 }
 

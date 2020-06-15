@@ -16,13 +16,11 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
-  RCTWrapperViewControllerHostingView *contentViewControllerHostingView =
-    [RCTWrapperViewControllerHostingView new];
+- (UIView *)view {
+  RCTWrapperViewControllerHostingView *contentViewControllerHostingView = [RCTWrapperViewControllerHostingView new];
 
   contentViewControllerHostingView.contentViewController =
-    [[RCTWrapperReactRootViewController alloc] initWithBridge:self.bridge];
+      [[RCTWrapperReactRootViewController alloc] initWithBridge:self.bridge];
 
   RCTWrapperView *wrapperView = [super view];
   wrapperView.contentView = contentViewControllerHostingView;

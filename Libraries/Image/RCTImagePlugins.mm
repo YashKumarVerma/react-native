@@ -16,13 +16,14 @@
 #import <string>
 #import <unordered_map>
 
-Class RCTImageClassProvider(const char *name) {
+Class RCTImageClassProvider(const char *name)
+{
   static std::unordered_map<std::string, Class (*)(void)> sCoreModuleClassMap = {
-    {"GIFImageDecoder", RCTGIFImageDecoderCls},
-    {"ImageEditingManager", RCTImageEditingManagerCls},
-    {"ImageLoader", RCTImageLoaderCls},
-    {"ImageStoreManager", RCTImageStoreManagerCls},
-    {"LocalAssetImageLoader", RCTLocalAssetImageLoaderCls},
+      {"GIFImageDecoder", RCTGIFImageDecoderCls},
+      {"ImageEditingManager", RCTImageEditingManagerCls},
+      {"ImageLoader", RCTImageLoaderCls},
+      {"ImageStoreManager", RCTImageStoreManagerCls},
+      {"LocalAssetImageLoader", RCTLocalAssetImageLoaderCls},
   };
 
   auto p = sCoreModuleClassMap.find(name);

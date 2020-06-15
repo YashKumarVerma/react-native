@@ -16,8 +16,7 @@
 @synthesize eventName = _eventName;
 @synthesize viewTag = _viewTag;
 
-- (instancetype)initWithName:(NSString *)name viewTag:(NSNumber *)viewTag body:(NSDictionary *)body
-{
+- (instancetype)initWithName:(NSString *)name viewTag:(NSNumber *)viewTag body:(NSDictionary *)body {
   if (self = [super init]) {
     NSMutableDictionary *mutableBody = [NSMutableDictionary dictionaryWithDictionary:body];
     mutableBody[@"target"] = viewTag;
@@ -31,18 +30,15 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (NSArray *)arguments
-{
+- (NSArray *)arguments {
   return _arguments;
 }
 
-- (BOOL)canCoalesce
-{
+- (BOOL)canCoalesce {
   return NO;
 }
 
-+ (NSString *)moduleDotMethod
-{
++ (NSString *)moduleDotMethod {
   return @"RCTEventEmitter.receiveEvent";
 }
 

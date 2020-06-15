@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/components/art/ARTGroupShadowNode.h>
 #include <Glog/logging.h>
 #include <react/components/art/ARTElement.h>
 #include <react/components/art/ARTGroup.h>
+#include <react/components/art/ARTGroupShadowNode.h>
 
 namespace facebook {
 namespace react {

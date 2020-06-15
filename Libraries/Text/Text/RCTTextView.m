@@ -14,8 +14,7 @@
 
 #import <React/RCTTextShadowView.h>
 
-@implementation RCTTextView
-{
+@implementation RCTTextView {
   CAShapeLayer *_highlightLayer;
   UILongPressGestureRecognizer *_longPressGestureRecognizer;
 
@@ -24,8 +23,7 @@
   CGRect _contentFrame;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     self.isAccessibilityElement = YES;
     self.accessibilityTraits |= UIAccessibilityTraitStaticText;
@@ -35,16 +33,14 @@
   return self;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   NSString *superDescription = super.description;
   NSRange semicolonRange = [superDescription rangeOfString:@";"];
   NSString *replacement = [NSString stringWithFormat:@"; reactTag: %@; text: %@", self.reactTag, _textStorage.string];
   return [superDescription stringByReplacingCharactersInRange:semicolonRange withString:replacement];
 }
 
-- (void)setSelectable:(BOOL)selectable
-{
+- (void)setSelectable:(BOOL)selectable {
   if (_selectable == selectable) {
     return;
   }
@@ -53,14 +49,12 @@
 
   if (_selectable) {
     [self enableContextMenu];
-  }
-  else {
+  } else {
     [self disableContextMenu];
   }
 }
 
-- (void)reactSetFrame:(CGRect)frame
-{
+- (void)reactSetFrame:(CGRect)frame {
   // Text looks super weird if its frame is animated.
   // This disables the frame animation, without affecting opacity, etc.
   [UIView performWithoutAnimation:^{
@@ -68,15 +62,13 @@
   }];
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   // Do nothing, as subviews are managed by `setTextStorage:` method
 }
 
 - (void)setTextStorage:(NSTextStorage *)textStorage
           contentFrame:(CGRect)contentFrame
-       descendantViews:(NSArray<UIView *> *)descendantViews
-{
+       descendantViews:(NSArray<UIView *> *)descendantViews {
   _textStorage = textStorage;
   _contentFrame = contentFrame;
 
@@ -94,13 +86,11 @@
   [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
   [super drawRect:rect];
   if (!_textStorage) {
     return;
   }
-
 
   NSLayoutManager *layoutManager = _textStorage.layoutManagers.firstObject;
   NSTextContainer *textContainer = layoutManager.textContainers.firstObject;
@@ -110,31 +100,31 @@
   [layoutManager drawGlyphsForGlyphRange:glyphRange atPoint:_contentFrame.origin];
 
   __block UIBezierPath *highlightPath = nil;
-  NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange
-                                                     actualGlyphRange:NULL];
-  [_textStorage enumerateAttribute:RCTTextAttributesIsHighlightedAttributeName
-                           inRange:characterRange
-                           options:0
-                        usingBlock:
-    ^(NSNumber *value, NSRange range, __unused BOOL *stop) {
-      if (!value.boolValue) {
-        return;
-      }
+  NSRange characterRange = [layoutManager characterRangeForGlyphRange:glyphRange actualGlyphRange:NULL];
+  [_textStorage
+      enumerateAttribute:RCTTextAttributesIsHighlightedAttributeName
+                 inRange:characterRange
+                 options:0
+              usingBlock:^(NSNumber *value, NSRange range, __unused BOOL *stop) {
+                if (!value.boolValue) {
+                  return;
+                }
 
-      [layoutManager enumerateEnclosingRectsForGlyphRange:range
-                                 withinSelectedGlyphRange:range
-                                          inTextContainer:textContainer
-                                               usingBlock:
-        ^(CGRect enclosingRect, __unused BOOL *anotherStop) {
-          UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2) cornerRadius:2];
-          if (highlightPath) {
-            [highlightPath appendPath:path];
-          } else {
-            highlightPath = path;
-          }
-        }
-      ];
-  }];
+                [layoutManager
+                    enumerateEnclosingRectsForGlyphRange:range
+                                withinSelectedGlyphRange:range
+                                         inTextContainer:textContainer
+                                              usingBlock:^(CGRect enclosingRect, __unused BOOL *anotherStop) {
+                                                UIBezierPath *path = [UIBezierPath
+                                                    bezierPathWithRoundedRect:CGRectInset(enclosingRect, -2, -2)
+                                                                 cornerRadius:2];
+                                                if (highlightPath) {
+                                                  [highlightPath appendPath:path];
+                                                } else {
+                                                  highlightPath = path;
+                                                }
+                                              }];
+              }];
 
   if (highlightPath) {
     if (!_highlightLayer) {
@@ -150,9 +140,7 @@
   }
 }
 
-
-- (NSNumber *)reactTagAtPoint:(CGPoint)point
-{
+- (NSNumber *)reactTagAtPoint:(CGPoint)point {
   NSNumber *reactTag = self.reactTag;
 
   CGFloat fraction;
@@ -164,15 +152,15 @@
 
   // If the point is not before (fraction == 0.0) the first character and not
   // after (fraction == 1.0) the last character, then the attribute is valid.
-  if (_textStorage.length > 0 && (fraction > 0 || characterIndex > 0) && (fraction < 1 || characterIndex < _textStorage.length - 1)) {
+  if (_textStorage.length > 0 && (fraction > 0 || characterIndex > 0) &&
+      (fraction < 1 || characterIndex < _textStorage.length - 1)) {
     reactTag = [_textStorage attribute:RCTTextAttributesTagAttributeName atIndex:characterIndex effectiveRange:NULL];
   }
 
   return reactTag;
 }
 
-- (void)didMoveToWindow
-{
+- (void)didMoveToWindow {
   [super didMoveToWindow];
 
   if (!self.window) {
@@ -188,8 +176,7 @@
 
 #pragma mark - Accessibility
 
-- (NSString *)accessibilityLabel
-{
+- (NSString *)accessibilityLabel {
   NSString *superAccessibilityLabel = [super accessibilityLabel];
   if (superAccessibilityLabel) {
     return superAccessibilityLabel;
@@ -199,20 +186,18 @@
 
 #pragma mark - Context Menu
 
-- (void)enableContextMenu
-{
-  _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+- (void)enableContextMenu {
+  _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(handleLongPress:)];
   [self addGestureRecognizer:_longPressGestureRecognizer];
 }
 
-- (void)disableContextMenu
-{
+- (void)disableContextMenu {
   [self removeGestureRecognizer:_longPressGestureRecognizer];
   _longPressGestureRecognizer = nil;
 }
 
-- (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
-{
+- (void)handleLongPress:(UILongPressGestureRecognizer *)gesture {
   // TODO: Adopt showMenuFromRect (necessary for UIKitForMac)
 #if !TARGET_OS_TV && !TARGET_OS_UIKITFORMAC
   UIMenuController *menuController = [UIMenuController sharedMenuController];
@@ -230,13 +215,11 @@
 #endif
 }
 
-- (BOOL)canBecomeFirstResponder
-{
+- (BOOL)canBecomeFirstResponder {
   return _selectable;
 }
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
   if (_selectable && action == @selector(copy:)) {
     return YES;
   }
@@ -244,15 +227,14 @@
   return [self.nextResponder canPerformAction:action withSender:sender];
 }
 
-- (void)copy:(id)sender
-{
+- (void)copy:(id)sender {
 #if !TARGET_OS_TV
   NSAttributedString *attributedText = _textStorage;
 
   NSMutableDictionary *item = [NSMutableDictionary new];
 
   NSData *rtf = [attributedText dataFromRange:NSMakeRange(0, attributedText.length)
-                           documentAttributes:@{NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType}
+                           documentAttributes:@{NSDocumentTypeDocumentAttribute : NSRTFDTextDocumentType}
                                         error:nil];
 
   if (rtf) {
@@ -262,7 +244,7 @@
   [item setObject:attributedText.string forKey:(id)kUTTypeUTF8PlainText];
 
   UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-  pasteboard.items = @[item];
+  pasteboard.items = @[ item ];
 #endif
 }
 

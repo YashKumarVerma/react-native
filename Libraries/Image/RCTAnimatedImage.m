@@ -26,8 +26,7 @@
   NSArray<RCTGIFCoderFrame *> *_frames;
 }
 
-- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale
-{
+- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale {
   if (self = [super init]) {
     CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
     if (!imageSource) {
@@ -49,14 +48,16 @@
     }
     self = [super initWithCGImage:image.CGImage scale:MAX(scale, 1) orientation:image.imageOrientation];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveMemoryWarning:)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification
+                                               object:nil];
   }
 
   return self;
 }
 
-- (BOOL)scanAndCheckFramesValidWithSource:(CGImageSourceRef)imageSource
-{
+- (BOOL)scanAndCheckFramesValidWithSource:(CGImageSourceRef)imageSource {
   if (!imageSource) {
     return NO;
   }
@@ -78,8 +79,7 @@
   return YES;
 }
 
-- (NSUInteger)imageLoopCountWithSource:(CGImageSourceRef)source
-{
+- (NSUInteger)imageLoopCountWithSource:(CGImageSourceRef)source {
   NSUInteger loopCount = 1;
   NSDictionary *imageProperties = (__bridge_transfer NSDictionary *)CGImageSourceCopyProperties(source, nil);
   NSDictionary *gifProperties = imageProperties[(__bridge NSString *)kCGImagePropertyGIFDictionary];
@@ -96,8 +96,7 @@
   return loopCount;
 }
 
-- (float)frameDurationAtIndex:(NSUInteger)index source:(CGImageSourceRef)source
-{
+- (float)frameDurationAtIndex:(NSUInteger)index source:(CGImageSourceRef)source {
   float frameDuration = 0.1f;
   CFDictionaryRef cfFrameProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil);
   if (!cfFrameProperties) {
@@ -120,26 +119,22 @@
   return frameDuration;
 }
 
-- (NSUInteger)animatedImageLoopCount
-{
+- (NSUInteger)animatedImageLoopCount {
   return _loopCount;
 }
 
-- (NSUInteger)animatedImageFrameCount
-{
+- (NSUInteger)animatedImageFrameCount {
   return _frameCount;
 }
 
-- (NSTimeInterval)animatedImageDurationAtIndex:(NSUInteger)index
-{
+- (NSTimeInterval)animatedImageDurationAtIndex:(NSUInteger)index {
   if (index >= _frameCount) {
     return 0;
   }
   return _frames[index].duration;
 }
 
-- (UIImage *)animatedImageFrameAtIndex:(NSUInteger)index
-{
+- (UIImage *)animatedImageFrameAtIndex:(NSUInteger)index {
   CGImageRef imageRef = CGImageSourceCreateImageAtIndex(_imageSource, index, NULL);
   if (!imageRef) {
     return nil;
@@ -149,8 +144,7 @@
   return image;
 }
 
-- (void)didReceiveMemoryWarning:(NSNotification *)notification
-{
+- (void)didReceiveMemoryWarning:(NSNotification *)notification {
   if (_imageSource) {
     for (size_t i = 0; i < _frameCount; i++) {
       CGImageSourceRemoveCacheAtIndex(_imageSource, i);
@@ -158,8 +152,7 @@
   }
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   if (_imageSource) {
     CFRelease(_imageSource);
     _imageSource = NULL;

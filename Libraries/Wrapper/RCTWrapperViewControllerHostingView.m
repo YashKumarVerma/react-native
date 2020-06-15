@@ -21,13 +21,11 @@
 
 @implementation UIViewController (Children)
 
-- (BOOL)isAttached
-{
+- (BOOL)isAttached {
   return self.parentViewController != nil;
 }
 
-- (void)attachChildViewController:(UIViewController *)childViewController toContainerView:(UIView *)containerView
-{
+- (void)attachChildViewController:(UIViewController *)childViewController toContainerView:(UIView *)containerView {
   [self addChildViewController:childViewController];
   // `[childViewController willMoveToParentViewController:self]` is calling automatically
   [containerView addSubview:childViewController.view];
@@ -40,9 +38,8 @@
   [childViewController endAppearanceTransition];
 }
 
-- (void)detachChildViewController:(UIViewController *)childViewController
-{
-  [childViewController beginAppearanceTransition:false animated: false];
+- (void)detachChildViewController:(UIViewController *)childViewController {
+  [childViewController beginAppearanceTransition:false animated:false];
   [childViewController endAppearanceTransition];
 
   [childViewController willMoveToParentViewController:nil];
@@ -59,14 +56,11 @@
 
 #pragma mark - `contentViewController`
 
-- (nullable UIViewController *)contentViewController
-{
+- (nullable UIViewController *)contentViewController {
   return _contentViewController;
 }
 
-- (void)setContentViewController:(UIViewController *)contentViewController
-{
-
+- (void)setContentViewController:(UIViewController *)contentViewController {
   if (_contentViewController) {
     [self detachContentViewControllerIfNeeded];
   }
@@ -80,8 +74,7 @@
 
 #pragma mark - Attaching and Detaching
 
-- (void)attachContentViewControllerIfNeeded
-{
+- (void)attachContentViewControllerIfNeeded {
   if (self.contentViewController.isAttached) {
     return;
   }
@@ -89,8 +82,7 @@
   [self.reactViewController attachChildViewController:self.contentViewController toContainerView:self];
 }
 
-- (void)detachContentViewControllerIfNeeded
-{
+- (void)detachContentViewControllerIfNeeded {
   if (!self.contentViewController.isAttached) {
     return;
   }
@@ -100,34 +92,29 @@
 
 #pragma mark - Life cycle
 
-- (void)willMoveToWindow:(UIWindow *)newWindow
-{
+- (void)willMoveToWindow:(UIWindow *)newWindow {
   if (newWindow == nil) {
     [self detachContentViewControllerIfNeeded];
   }
 }
 
-- (void)didMoveToWindow
-{
+- (void)didMoveToWindow {
   [super didMoveToWindow];
   [self attachContentViewControllerIfNeeded];
 }
 
 #pragma mark - Layout
 
-- (void)setNeedsLayout
-{
+- (void)setNeedsLayout {
   [super setNeedsLayout];
   [self.superview setNeedsLayout];
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   return self.contentViewController.view.intrinsicContentSize;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   return [self.contentViewController.view sizeThatFits:size];
 }
 

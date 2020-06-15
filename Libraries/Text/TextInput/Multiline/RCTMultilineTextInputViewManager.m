@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#import <React/RCTMultilineTextInputViewManager.h>
 #import <React/RCTMultilineTextInputView.h>
+#import <React/RCTMultilineTextInputViewManager.h>
 
 @implementation RCTMultilineTextInputViewManager
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [[RCTMultilineTextInputView alloc] initWithBridge:self.bridge];
 }
 

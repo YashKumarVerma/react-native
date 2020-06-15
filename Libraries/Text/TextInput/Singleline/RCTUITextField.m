@@ -7,18 +7,17 @@
 
 #import <React/RCTUITextField.h>
 
-#import <React/RCTUtils.h>
-#import <React/UIView+React.h>
 #import <React/RCTBackedTextInputDelegateAdapter.h>
 #import <React/RCTTextAttributes.h>
+#import <React/RCTUtils.h>
+#import <React/UIView+React.h>
 
 @implementation RCTUITextField {
   RCTBackedTextFieldDelegateAdapter *_textInputDelegateAdapter;
   NSDictionary<NSAttributedStringKey, id> *_defaultTextAttributes;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(_textDidChange)
@@ -32,42 +31,37 @@
   return self;
 }
 
-- (void)_textDidChange
-{
+- (void)_textDidChange {
   _textWasPasted = NO;
 }
 
 #pragma mark - Accessibility
 
-- (void)setIsAccessibilityElement:(BOOL)isAccessibilityElement
-{
+- (void)setIsAccessibilityElement:(BOOL)isAccessibilityElement {
   // UITextField is accessible by default (some nested views are) and disabling that is not supported.
   // On iOS accessible elements cannot be nested, therefore enabling accessibility for some container view
-  // (even in a case where this view is a part of public API of TextInput on iOS) shadows some features implemented inside the component.
+  // (even in a case where this view is a part of public API of TextInput on iOS) shadows some features implemented
+  // inside the component.
 }
 
 #pragma mark - Properties
 
-- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset
-{
+- (void)setTextContainerInset:(UIEdgeInsets)textContainerInset {
   _textContainerInset = textContainerInset;
   [self setNeedsLayout];
 }
 
-- (void)setPlaceholder:(NSString *)placeholder
-{
+- (void)setPlaceholder:(NSString *)placeholder {
   [super setPlaceholder:placeholder];
   [self _updatePlaceholder];
 }
 
-- (void)setPlaceholderColor:(UIColor *)placeholderColor
-{
+- (void)setPlaceholderColor:(UIColor *)placeholderColor {
   _placeholderColor = placeholderColor;
   [self _updatePlaceholder];
 }
 
-- (void)setDefaultTextAttributes:(NSDictionary<NSAttributedStringKey, id> *)defaultTextAttributes
-{
+- (void)setDefaultTextAttributes:(NSDictionary<NSAttributedStringKey, id> *)defaultTextAttributes {
   if ([_defaultTextAttributes isEqualToDictionary:defaultTextAttributes]) {
     return;
   }
@@ -77,29 +71,24 @@
   [self _updatePlaceholder];
 }
 
-- (NSDictionary<NSAttributedStringKey, id> *)defaultTextAttributes
-{
+- (NSDictionary<NSAttributedStringKey, id> *)defaultTextAttributes {
   return _defaultTextAttributes;
 }
 
-- (void)_updatePlaceholder
-{
+- (void)_updatePlaceholder {
   self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder ?: @""
                                                                attributes:[self _placeholderTextAttributes]];
 }
 
-- (BOOL)isEditable
-{
+- (BOOL)isEditable {
   return self.isEnabled;
 }
 
-- (void)setEditable:(BOOL)editable
-{
+- (void)setEditable:(BOOL)editable {
   self.enabled = editable;
 }
 
-- (void)setSecureTextEntry:(BOOL)secureTextEntry
-{
+- (void)setSecureTextEntry:(BOOL)secureTextEntry {
   if (self.secureTextEntry == secureTextEntry) {
     return;
   }
@@ -116,9 +105,9 @@
 
 #pragma mark - Placeholder
 
-- (NSDictionary<NSAttributedStringKey, id> *)_placeholderTextAttributes
-{
-  NSMutableDictionary<NSAttributedStringKey, id> *textAttributes = [_defaultTextAttributes mutableCopy] ?: [NSMutableDictionary new];
+- (NSDictionary<NSAttributedStringKey, id> *)_placeholderTextAttributes {
+  NSMutableDictionary<NSAttributedStringKey, id> *textAttributes =
+      [_defaultTextAttributes mutableCopy] ?: [NSMutableDictionary new];
 
   if (self.placeholderColor) {
     [textAttributes setValue:self.placeholderColor forKey:NSForegroundColorAttributeName];
@@ -131,8 +120,7 @@
 
 #pragma mark - Context Menu
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
   if (_contextMenuHidden) {
     return NO;
   }
@@ -142,8 +130,7 @@
 
 #pragma mark - Caret Manipulation
 
-- (CGRect)caretRectForPosition:(UITextPosition *)position
-{
+- (CGRect)caretRectForPosition:(UITextPosition *)position {
   if (_caretHidden) {
     return CGRectZero;
   }
@@ -153,13 +140,11 @@
 
 #pragma mark - Positioning Overrides
 
-- (CGRect)textRectForBounds:(CGRect)bounds
-{
+- (CGRect)textRectForBounds:(CGRect)bounds {
   return UIEdgeInsetsInsetRect([super textRectForBounds:bounds], _textContainerInset);
 }
 
-- (CGRect)editingRectForBounds:(CGRect)bounds
-{
+- (CGRect)editingRectForBounds:(CGRect)bounds {
   return [self textRectForBounds:bounds];
 }
 
@@ -168,15 +153,13 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-implementations"
 // Overrides selectedTextRange setter to get notify when selectedTextRange changed.
-- (void)setSelectedTextRange:(UITextRange *)selectedTextRange
-{
+- (void)setSelectedTextRange:(UITextRange *)selectedTextRange {
   [super setSelectedTextRange:selectedTextRange];
   [_textInputDelegateAdapter selectedTextRangeWasSet];
 }
 #pragma clang diagnostic pop
 
-- (void)setSelectedTextRange:(UITextRange *)selectedTextRange notifyDelegate:(BOOL)notifyDelegate
-{
+- (void)setSelectedTextRange:(UITextRange *)selectedTextRange notifyDelegate:(BOOL)notifyDelegate {
   if (!notifyDelegate) {
     // We have to notify an adapter that following selection change was initiated programmatically,
     // so the adapter must not generate a notification for it.
@@ -186,22 +169,19 @@
   [super setSelectedTextRange:selectedTextRange];
 }
 
-- (void)paste:(id)sender
-{
+- (void)paste:(id)sender {
   [super paste:sender];
   _textWasPasted = YES;
 }
 
 #pragma mark - Layout
 
-- (CGSize)contentSize
-{
+- (CGSize)contentSize {
   // Returning size DOES contain `textContainerInset` (aka `padding`).
   return self.intrinsicContentSize;
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   // Note: `placeholder` defines intrinsic size for `<TextInput>`.
   NSString *text = self.placeholder ?: @"";
   CGSize size = [text sizeWithAttributes:[self _placeholderTextAttributes]];
@@ -212,8 +192,7 @@
   return size;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   // All size values here contain `textContainerInset` (aka `padding`).
   CGSize intrinsicSize = self.intrinsicContentSize;
   return CGSizeMake(MIN(size.width, intrinsicSize.width), MIN(size.height, intrinsicSize.height));

@@ -39,23 +39,19 @@ static NSString *RCTCurrentAppState()
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-- (facebook::react::ModuleConstants<JS::NativeAppState::Constants>)constantsToExport
-{
+- (facebook::react::ModuleConstants<JS::NativeAppState::Constants>)constantsToExport {
   return (facebook::react::ModuleConstants<JS::NativeAppState::Constants>)[self getConstants];
 }
 
-- (facebook::react::ModuleConstants<JS::NativeAppState::Constants>)getConstants
-{
+- (facebook::react::ModuleConstants<JS::NativeAppState::Constants>)getConstants {
   __block facebook::react::ModuleConstants<JS::NativeAppState::Constants> constants;
   RCTUnsafeExecuteOnMainQueueSync(^{
     constants = facebook::react::typedConstants<JS::NativeAppState::Constants>({
@@ -68,13 +64,11 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - Lifecycle
 
-- (NSArray<NSString *> *)supportedEvents
-{
+- (NSArray<NSString *> *)supportedEvents {
   return @[ @"appStateDidChange", @"memoryWarning" ];
 }
 
-- (void)startObserving
-{
+- (void)startObserving {
   for (NSString *name in @[
          UIApplicationDidBecomeActiveNotification,
          UIApplicationDidEnterBackgroundNotification,
@@ -94,27 +88,23 @@ RCT_EXPORT_MODULE()
                                              object:nil];
 }
 
-- (void)stopObserving
-{
+- (void)stopObserving {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   [self stopObserving];
 }
 
 #pragma mark - App Notification Methods
 
-- (void)handleMemoryWarning
-{
+- (void)handleMemoryWarning {
   if (self.bridge) {
     [self sendEventWithName:@"memoryWarning" body:nil];
   }
 }
 
-- (void)handleAppStateDidChange:(NSNotification *)notification
-{
+- (void)handleAppStateDidChange:(NSNotification *)notification {
   NSString *newState;
 
   if ([notification.name isEqualToString:UIApplicationWillResignActiveNotification]) {
@@ -144,8 +134,7 @@ RCT_EXPORT_METHOD(getCurrentAppState : (RCTResponseSenderBlock)callback error : 
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeAppStateSpecJSI>(params);
 }
 

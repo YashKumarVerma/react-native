@@ -17,8 +17,7 @@
 
 @implementation RCTConvert (ART)
 
-+ (CGPathRef)CGPath:(id)json
-{
++ (CGPathRef)CGPath:(id)json {
   NSArray *arr = [self NSNumberArray:json];
 
   NSUInteger count = [arr count];
@@ -49,13 +48,13 @@
           CGPathAddArc(path, NULL, NEXT_VALUE, NEXT_VALUE, NEXT_VALUE, NEXT_VALUE, NEXT_VALUE, NEXT_VALUE == 0);
           break;
         default:
-          RCTLogError(@"Invalid CGPath type %llu at element %llu of %@", (unsigned long long)type, (unsigned long long)i, arr);
+          RCTLogError(
+              @"Invalid CGPath type %llu at element %llu of %@", (unsigned long long)type, (unsigned long long)i, arr);
           CGPathRelease(path);
           return NULL;
       }
     }
-  }
-  @catch (NSException *exception) {
+  } @catch (NSException *exception) {
     RCTLogError(@"Invalid CGPath format: %@", arr);
     CGPathRelease(path);
     return NULL;
@@ -64,18 +63,21 @@
   return (CGPathRef)CFAutorelease(path);
 }
 
-RCT_ENUM_CONVERTER(CTTextAlignment, (@{
-  @"auto": @(kCTTextAlignmentNatural),
-  @"left": @(kCTTextAlignmentLeft),
-  @"center": @(kCTTextAlignmentCenter),
-  @"right": @(kCTTextAlignmentRight),
-  @"justify": @(kCTTextAlignmentJustified),
-}), kCTTextAlignmentNatural, integerValue)
+RCT_ENUM_CONVERTER(
+    CTTextAlignment,
+    (@{
+      @"auto" : @(kCTTextAlignmentNatural),
+      @"left" : @(kCTTextAlignmentLeft),
+      @"center" : @(kCTTextAlignmentCenter),
+      @"right" : @(kCTTextAlignmentRight),
+      @"justify" : @(kCTTextAlignmentJustified),
+    }),
+    kCTTextAlignmentNatural,
+    integerValue)
 
 // This takes a tuple of text lines and a font to generate a CTLine for each text line.
 // This prepares everything for rendering a frame of text in ARTText.
-+ (ARTTextFrame)ARTTextFrame:(id)json
-{
++ (ARTTextFrame)ARTTextFrame:(id)json {
   NSDictionary *dict = [self NSDictionary:json];
   ARTTextFrame frame;
   frame.count = 0;
@@ -92,9 +94,9 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   }
 
   // Create a dictionary for this font
-  CFDictionaryRef attributes = (__bridge CFDictionaryRef)@{
-    (NSString *)kCTFontAttributeName:(__bridge id)font,
-    (NSString *)kCTForegroundColorFromContextAttributeName: @YES
+  CFDictionaryRef attributes = (__bridge CFDictionaryRef) @{
+    (NSString *)kCTFontAttributeName : (__bridge id)font,
+    (NSString *)kCTForegroundColorFromContextAttributeName : @YES
   };
 
   // Set up text frame with font metrics
@@ -106,7 +108,6 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   frame.widths = malloc(sizeof(CGFloat) * lineCount);
 
   [lines enumerateObjectsUsingBlock:^(NSString *text, NSUInteger i, BOOL *stop) {
-
     CFStringRef string = (__bridge CFStringRef)text;
     CFAttributedStringRef attrString = CFAttributedStringCreate(kCFAllocatorDefault, string, attributes);
     CTLineRef line = CTLineCreateWithAttributedString(attrString);
@@ -119,8 +120,7 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   return frame;
 }
 
-+ (ARTCGFloatArray)ARTCGFloatArray:(id)json
-{
++ (ARTCGFloatArray)ARTCGFloatArray:(id)json {
   NSArray *arr = [self NSNumberArray:json];
   NSUInteger count = arr.count;
 
@@ -140,8 +140,7 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   return array;
 }
 
-+ (ARTBrush *)ARTBrush:(id)json
-{
++ (ARTBrush *)ARTBrush:(id)json {
   NSArray *arr = [self NSArray:json];
   NSUInteger type = [self NSUInteger:arr.firstObject];
   switch (type) {
@@ -161,34 +160,31 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   }
 }
 
-+ (CGPoint)CGPoint:(id)json offset:(NSUInteger)offset
-{
++ (CGPoint)CGPoint:(id)json offset:(NSUInteger)offset {
   NSArray *arr = [self NSArray:json];
   if (arr.count < offset + 2) {
     RCTLogError(@"Too few elements in array (expected at least %llu): %@", (unsigned long long)(2 + offset), arr);
     return CGPointZero;
   }
   return (CGPoint){
-    [self CGFloat:arr[offset]],
-    [self CGFloat:arr[offset + 1]],
+      [self CGFloat:arr[offset]],
+      [self CGFloat:arr[offset + 1]],
   };
 }
 
-+ (CGRect)CGRect:(id)json offset:(NSUInteger)offset
-{
++ (CGRect)CGRect:(id)json offset:(NSUInteger)offset {
   NSArray *arr = [self NSArray:json];
   if (arr.count < offset + 4) {
     RCTLogError(@"Too few elements in array (expected at least %llu): %@", (unsigned long long)(4 + offset), arr);
     return CGRectZero;
   }
   return (CGRect){
-    {[self CGFloat:arr[offset]], [self CGFloat:arr[offset + 1]]},
-    {[self CGFloat:arr[offset + 2]], [self CGFloat:arr[offset + 3]]},
+      {[self CGFloat:arr[offset]], [self CGFloat:arr[offset + 1]]},
+      {[self CGFloat:arr[offset + 2]], [self CGFloat:arr[offset + 3]]},
   };
 }
 
-+ (CGColorRef)CGColor:(id)json offset:(NSUInteger)offset
-{
++ (CGColorRef)CGColor:(id)json offset:(NSUInteger)offset {
   NSArray *arr = [self NSArray:json];
   if (arr.count < offset + 4) {
     RCTLogError(@"Too few elements in array (expected at least %llu): %@", (unsigned long long)(4 + offset), arr);
@@ -197,8 +193,7 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   return [self CGColor:[arr subarrayWithRange:(NSRange){offset, 4}]];
 }
 
-+ (CGGradientRef)CGGradient:(id)json offset:(NSUInteger)offset
-{
++ (CGGradientRef)CGGradient:(id)json offset:(NSUInteger)offset {
   NSArray *arr = [self NSArray:json];
   if (arr.count < offset) {
     RCTLogError(@"Too few elements in array (expected at least %llu): %@", (unsigned long long)offset, arr);
@@ -208,12 +203,8 @@ RCT_ENUM_CONVERTER(CTTextAlignment, (@{
   ARTCGFloatArray colorsAndOffsets = [self ARTCGFloatArray:arr];
   size_t stops = colorsAndOffsets.count / 5;
   CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-  CGGradientRef gradient = CGGradientCreateWithColorComponents(
-    rgb,
-    colorsAndOffsets.array,
-    colorsAndOffsets.array + stops * 4,
-    stops
-  );
+  CGGradientRef gradient =
+      CGGradientCreateWithColorComponents(rgb, colorsAndOffsets.array, colorsAndOffsets.array + stops * 4, stops);
   CGColorSpaceRelease(rgb);
   free(colorsAndOffsets.array);
   return (CGGradientRef)CFAutorelease(gradient);

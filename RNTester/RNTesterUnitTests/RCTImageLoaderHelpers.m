@@ -7,25 +7,23 @@
 
 #import "RCTImageLoaderHelpers.h"
 
-@implementation RCTConcreteImageURLLoader
-{
+@implementation RCTConcreteImageURLLoader {
   RCTImageURLLoaderCanLoadImageURLHandler _canLoadImageURLHandler;
   RCTImageURLLoaderLoadImageURLHandler _loadImageURLHandler;
   float _priority;
 }
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return nil;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   return nil;
 }
 
-- (instancetype)initWithPriority:(float)priority canLoadImageURLHandler:(RCTImageURLLoaderCanLoadImageURLHandler)canLoadImageURLHandler loadImageURLHandler:(RCTImageURLLoaderLoadImageURLHandler)loadImageURLHandler
-{
+- (instancetype)initWithPriority:(float)priority
+          canLoadImageURLHandler:(RCTImageURLLoaderCanLoadImageURLHandler)canLoadImageURLHandler
+             loadImageURLHandler:(RCTImageURLLoaderLoadImageURLHandler)loadImageURLHandler {
   if ((self = [super init])) {
     _canLoadImageURLHandler = [canLoadImageURLHandler copy];
     _loadImageURLHandler = [loadImageURLHandler copy];
@@ -35,8 +33,7 @@
   return self;
 }
 
-- (BOOL)canLoadImageURL:(NSURL *)requestURL
-{
+- (BOOL)canLoadImageURL:(NSURL *)requestURL {
   return _canLoadImageURLHandler(requestURL);
 }
 
@@ -46,37 +43,33 @@
                                         resizeMode:(RCTResizeMode)resizeMode
                                    progressHandler:(RCTImageLoaderProgressBlock)progressHandler
                                 partialLoadHandler:(__unused RCTImageLoaderPartialLoadBlock)partialLoadHandler
-                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
-{
+                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler {
   return _loadImageURLHandler(imageURL, size, scale, resizeMode, progressHandler, completionHandler);
 }
 
-- (float)loaderPriority
-{
+- (float)loaderPriority {
   return _priority;
 }
 
 @end
 
-@implementation RCTConcreteImageDecoder
-{
+@implementation RCTConcreteImageDecoder {
   RCTImageDataDecoderCanDecodeImageDataHandler _canDecodeImageDataHandler;
   RCTImageDataDecoderDecodeImageDataHandler _decodeImageDataHandler;
   float _priority;
 }
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return nil;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   return nil;
 }
 
-- (instancetype)initWithPriority:(float)priority canDecodeImageDataHandler:(RCTImageDataDecoderCanDecodeImageDataHandler)canDecodeImageDataHandler decodeImageDataHandler:(RCTImageDataDecoderDecodeImageDataHandler)decodeImageDataHandler
-{
+- (instancetype)initWithPriority:(float)priority
+       canDecodeImageDataHandler:(RCTImageDataDecoderCanDecodeImageDataHandler)canDecodeImageDataHandler
+          decodeImageDataHandler:(RCTImageDataDecoderDecodeImageDataHandler)decodeImageDataHandler {
   if ((self = [super init])) {
     _canDecodeImageDataHandler = [canDecodeImageDataHandler copy];
     _decodeImageDataHandler = [decodeImageDataHandler copy];
@@ -86,18 +79,19 @@
   return self;
 }
 
-- (BOOL)canDecodeImageData:(NSData *)imageData
-{
+- (BOOL)canDecodeImageData:(NSData *)imageData {
   return _canDecodeImageDataHandler(imageData);
 }
 
-- (RCTImageLoaderCancellationBlock)decodeImageData:(NSData *)imageData size:(CGSize)size scale:(CGFloat)scale resizeMode:(RCTResizeMode)resizeMode completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
-{
+- (RCTImageLoaderCancellationBlock)decodeImageData:(NSData *)imageData
+                                              size:(CGSize)size
+                                             scale:(CGFloat)scale
+                                        resizeMode:(RCTResizeMode)resizeMode
+                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler {
   return _decodeImageDataHandler(imageData, size, scale, resizeMode, completionHandler);
 }
 
-- (float)decoderPriority
-{
+- (float)decoderPriority {
   return _priority;
 }
 

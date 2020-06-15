@@ -42,8 +42,7 @@
   uint16_t _coalescingKey;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   RCTAssertParam(bridge);
 
   if ((self = [super initWithTarget:nil action:NULL])) {
@@ -68,15 +67,13 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)action)
 
-- (void)attachToView:(UIView *)view
-{
+- (void)attachToView:(UIView *)view {
   RCTAssert(self.view == nil, @"RCTTouchHandler already has attached view.");
 
   [view addGestureRecognizer:self];
 }
 
-- (void)detachFromView:(UIView *)view
-{
+- (void)detachFromView:(UIView *)view {
   RCTAssertParam(view);
   RCTAssert(self.view == view, @"RCTTouchHandler attached to another view.");
 
@@ -85,8 +82,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 
 #pragma mark - Bookkeeping for touch indices
 
-- (void)_recordNewTouches:(NSSet<UITouch *> *)touches
-{
+- (void)_recordNewTouches:(NSSet<UITouch *> *)touches {
   for (UITouch *touch in touches) {
     RCTAssert(![_nativeTouches containsObject:touch], @"Touch is already recorded. This is a critical bug.");
 
@@ -130,8 +126,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (void)_recordRemovedTouches:(NSSet<UITouch *> *)touches
-{
+- (void)_recordRemovedTouches:(NSSet<UITouch *> *)touches {
   for (UITouch *touch in touches) {
     NSUInteger index = [_nativeTouches indexOfObject:touch];
     if (index == NSNotFound) {
@@ -144,8 +139,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (void)_updateReactTouchAtIndex:(NSInteger)touchIndex
-{
+- (void)_updateReactTouchAtIndex:(NSInteger)touchIndex {
   UITouch *nativeTouch = _nativeTouches[touchIndex];
   CGPoint windowLocation = [nativeTouch locationInView:nativeTouch.window];
   RCTAssert(_cachedRootView, @"We were unable to find a root view for the touch");
@@ -180,8 +174,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
  * (start/end/move/cancel) and the indices that represent "changed" `Touch`es
  * from that array.
  */
-- (void)_updateAndDispatchTouches:(NSSet<UITouch *> *)touches eventName:(NSString *)eventName
-{
+- (void)_updateAndDispatchTouches:(NSSet<UITouch *> *)touches eventName:(NSString *)eventName {
   // Update touches
   NSMutableArray<NSNumber *> *changedIndexes = [NSMutableArray new];
   for (UITouch *touch in touches) {
@@ -239,8 +232,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
  * relies on.
  * We cache it here so that we don't have to repeat it for every touch in the gesture.
  */
-- (void)_cacheRootView
-{
+- (void)_cacheRootView {
   UIView *rootView = self.view;
   while (rootView.superview && ![rootView isReactRootView] && ![rootView isKindOfClass:[RCTSurfaceView class]]) {
     rootView = rootView.superview;
@@ -272,8 +264,7 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
 
 #pragma mark - `UIResponder`-ish touch-delivery methods
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesBegan:touches withEvent:event];
 
   [self _cacheRootView];
@@ -291,16 +282,14 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
   }
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesMoved:touches withEvent:event];
 
   [self _updateAndDispatchTouches:touches eventName:@"touchMove"];
   self.state = UIGestureRecognizerStateChanged;
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesEnded:touches withEvent:event];
 
   [self _updateAndDispatchTouches:touches eventName:@"touchEnd"];
@@ -314,8 +303,7 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
   [self _recordRemovedTouches:touches];
 }
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesCancelled:touches withEvent:event];
 
   [self _updateAndDispatchTouches:touches eventName:@"touchCancel"];
@@ -329,20 +317,17 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
   [self _recordRemovedTouches:touches];
 }
 
-- (BOOL)canPreventGestureRecognizer:(__unused UIGestureRecognizer *)preventedGestureRecognizer
-{
+- (BOOL)canPreventGestureRecognizer:(__unused UIGestureRecognizer *)preventedGestureRecognizer {
   return NO;
 }
 
-- (BOOL)canBePreventedByGestureRecognizer:(UIGestureRecognizer *)preventingGestureRecognizer
-{
+- (BOOL)canBePreventedByGestureRecognizer:(UIGestureRecognizer *)preventingGestureRecognizer {
   // We fail in favour of other external gesture recognizers.
   // iOS will ask `delegate`'s opinion about this gesture recognizer little bit later.
   return ![preventingGestureRecognizer.view isDescendantOfView:self.view];
 }
 
-- (void)reset
-{
+- (void)reset {
   if (_nativeTouches.count != 0) {
     [self _updateAndDispatchTouches:_nativeTouches.set eventName:@"touchCancel"];
 
@@ -356,8 +341,7 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
 
 #pragma mark - Other
 
-- (void)cancel
-{
+- (void)cancel {
   self.enabled = NO;
   self.enabled = YES;
 }
@@ -365,8 +349,7 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer
-    shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
+    shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
   // Same condition for `failure of` as for `be prevented by`.
   return [self canBePreventedByGestureRecognizer:otherGestureRecognizer];
 }

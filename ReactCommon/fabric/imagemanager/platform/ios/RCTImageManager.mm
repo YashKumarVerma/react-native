@@ -26,8 +26,7 @@ using namespace facebook::react;
   dispatch_queue_t _backgroundSerialQueue;
 }
 
-- (instancetype)initWithImageLoader:(id<RCTImageLoaderWithAttributionProtocol>)imageLoader
-{
+- (instancetype)initWithImageLoader:(id<RCTImageLoaderWithAttributionProtocol>)imageLoader {
   if (self = [super init]) {
     _imageLoader = imageLoader;
     _backgroundSerialQueue =
@@ -37,8 +36,7 @@ using namespace facebook::react;
   return self;
 }
 
-- (ImageRequest)requestImage:(ImageSource)imageSource surfaceId:(SurfaceId)surfaceId
-{
+- (ImageRequest)requestImage:(ImageSource)imageSource surfaceId:(SurfaceId)surfaceId {
   SystraceSection s("RCTImageManager::requestImage");
 
   auto imageInstrumentation = std::make_shared<RCTImageInstrumentationProxy>(_imageLoader);

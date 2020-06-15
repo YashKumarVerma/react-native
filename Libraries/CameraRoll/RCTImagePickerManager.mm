@@ -28,11 +28,13 @@
 
 @end
 
-@interface RCTImagePickerManager () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, NativeImagePickerIOSSpec>
+@interface RCTImagePickerManager () <
+    UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate,
+    NativeImagePickerIOSSpec>
 @end
 
-@implementation RCTImagePickerManager
-{
+@implementation RCTImagePickerManager {
   NSMutableArray<UIImagePickerController *> *_pickers;
   NSMutableArray<RCTResponseSenderBlock> *_pickerCallbacks;
   NSMutableArray<RCTResponseSenderBlock> *_pickerCancelCallbacks;
@@ -43,8 +45,7 @@ RCT_EXPORT_MODULE(ImagePickerIOS);
 
 @synthesize bridge = _bridge;
 
-- (id)init
-{
+- (id)init {
   if (self = [super init]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(cameraChanged:)
@@ -54,40 +55,41 @@ RCT_EXPORT_MODULE(ImagePickerIOS);
   return self;
 }
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return NO;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
-RCT_EXPORT_METHOD(canRecordVideos:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(canRecordVideos : (RCTResponseSenderBlock)callback)
 {
-  NSArray<NSString *> *availableMediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
-  callback(@[@([availableMediaTypes containsObject:(NSString *)kUTTypeMovie])]);
+  NSArray<NSString *> *availableMediaTypes =
+      [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
+  callback(@[ @([availableMediaTypes containsObject:(NSString *)kUTTypeMovie]) ]);
 }
 
-RCT_EXPORT_METHOD(canUseCamera:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(canUseCamera : (RCTResponseSenderBlock)callback)
 {
-  callback(@[@([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])]);
+  callback(@[ @([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) ]);
 }
 
-RCT_EXPORT_METHOD(openCameraDialog:(JS::NativeImagePickerIOS::SpecOpenCameraDialogConfig &)config
-                  successCallback:(RCTResponseSenderBlock)callback
-                  cancelCallback:(RCTResponseSenderBlock)cancelCallback)
+RCT_EXPORT_METHOD(openCameraDialog
+                  : (JS::NativeImagePickerIOS::SpecOpenCameraDialogConfig &)config successCallback
+                  : (RCTResponseSenderBlock)callback cancelCallback
+                  : (RCTResponseSenderBlock)cancelCallback)
 {
   if (RCTRunningInAppExtension()) {
-    cancelCallback(@[@"Camera access is unavailable in an app extension"]);
+    cancelCallback(@[ @"Camera access is unavailable in an app extension" ]);
     return;
   }
 
   RCTImagePickerController *imagePicker = [RCTImagePickerController new];
   imagePicker.delegate = self;
   imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-  NSArray<NSString *> *availableMediaTypes = [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
+  NSArray<NSString *> *availableMediaTypes =
+      [UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
   imagePicker.mediaTypes = availableMediaTypes;
   imagePicker.unmirrorFrontFacingCamera = config.unmirrorFrontFacingCamera() ? YES : NO;
 
@@ -95,17 +97,16 @@ RCT_EXPORT_METHOD(openCameraDialog:(JS::NativeImagePickerIOS::SpecOpenCameraDial
     imagePicker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
   }
 
-  [self _presentPicker:imagePicker
-       successCallback:callback
-        cancelCallback:cancelCallback];
+  [self _presentPicker:imagePicker successCallback:callback cancelCallback:cancelCallback];
 }
 
-RCT_EXPORT_METHOD(openSelectDialog:(JS::NativeImagePickerIOS::SpecOpenSelectDialogConfig &)config
-                  successCallback:(RCTResponseSenderBlock)callback
-                  cancelCallback:(RCTResponseSenderBlock)cancelCallback)
+RCT_EXPORT_METHOD(openSelectDialog
+                  : (JS::NativeImagePickerIOS::SpecOpenSelectDialogConfig &)config successCallback
+                  : (RCTResponseSenderBlock)callback cancelCallback
+                  : (RCTResponseSenderBlock)cancelCallback)
 {
   if (RCTRunningInAppExtension()) {
-    cancelCallback(@[@"Image picker is currently unavailable in an app extension"]);
+    cancelCallback(@[ @"Image picker is currently unavailable in an app extension" ]);
     return;
   }
 
@@ -123,9 +124,7 @@ RCT_EXPORT_METHOD(openSelectDialog:(JS::NativeImagePickerIOS::SpecOpenSelectDial
 
   imagePicker.mediaTypes = allowedTypes;
 
-  [self _presentPicker:imagePicker
-       successCallback:callback
-        cancelCallback:cancelCallback];
+  [self _presentPicker:imagePicker successCallback:callback cancelCallback:cancelCallback];
 }
 
 // In iOS 13, the URLs provided when selecting videos from the library are only valid while the
@@ -141,14 +140,13 @@ RCT_EXPORT_METHOD(clearAllPendingVideos)
 // info object provided by the delegate is retained.
 // This method provides a way to release the info object for a particular file url when the application
 // is done with it, for example after the video has been uploaded or copied locally.
-RCT_EXPORT_METHOD(removePendingVideo:(NSString *)url)
+RCT_EXPORT_METHOD(removePendingVideo : (NSString *)url)
 {
   [_pendingVideoInfo removeObjectForKey:url];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker
-didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info
-{
+    didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info {
   NSString *mediaType = info[UIImagePickerControllerMediaType];
   BOOL isMovie = [mediaType isEqualToString:(NSString *)kUTTypeMovie];
   NSString *key = isMovie ? UIImagePickerControllerMediaURL : UIImagePickerControllerReferenceURL;
@@ -169,7 +167,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info
       }
     }
 
-    [self _dismissPicker:picker args:@[imageURLString, RCTNullIfNil(height), RCTNullIfNil(width)]];
+    [self _dismissPicker:picker args:@[ imageURLString, RCTNullIfNil(height), RCTNullIfNil(width) ]];
     return;
   }
 
@@ -179,20 +177,21 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info
 
   // WARNING: Using ImageStoreManager may cause a memory leak because the
   // image isn't automatically removed from store once we're done using it.
-  [_bridge.imageStoreManager storeImage:originalImage withBlock:^(NSString *tempImageTag) {
-    [self _dismissPicker:picker args:tempImageTag ? @[tempImageTag, RCTNullIfNil(height), RCTNullIfNil(width)] : nil];
-  }];
+  [_bridge.imageStoreManager
+      storeImage:originalImage
+       withBlock:^(NSString *tempImageTag) {
+         [self _dismissPicker:picker
+                         args:tempImageTag ? @[ tempImageTag, RCTNullIfNil(height), RCTNullIfNil(width) ] : nil];
+       }];
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
   [self _dismissPicker:picker args:nil];
 }
 
 - (void)_presentPicker:(UIImagePickerController *)imagePicker
        successCallback:(RCTResponseSenderBlock)callback
-        cancelCallback:(RCTResponseSenderBlock)cancelCallback
-{
+        cancelCallback:(RCTResponseSenderBlock)cancelCallback {
   if (!_pickers) {
     _pickers = [NSMutableArray new];
     _pickerCallbacks = [NSMutableArray new];
@@ -208,8 +207,7 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info
   [rootViewController presentViewController:imagePicker animated:YES completion:nil];
 }
 
-- (void)_dismissPicker:(UIImagePickerController *)picker args:(NSArray *)args
-{
+- (void)_dismissPicker:(UIImagePickerController *)picker args:(NSArray *)args {
   NSUInteger index = [_pickers indexOfObject:picker];
   if (index == NSNotFound) {
     // This happens if the user selects multiple items in succession.
@@ -233,15 +231,14 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info
   }
 }
 
-- (void)cameraChanged:(NSNotification *)notification
-{
+- (void)cameraChanged:(NSNotification *)notification {
   for (UIImagePickerController *picker in _pickers) {
     if (picker.sourceType != UIImagePickerControllerSourceTypeCamera) {
       continue;
     }
-    if ([picker isKindOfClass:[RCTImagePickerController class]]
-      && ((RCTImagePickerController *)picker).unmirrorFrontFacingCamera
-      && picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+    if ([picker isKindOfClass:[RCTImagePickerController class]] &&
+        ((RCTImagePickerController *)picker).unmirrorFrontFacingCamera &&
+        picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
       picker.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, -1, 1);
     } else {
       picker.cameraViewTransform = CGAffineTransformIdentity;
@@ -249,13 +246,14 @@ didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info
   }
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeImagePickerIOSSpecJSI>(params);
 }
 
 @end
 
-Class RCTImagePickerManagerCls(void) {
+Class RCTImagePickerManagerCls(void)
+{
   return RCTImagePickerManager.class;
 }

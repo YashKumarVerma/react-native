@@ -76,13 +76,11 @@ RCT_MULTI_ENUM_CONVERTER(
 
 RCT_EXPORT_MODULE()
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return RCTGetUIManagerQueue();
 }
 
-- (UIView *)view
-{
+- (UIView *)view {
 #if TARGET_OS_TV
   return [RCTTVView new];
 #else
@@ -90,13 +88,11 @@ RCT_EXPORT_MODULE()
 #endif
 }
 
-- (RCTShadowView *)shadowView
-{
+- (RCTShadowView *)shadowView {
   return [RCTShadowView new];
 }
 
-- (NSArray<NSString *> *)customBubblingEventTypes
-{
+- (NSArray<NSString *> *)customBubblingEventTypes {
   return @[
 
     // Generic events

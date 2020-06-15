@@ -12,8 +12,8 @@ namespace yoga {
 namespace vanillajni {
 
 void registerNatives(
-    JNIEnv* env,
-    const char* className,
+    JNIEnv *env,
+    const char *className,
     const JNINativeMethod methods[],
     size_t numMethods) {
   jclass clazz = env->FindClass(className);
@@ -26,10 +26,10 @@ void registerNatives(
 }
 
 jmethodID getStaticMethodId(
-    JNIEnv* env,
+    JNIEnv *env,
     jclass clazz,
-    const char* methodName,
-    const char* methodDescriptor) {
+    const char *methodName,
+    const char *methodDescriptor) {
   jmethodID methodId =
       env->GetStaticMethodID(clazz, methodName, methodDescriptor);
   assertNoPendingJniExceptionIf(env, !methodId);
@@ -37,20 +37,20 @@ jmethodID getStaticMethodId(
 }
 
 jmethodID getMethodId(
-    JNIEnv* env,
+    JNIEnv *env,
     jclass clazz,
-    const char* methodName,
-    const char* methodDescriptor) {
+    const char *methodName,
+    const char *methodDescriptor) {
   jmethodID methodId = env->GetMethodID(clazz, methodName, methodDescriptor);
   assertNoPendingJniExceptionIf(env, !methodId);
   return methodId;
 }
 
 jfieldID getFieldId(
-    JNIEnv* env,
+    JNIEnv *env,
     jclass clazz,
-    const char* fieldName,
-    const char* fieldSignature) {
+    const char *fieldName,
+    const char *fieldSignature) {
   jfieldID fieldId = env->GetFieldID(clazz, fieldName, fieldSignature);
   assertNoPendingJniExceptionIf(env, !fieldId);
   return fieldId;
@@ -77,11 +77,8 @@ DEFINE_CALL_METHOD_FOR_PRIMITIVE_INTERFACE(void, Void) {
   assertNoPendingJniException(env);
 }
 
-ScopedLocalRef<jobject> callStaticObjectMethod(
-    JNIEnv* env,
-    jclass clazz,
-    jmethodID methodId,
-    ...) {
+ScopedLocalRef<jobject>
+callStaticObjectMethod(JNIEnv *env, jclass clazz, jmethodID methodId, ...) {
   va_list args;
   va_start(args, methodId);
   jobject result = env->CallStaticObjectMethodV(clazz, methodId, args);
@@ -90,7 +87,7 @@ ScopedLocalRef<jobject> callStaticObjectMethod(
   return make_local_ref(env, result);
 }
 
-ScopedGlobalRef<jobject> newGlobalRef(JNIEnv* env, jobject obj) {
+ScopedGlobalRef<jobject> newGlobalRef(JNIEnv *env, jobject obj) {
   jobject result = env->NewGlobalRef(obj);
 
   if (!result) {
@@ -100,7 +97,7 @@ ScopedGlobalRef<jobject> newGlobalRef(JNIEnv* env, jobject obj) {
   return make_global_ref(result);
 }
 
-ScopedGlobalRef<jthrowable> newGlobalRef(JNIEnv* env, jthrowable obj) {
+ScopedGlobalRef<jthrowable> newGlobalRef(JNIEnv *env, jthrowable obj) {
   jthrowable result = static_cast<jthrowable>(env->NewGlobalRef(obj));
 
   if (!result) {

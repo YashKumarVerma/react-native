@@ -16,9 +16,10 @@
 #import <string>
 #import <unordered_map>
 
-Class RCTAnimationClassProvider(const char *name) {
+Class RCTAnimationClassProvider(const char *name)
+{
   static std::unordered_map<std::string, Class (*)(void)> sCoreModuleClassMap = {
-    {"NativeAnimatedModule", RCTNativeAnimatedModuleCls},
+      {"NativeAnimatedModule", RCTNativeAnimatedModuleCls},
   };
 
   auto p = sCoreModuleClassMap.find(name);

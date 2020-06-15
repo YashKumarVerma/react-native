@@ -48,8 +48,7 @@ struct Registration {
   std::vector<Registration<RCTConnectedHandler>> _connectedRegistrations;
 }
 
-+ (instancetype)sharedPackagerConnection
-{
++ (instancetype)sharedPackagerConnection {
   static RCTPackagerConnection *connection;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -58,8 +57,7 @@ struct Registration {
   return connection;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _nextToken = 1; // Prevent randomly erasing a handler if you pass a bogus 0 token
     _serverHostForSocket = [[RCTBundleURLProvider sharedSettings] packagerServerHost];
@@ -95,8 +93,7 @@ static RCTReconnectingWebSocket *socketForLocation(NSString *const serverHost)
   return [[RCTReconnectingWebSocket alloc] initWithURL:components.URL queue:queue];
 }
 
-- (void)stop
-{
+- (void)stop {
   std::lock_guard<std::mutex> l(_mutex);
   if (_socket == nil) {
     // Already stopped
@@ -111,8 +108,7 @@ static RCTReconnectingWebSocket *socketForLocation(NSString *const serverHost)
   _requestRegistrations.clear();
 }
 
-- (void)bundleURLSettingsChanged
-{
+- (void)bundleURLSettingsChanged {
   std::lock_guard<std::mutex> l(_mutex);
   if (_socket == nil) {
     return; // already stopped
@@ -133,8 +129,7 @@ static RCTReconnectingWebSocket *socketForLocation(NSString *const serverHost)
 
 - (RCTHandlerToken)addNotificationHandler:(RCTNotificationHandler)handler
                                     queue:(dispatch_queue_t)queue
-                                forMethod:(NSString *)method
-{
+                                forMethod:(NSString *)method {
   std::lock_guard<std::mutex> l(_mutex);
   const auto token = _nextToken++;
   _notificationRegistrations.push_back({method, handler, queue, token});
@@ -143,16 +138,14 @@ static RCTReconnectingWebSocket *socketForLocation(NSString *const serverHost)
 
 - (RCTHandlerToken)addRequestHandler:(RCTRequestHandler)handler
                                queue:(dispatch_queue_t)queue
-                           forMethod:(NSString *)method
-{
+                           forMethod:(NSString *)method {
   std::lock_guard<std::mutex> l(_mutex);
   const auto token = _nextToken++;
   _requestRegistrations.push_back({method, handler, queue, token});
   return token;
 }
 
-- (RCTHandlerToken)addConnectedHandler:(RCTConnectedHandler)handler queue:(dispatch_queue_t)queue
-{
+- (RCTHandlerToken)addConnectedHandler:(RCTConnectedHandler)handler queue:(dispatch_queue_t)queue {
   std::lock_guard<std::mutex> l(_mutex);
   if (_socketConnected) {
     dispatch_async(queue, ^{
@@ -166,8 +159,7 @@ static RCTReconnectingWebSocket *socketForLocation(NSString *const serverHost)
   }
 }
 
-- (void)removeHandler:(RCTHandlerToken)token
-{
+- (void)removeHandler:(RCTHandlerToken)token {
   std::lock_guard<std::mutex> l(_mutex);
   eraseRegistrationsWithToken(_notificationRegistrations, token);
   eraseRegistrationsWithToken(_requestRegistrations, token);
@@ -183,8 +175,7 @@ static void eraseRegistrationsWithToken(std::vector<Registration<Handler>> &regi
       registrations.end());
 }
 
-- (void)addHandler:(id<RCTPackagerClientMethod>)handler forMethod:(NSString *)method
-{
+- (void)addHandler:(id<RCTPackagerClientMethod>)handler forMethod:(NSString *)method {
   dispatch_queue_t queue =
       [handler respondsToSelector:@selector(methodQueue)] ? [handler methodQueue] : dispatch_get_main_queue();
 
@@ -210,8 +201,7 @@ static BOOL isSupportedVersion(NSNumber *version)
 
 #pragma mark - RCTReconnectingWebSocketDelegate
 
-- (void)reconnectingWebSocketDidOpen:(__unused RCTReconnectingWebSocket *)webSocket
-{
+- (void)reconnectingWebSocketDidOpen:(__unused RCTReconnectingWebSocket *)webSocket {
   std::vector<Registration<RCTConnectedHandler>> registrations;
   {
     std::lock_guard<std::mutex> l(_mutex);
@@ -228,8 +218,7 @@ static BOOL isSupportedVersion(NSNumber *version)
   }
 }
 
-- (void)reconnectingWebSocket:(RCTReconnectingWebSocket *)webSocket didReceiveMessage:(id)message
-{
+- (void)reconnectingWebSocket:(RCTReconnectingWebSocket *)webSocket didReceiveMessage:(id)message {
   NSError *error = nil;
   NSDictionary<NSString *, id> *msg = RCTJSONParse(message, &error);
 
@@ -275,8 +264,7 @@ static BOOL isSupportedVersion(NSNumber *version)
   }
 }
 
-- (void)reconnectingWebSocketDidClose:(__unused RCTReconnectingWebSocket *)webSocket
-{
+- (void)reconnectingWebSocketDidClose:(__unused RCTReconnectingWebSocket *)webSocket {
   std::lock_guard<std::mutex> l(_mutex);
   _socketConnected = NO;
 }

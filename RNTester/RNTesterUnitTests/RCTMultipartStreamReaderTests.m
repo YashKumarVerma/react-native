@@ -15,8 +15,7 @@
 
 @implementation RCTMultipartStreamReaderTests
 
-- (void)testSimpleCase
-{
+- (void)testSimpleCase {
   NSString *response =
       @"preamble, should be ignored\r\n"
       @"--sample_boundary\r\n"
@@ -42,8 +41,7 @@
   XCTAssertEqual(count, 1);
 }
 
-- (void)testMultipleParts
-{
+- (void)testMultipleParts {
   NSString *response =
       @"preamble, should be ignored\r\n"
       @"--sample_boundary\r\n"
@@ -72,8 +70,7 @@
   XCTAssertEqual(count, 3);
 }
 
-- (void)testNoDelimiter
-{
+- (void)testNoDelimiter {
   NSString *response = @"Yolo";
 
   NSInputStream *inputStream = [NSInputStream inputStreamWithData:[response dataUsingEncoding:NSUTF8StringEncoding]];
@@ -90,8 +87,7 @@
   XCTAssertEqual(count, 0);
 }
 
-- (void)testNoCloseDelimiter
-{
+- (void)testNoCloseDelimiter {
   NSString *response =
       @"preamble, should be ignored\r\n"
       @"--sample_boundary\r\n"

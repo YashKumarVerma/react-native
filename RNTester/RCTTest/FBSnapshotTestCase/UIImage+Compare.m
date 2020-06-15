@@ -9,8 +9,7 @@
 
 @implementation UIImage (Compare)
 
-- (BOOL)compareWithImage:(UIImage *)image
-{
+- (BOOL)compareWithImage:(UIImage *)image {
   NSAssert(CGSizeEqualToSize(self.size, image.size), @"Images must be same size.");
 
   // The images have the equal size, so we could use the smallest amount of bytes because of byte padding
@@ -25,22 +24,22 @@
     return NO;
   }
 
-  CGContextRef referenceImageContext = CGBitmapContextCreate(referenceImagePixels,
-                                                             CGImageGetWidth(self.CGImage),
-                                                             CGImageGetHeight(self.CGImage),
-                                                             CGImageGetBitsPerComponent(self.CGImage),
-                                                             minBytesPerRow,
-                                                             CGImageGetColorSpace(self.CGImage),
-                                                             (CGBitmapInfo)kCGImageAlphaPremultipliedLast
-                                                             );
-  CGContextRef imageContext = CGBitmapContextCreate(imagePixels,
-                                                    CGImageGetWidth(image.CGImage),
-                                                    CGImageGetHeight(image.CGImage),
-                                                    CGImageGetBitsPerComponent(image.CGImage),
-                                                    minBytesPerRow,
-                                                    CGImageGetColorSpace(image.CGImage),
-                                                    (CGBitmapInfo)kCGImageAlphaPremultipliedLast
-                                                    );
+  CGContextRef referenceImageContext = CGBitmapContextCreate(
+      referenceImagePixels,
+      CGImageGetWidth(self.CGImage),
+      CGImageGetHeight(self.CGImage),
+      CGImageGetBitsPerComponent(self.CGImage),
+      minBytesPerRow,
+      CGImageGetColorSpace(self.CGImage),
+      (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
+  CGContextRef imageContext = CGBitmapContextCreate(
+      imagePixels,
+      CGImageGetWidth(image.CGImage),
+      CGImageGetHeight(image.CGImage),
+      CGImageGetBitsPerComponent(image.CGImage),
+      minBytesPerRow,
+      CGImageGetColorSpace(image.CGImage),
+      (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
 
   CGFloat scaleFactor = [UIScreen mainScreen].scale;
   CGContextScaleCTM(referenceImageContext, scaleFactor, scaleFactor);

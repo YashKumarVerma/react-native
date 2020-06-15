@@ -48,35 +48,29 @@ using namespace facebook::react;
   return self;
 }
 
-- (void)addObserveForTag:(NSInteger)tag usingBlock:(InterceptorBlock)block
-{
+- (void)addObserveForTag:(NSInteger)tag usingBlock:(InterceptorBlock)block {
   [_eventInterceptors setObject:block forKey:[NSNumber numberWithInteger:tag]];
 }
 
-- (void)removeObserveForTag:(NSInteger)tag
-{
+- (void)removeObserveForTag:(NSInteger)tag {
   [_eventInterceptors removeObjectForKey:[NSNumber numberWithInteger:tag]];
 }
 
-- (UIView *)paperView
-{
+- (UIView *)paperView {
   // TODO: pass in the right tags?
   return [_componentData createViewWithTag:NULL rootTag:NULL];
 }
 
-- (void)setProps:(folly::dynamic const &)props forView:(UIView *)view
-{
+- (void)setProps:(folly::dynamic const &)props forView:(UIView *)view {
   NSDictionary<NSString *, id> *convertedProps = convertFollyDynamicToId(props);
   [_componentData setProps:convertedProps forView:view];
 }
 
-- (NSString *)componentViewName
-{
+- (NSString *)componentViewName {
   return RCTDropReactPrefixes(_componentData.name);
 }
 
-- (void)handleCommand:(NSString *)commandName args:(NSArray *)args reactTag:(NSInteger)tag
-{
+- (void)handleCommand:(NSString *)commandName args:(NSArray *)args reactTag:(NSInteger)tag {
   Class managerClass = _componentData.managerClass;
   RCTModuleData *moduleData = [_bridge.batchedBridge moduleDataForName:RCTBridgeModuleNameForClass(managerClass)];
   id<RCTBridgeMethod> method;

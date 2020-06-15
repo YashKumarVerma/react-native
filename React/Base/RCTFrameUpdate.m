@@ -15,8 +15,7 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (instancetype)initWithDisplayLink:(CADisplayLink *)displayLink
-{
+- (instancetype)initWithDisplayLink:(CADisplayLink *)displayLink {
   if ((self = [super init])) {
     _timestamp = displayLink.timestamp;
     _deltaTime = displayLink.duration;

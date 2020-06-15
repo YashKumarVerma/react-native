@@ -52,8 +52,7 @@ static NSDictionary<NSString *, id> *makePageIdPayload(NSString *pageId)
 
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (instancetype)initWithURL:(NSURL *)url
-{
+- (instancetype)initWithURL:(NSURL *)url {
   if (self = [super init]) {
     _url = url;
     _inspectorConnections = [NSMutableDictionary new];
@@ -62,13 +61,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return self;
 }
 
-- (void)setBundleStatusProvider:(RCTBundleStatusProvider)bundleStatusProvider
-{
+- (void)setBundleStatusProvider:(RCTBundleStatusProvider)bundleStatusProvider {
   _bundleStatusProvider = bundleStatusProvider;
 }
 
-- (void)handleProxyMessage:(NSDictionary<NSString *, id> *)message
-{
+- (void)handleProxyMessage:(NSDictionary<NSString *, id> *)message {
   NSString *event = message[@"event"];
   NSDictionary *payload = message[@"payload"];
   if ([@"getPages" isEqualToString:event]) {
@@ -84,23 +81,20 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   }
 }
 
-- (void)sendEventToAllConnections:(NSString *)event
-{
+- (void)sendEventToAllConnections:(NSString *)event {
   for (NSString *pageId in _inspectorConnections) {
     [_inspectorConnections[pageId] sendMessage:event];
   }
 }
 
-- (void)closeAllConnections
-{
+- (void)closeAllConnections {
   for (NSString *pageId in _inspectorConnections) {
     [[_inspectorConnections objectForKey:pageId] disconnect];
   }
   [_inspectorConnections removeAllObjects];
 }
 
-- (void)handleConnect:(NSDictionary *)payload
-{
+- (void)handleConnect:(NSDictionary *)payload {
   NSString *pageId = payload[@"pageId"];
   RCTInspectorLocalConnection *existingConnection = _inspectorConnections[pageId];
   if (existingConnection) {
@@ -118,8 +112,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   _inspectorConnections[pageId] = inspectorConnection;
 }
 
-- (void)handleDisconnect:(NSDictionary *)payload
-{
+- (void)handleDisconnect:(NSDictionary *)payload {
   NSString *pageId = payload[@"pageId"];
   RCTInspectorLocalConnection *inspectorConnection = _inspectorConnections[pageId];
   if (inspectorConnection) {
@@ -128,13 +121,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   }
 }
 
-- (void)removeConnectionForPage:(NSString *)pageId
-{
+- (void)removeConnectionForPage:(NSString *)pageId {
   [_inspectorConnections removeObjectForKey:pageId];
 }
 
-- (void)handleWrappedEvent:(NSDictionary *)payload
-{
+- (void)handleWrappedEvent:(NSDictionary *)payload {
   NSString *pageId = payload[@"pageId"];
   NSString *wrappedEvent = payload[@"wrappedEvent"];
   RCTInspectorLocalConnection *inspectorConnection = _inspectorConnections[pageId];
@@ -145,8 +136,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   [inspectorConnection sendMessage:wrappedEvent];
 }
 
-- (NSArray *)pages
-{
+- (NSArray *)pages {
   NSArray<RCTInspectorPage *> *pages = [RCTInspector pages];
   NSMutableArray *array = [NSMutableArray arrayWithCapacity:pages.count];
 
@@ -169,8 +159,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return array;
 }
 
-- (void)sendWrappedEvent:(NSString *)pageId message:(NSString *)message
-{
+- (void)sendWrappedEvent:(NSString *)pageId message:(NSString *)message {
   NSDictionary *payload = @{
     @"pageId" : pageId,
     @"wrappedEvent" : message,
@@ -178,8 +167,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   [self sendEvent:@"wrappedEvent" payload:payload];
 }
 
-- (void)sendEvent:(NSString *)name payload:(id)payload
-{
+- (void)sendEvent:(NSString *)name payload:(id)payload {
   NSDictionary *jsonMessage = @{
     @"event" : name,
     @"payload" : payload,
@@ -188,8 +176,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 }
 
 // analogous to InspectorPackagerConnection.Connection.onFailure(...)
-- (void)webSocket:(__unused RCTSRWebSocket *)webSocket didFailWithError:(NSError *)error
-{
+- (void)webSocket:(__unused RCTSRWebSocket *)webSocket didFailWithError:(NSError *)error {
   if (_webSocket) {
     [self abort:@"Websocket exception" withCause:error];
   }
@@ -199,8 +186,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 }
 
 // analogous to InspectorPackagerConnection.Connection.onMessage(...)
-- (void)webSocket:(__unused RCTSRWebSocket *)webSocket didReceiveMessage:(id)opaqueMessage
-{
+- (void)webSocket:(__unused RCTSRWebSocket *)webSocket didReceiveMessage:(id)opaqueMessage {
   // warn but don't die on unrecognized messages
   if (![opaqueMessage isKindOfClass:[NSString class]]) {
     RCTLogWarn(@"Unrecognized inspector message, object is of type: %@", [opaqueMessage class]);
@@ -222,8 +208,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 - (void)webSocket:(__unused RCTSRWebSocket *)webSocket
     didCloseWithCode:(__unused NSInteger)code
               reason:(__unused NSString *)reason
-            wasClean:(__unused BOOL)wasClean
-{
+            wasClean:(__unused BOOL)wasClean {
   _webSocket = nil;
   [self closeAllConnections];
   if (!_closed) {
@@ -231,13 +216,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   }
 }
 
-- (bool)isConnected
-{
+- (bool)isConnected {
   return _webSocket != nil;
 }
 
-- (void)connect
-{
+- (void)connect {
   if (_closed) {
     RCTLogError(@"Illegal state: Can't connect after having previously been closed.");
     return;
@@ -252,8 +235,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   [_webSocket open];
 }
 
-- (void)reconnect
-{
+- (void)reconnect {
   if (_closed) {
     RCTLogError(@"Illegal state: Can't reconnect after having previously been closed.");
     return;
@@ -273,14 +255,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   });
 }
 
-- (void)closeQuietly
-{
+- (void)closeQuietly {
   _closed = true;
   [self disposeWebSocket];
 }
 
-- (void)sendToPackager:(NSDictionary *)messageObject
-{
+- (void)sendToPackager:(NSDictionary *)messageObject {
   __weak RCTInspectorPackagerConnection *weakSelf = self;
   dispatch_async(_jsQueue, ^{
     RCTInspectorPackagerConnection *strongSelf = weakSelf;
@@ -296,8 +276,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   });
 }
 
-- (void)abort:(NSString *)message withCause:(NSError *)cause
-{
+- (void)abort:(NSString *)message withCause:(NSError *)cause {
   // Don't log ECONNREFUSED at all; it's expected in cases where the server isn't listening.
   if (![cause.domain isEqual:NSPOSIXErrorDomain] || cause.code != ECONNREFUSED) {
     RCTLogInfo(@"Error occurred, shutting down websocket connection: %@ %@", message, cause);
@@ -307,8 +286,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   [self disposeWebSocket];
 }
 
-- (void)disposeWebSocket
-{
+- (void)disposeWebSocket {
   if (_webSocket) {
     [_webSocket closeWithCode:1000 reason:@"End of session"];
     _webSocket.delegate = nil;
@@ -323,8 +301,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
 - (instancetype)initWithPackagerConnection:(RCTInspectorPackagerConnection *)owningPackagerConnection
-                                    pageId:(NSString *)pageId
-{
+                                    pageId:(NSString *)pageId {
   if (self = [super init]) {
     _owningPackagerConnection = owningPackagerConnection;
     _pageId = pageId;
@@ -332,13 +309,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
   return self;
 }
 
-- (void)onMessage:(NSString *)message
-{
+- (void)onMessage:(NSString *)message {
   [_owningPackagerConnection sendWrappedEvent:_pageId message:message];
 }
 
-- (void)onDisconnect
-{
+- (void)onDisconnect {
   RCTInspectorPackagerConnection *owningPackagerConnectionStrong = _owningPackagerConnection;
   if (owningPackagerConnectionStrong) {
     [owningPackagerConnectionStrong removeConnectionForPage:_pageId];

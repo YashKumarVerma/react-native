@@ -15,8 +15,7 @@
 - (instancetype)initWithBridge:(RCTBridge *)bridge
                     moduleName:(NSString *)moduleName
              initialProperties:(NSDictionary *)initialProperties
-               sizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode
-{
+               sizeMeasureMode:(RCTSurfaceSizeMeasureMode)sizeMeasureMode {
   RCTSurface *surface = (RCTSurface *)[[RCTFabricSurface alloc] initWithBridge:bridge
                                                                     moduleName:moduleName
                                                              initialProperties:initialProperties];

@@ -27,8 +27,7 @@
   RCTSurface *_surface;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame bridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithFrame:(CGRect)frame bridge:(RCTBridge *)bridge {
   if ((self = [super initWithFrame:frame])) {
     self.windowLevel = UIWindowLevelStatusBar - 1;
     self.backgroundColor = [UIColor clearColor];
@@ -51,13 +50,11 @@
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [RCTSharedApplication().delegate.window makeKeyWindow];
 }
 
-- (void)show
-{
+- (void)show {
   [self becomeFirstResponder];
   [self makeKeyAndVisible];
 }
@@ -75,8 +72,7 @@
 
 RCT_EXPORT_MODULE()
 
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
@@ -112,8 +108,7 @@ RCT_EXPORT_METHOD(hide)
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeLogBoxSpecJSI>(params);
 }
 
@@ -126,24 +121,20 @@ RCT_EXPORT_METHOD(hide)
 
 @implementation RCTLogBox
 
-+ (NSString *)moduleName
-{
++ (NSString *)moduleName {
   return nil;
 }
 
-- (void)show
-{
+- (void)show {
   // noop
 }
 
-- (void)hide
-{
+- (void)hide {
   // noop
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeLogBoxSpecJSI>(params);
 }
 @end

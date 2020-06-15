@@ -18,8 +18,7 @@
 
 @implementation RNTesterSnapshotTests
 
-- (void)setUp
-{
+- (void)setUp {
   _runner = RCTInitRunnerForApp(@"RNTester/js/RNTesterApp.ios", nil, nil);
   if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10) {
     _runner.testSuffix = [NSString stringWithFormat:@"-iOS%d", UIDevice.currentDevice.systemVersion.intValue];
@@ -42,8 +41,7 @@ RCT_TEST(TextExample)
 RCT_TEST(SwitchExample)
 #endif
 
-- (void)testZZZNotInRecordMode
-{
+- (void)testZZZNotInRecordMode {
   XCTAssertFalse(_runner.recordMode, @"Don't forget to turn record mode back to off");
 }
 

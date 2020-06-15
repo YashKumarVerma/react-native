@@ -24,8 +24,7 @@
 
 @end
 
-@implementation RCTFrameAnimation
-{
+@implementation RCTFrameAnimation {
   NSArray<NSNumber *> *_frames;
   CGFloat _toValue;
   CGFloat _fromValue;
@@ -40,8 +39,7 @@
 - (instancetype)initWithId:(NSNumber *)animationId
                     config:(NSDictionary *)config
                    forNode:(RCTValueAnimatedNode *)valueNode
-                  callBack:(nullable RCTResponseSenderBlock)callback
-{
+                  callBack:(nullable RCTResponseSenderBlock)callback {
   if ((self = [super init])) {
     _animationId = animationId;
     _lastPosition = _fromValue = valueNode.value;
@@ -52,8 +50,7 @@
   return self;
 }
 
-- (void)resetAnimationConfig:(NSDictionary *)config
-{
+- (void)resetAnimationConfig:(NSDictionary *)config {
   NSNumber *toValue = [RCTConvert NSNumber:config[@"toValue"]] ?: @1;
   NSArray<NSNumber *> *frames = [RCTConvert NSNumberArray:config[@"frames"]];
   NSNumber *iterations = [RCTConvert NSNumber:config[@"iterations"]] ?: @1;
@@ -67,26 +64,21 @@
   _currentLoop = 1;
 }
 
-RCT_NOT_IMPLEMENTED(- (instancetype)init)
+RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (void)startAnimation
-{
+- (void)startAnimation {
   _animationStartTime = _animationCurrentTime = -1;
   _animationHasBegun = YES;
 }
 
-- (void)stopAnimation
-{
+- (void)stopAnimation {
   _valueNode = nil;
   if (_callback) {
-    _callback(@[@{
-      @"finished": @(_animationHasFinished)
-    }]);
+    _callback(@[ @{@"finished" : @(_animationHasFinished)} ]);
   }
 }
 
-- (void)stepAnimationWithTime:(NSTimeInterval)currentTime
-{
+- (void)stepAnimationWithTime:(NSTimeInterval)currentTime {
   if (!_animationHasBegun || _animationHasFinished || _frames.count == 0) {
     // Animation has not begun or animation has already finished.
     return;
@@ -128,27 +120,22 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   NSTimeInterval toInterval = nextIndex * RCTSingleFrameInterval;
 
   // Interpolate between the individual frames to ensure the animations are
-  //smooth and of the proper duration regardless of the framerate.
-  CGFloat frameOutput = RCTInterpolateValue(currentDuration,
-                                            fromInterval,
-                                            toInterval,
-                                            fromFrameValue.doubleValue,
-                                            toFrameValue.doubleValue,
-                                            EXTRAPOLATE_TYPE_EXTEND,
-                                            EXTRAPOLATE_TYPE_EXTEND);
+  // smooth and of the proper duration regardless of the framerate.
+  CGFloat frameOutput = RCTInterpolateValue(
+      currentDuration,
+      fromInterval,
+      toInterval,
+      fromFrameValue.doubleValue,
+      toFrameValue.doubleValue,
+      EXTRAPOLATE_TYPE_EXTEND,
+      EXTRAPOLATE_TYPE_EXTEND);
 
   [self updateOutputWithFrameOutput:frameOutput];
 }
 
-- (void)updateOutputWithFrameOutput:(CGFloat)frameOutput
-{
-  CGFloat outputValue = RCTInterpolateValue(frameOutput,
-                                            0,
-                                            1,
-                                            _fromValue,
-                                            _toValue,
-                                            EXTRAPOLATE_TYPE_EXTEND,
-                                            EXTRAPOLATE_TYPE_EXTEND);
+- (void)updateOutputWithFrameOutput:(CGFloat)frameOutput {
+  CGFloat outputValue =
+      RCTInterpolateValue(frameOutput, 0, 1, _fromValue, _toValue, EXTRAPOLATE_TYPE_EXTEND, EXTRAPOLATE_TYPE_EXTEND);
 
   _lastPosition = outputValue;
   _valueNode.value = outputValue;

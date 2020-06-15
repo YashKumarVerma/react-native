@@ -17,8 +17,7 @@
   BOOL _isLaidOut;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     self.viewName = @"RCTSurfaceRootView";
     _baseDirection = [[RCTI18nUtil sharedInstance] isRTL] ? YGDirectionRTL : YGDirectionLTR;
@@ -32,8 +31,7 @@
   return self;
 }
 
-- (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)atIndex {
   [super insertReactSubview:subview atIndex:atIndex];
   if (!_isRendered) {
     [_delegate rootShadowViewDidStartRendering:self];
@@ -41,8 +39,7 @@
   }
 }
 
-- (void)layoutWithAffectedShadowViews:(NSHashTable<RCTShadowView *> *)affectedShadowViews
-{
+- (void)layoutWithAffectedShadowViews:(NSHashTable<RCTShadowView *> *)affectedShadowViews {
   NSHashTable<NSString *> *other = [NSHashTable new];
 
   RCTLayoutContext layoutContext = {};
@@ -63,8 +60,7 @@
   }
 }
 
-- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   if (CGSizeEqualToSize(minimumSize, _minimumSize) && CGSizeEqualToSize(maximumSize, _maximumSize)) {
     return;
   }
@@ -73,8 +69,7 @@
   _minimumSize = minimumSize;
 }
 
-- (void)setIntrinsicSize:(CGSize)intrinsicSize
-{
+- (void)setIntrinsicSize:(CGSize)intrinsicSize {
   if (CGSizeEqualToSize(_intrinsicSize, intrinsicSize)) {
     return;
   }
@@ -84,8 +79,7 @@
   [_delegate rootShadowView:self didChangeIntrinsicSize:intrinsicSize];
 }
 
-- (CGSize)intrinsicSize
-{
+- (CGSize)intrinsicSize {
   return _intrinsicSize;
 }
 

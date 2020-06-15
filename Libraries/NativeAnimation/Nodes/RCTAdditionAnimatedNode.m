@@ -9,15 +9,13 @@
 
 @implementation RCTAdditionAnimatedNode
 
-- (void)performUpdate
-{
+- (void)performUpdate {
   [super performUpdate];
   NSArray<NSNumber *> *inputNodes = self.config[@"input"];
   if (inputNodes.count > 1) {
     RCTValueAnimatedNode *parent1 = (RCTValueAnimatedNode *)[self.parentNodes objectForKey:inputNodes[0]];
     RCTValueAnimatedNode *parent2 = (RCTValueAnimatedNode *)[self.parentNodes objectForKey:inputNodes[1]];
-    if ([parent1 isKindOfClass:[RCTValueAnimatedNode class]] &&
-        [parent2 isKindOfClass:[RCTValueAnimatedNode class]]) {
+    if ([parent1 isKindOfClass:[RCTValueAnimatedNode class]] && [parent2 isKindOfClass:[RCTValueAnimatedNode class]]) {
       self.value = parent1.value + parent2.value;
     }
   }

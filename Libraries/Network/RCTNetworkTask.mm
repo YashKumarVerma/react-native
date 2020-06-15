@@ -11,8 +11,7 @@
 #import <React/RCTNetworkTask.h>
 #import <React/RCTUtils.h>
 
-@implementation RCTNetworkTask
-{
+@implementation RCTNetworkTask {
   NSMutableData *_data;
   id<RCTURLRequestHandler> _handler;
   dispatch_queue_t _callbackQueue;
@@ -23,8 +22,7 @@
 
 - (instancetype)initWithRequest:(NSURLRequest *)request
                         handler:(id<RCTURLRequestHandler>)handler
-                  callbackQueue:(dispatch_queue_t)callbackQueue
-{
+                  callbackQueue:(dispatch_queue_t)callbackQueue {
   RCTAssertParam(request);
   RCTAssertParam(handler);
   RCTAssertParam(callbackQueue);
@@ -43,10 +41,9 @@
   return self;
 }
 
-RCT_NOT_IMPLEMENTED(- (instancetype)init)
+RCT_NOT_IMPLEMENTED(-(instancetype)init)
 
-- (void)invalidate
-{
+- (void)invalidate {
   _selfReference = nil;
   _completionBlock = nil;
   _downloadProgressBlock = nil;
@@ -56,8 +53,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   _requestToken = nil;
 }
 
-- (void)dispatchCallback:(dispatch_block_t)callback
-{
+- (void)dispatchCallback:(dispatch_block_t)callback {
   if (dispatch_get_specific((__bridge void *)self) == (__bridge void *)self) {
     callback();
   } else {
@@ -65,8 +61,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)start
-{
+- (void)start {
   if (_status != RCTNetworkTaskPending) {
     RCTLogError(@"RCTNetworkTask was already started or completed");
     return;
@@ -81,8 +76,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)cancel
-{
+- (void)cancel {
   if (_status == RCTNetworkTaskFinished) {
     return;
   }
@@ -95,8 +89,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   [self invalidate];
 }
 
-- (BOOL)validateRequestToken:(id)requestToken
-{
+- (BOOL)validateRequestToken:(id)requestToken {
   BOOL valid = YES;
   if (_requestToken == nil) {
     if (requestToken == nil) {
@@ -126,8 +119,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   return valid;
 }
 
-- (void)URLRequest:(id)requestToken didSendDataWithProgress:(int64_t)bytesSent
-{
+- (void)URLRequest:(id)requestToken didSendDataWithProgress:(int64_t)bytesSent {
   if (![self validateRequestToken:requestToken]) {
     return;
   }
@@ -141,8 +133,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)URLRequest:(id)requestToken didReceiveResponse:(NSURLResponse *)response
-{
+- (void)URLRequest:(id)requestToken didReceiveResponse:(NSURLResponse *)response {
   if (![self validateRequestToken:requestToken]) {
     return;
   }
@@ -156,8 +147,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)URLRequest:(id)requestToken didReceiveData:(NSData *)data
-{
+- (void)URLRequest:(id)requestToken didReceiveData:(NSData *)data {
   if (![self validateRequestToken:requestToken]) {
     return;
   }
@@ -191,8 +181,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
   }
 }
 
-- (void)URLRequest:(id)requestToken didCompleteWithError:(NSError *)error
-{
+- (void)URLRequest:(id)requestToken didCompleteWithError:(NSError *)error {
   if (![self validateRequestToken:requestToken]) {
     return;
   }

@@ -200,8 +200,7 @@ static void RNPerformMountInstructions(
   BOOL _followUpTransactionRequired;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _componentViewRegistry = [[RCTComponentViewRegistry alloc] init];
   }
@@ -209,8 +208,7 @@ static void RNPerformMountInstructions(
   return self;
 }
 
-- (void)scheduleTransaction:(MountingCoordinator::Shared const &)mountingCoordinator
-{
+- (void)scheduleTransaction:(MountingCoordinator::Shared const &)mountingCoordinator {
   if (RCTIsMainQueue()) {
     // Already on the proper thread, so:
     // * No need to do a thread jump;
@@ -227,8 +225,7 @@ static void RNPerformMountInstructions(
   });
 }
 
-- (void)dispatchCommand:(ReactTag)reactTag commandName:(NSString *)commandName args:(NSArray *)args
-{
+- (void)dispatchCommand:(ReactTag)reactTag commandName:(NSString *)commandName args:(NSArray *)args {
   if (RCTIsMainQueue()) {
     // Already on the proper thread, so:
     // * No need to do a thread jump;
@@ -243,8 +240,7 @@ static void RNPerformMountInstructions(
   });
 }
 
-- (void)initiateTransaction:(MountingCoordinator::Shared const &)mountingCoordinator
-{
+- (void)initiateTransaction:(MountingCoordinator::Shared const &)mountingCoordinator {
   SystraceSection s("-[RCTMountingManager initiateTransaction:]");
   RCTAssertMainQueue();
 
@@ -261,8 +257,7 @@ static void RNPerformMountInstructions(
   } while (_followUpTransactionRequired);
 }
 
-- (void)performTransaction:(MountingCoordinator::Shared const &)mountingCoordinator
-{
+- (void)performTransaction:(MountingCoordinator::Shared const &)mountingCoordinator {
   SystraceSection s("-[RCTMountingManager performTransaction:]");
   RCTAssertMainQueue();
 
@@ -292,8 +287,7 @@ static void RNPerformMountInstructions(
 
 - (void)synchronouslyUpdateViewOnUIThread:(ReactTag)reactTag
                              changedProps:(NSDictionary *)props
-                      componentDescriptor:(const ComponentDescriptor &)componentDescriptor
-{
+                      componentDescriptor:(const ComponentDescriptor &)componentDescriptor {
   RCTAssertMainQueue();
   UIView<RCTComponentViewProtocol> *componentView = [_componentViewRegistry findComponentViewWithTag:reactTag];
   SharedProps oldProps = [componentView props];
@@ -303,8 +297,7 @@ static void RNPerformMountInstructions(
 
 - (void)synchronouslyDispatchCommandOnUIThread:(ReactTag)reactTag
                                    commandName:(NSString *)commandName
-                                          args:(NSArray *)args
-{
+                                          args:(NSArray *)args {
   RCTAssertMainQueue();
   UIView<RCTComponentViewProtocol> *componentView = [_componentViewRegistry findComponentViewWithTag:reactTag];
   [componentView handleCommand:commandName args:args];

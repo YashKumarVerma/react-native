@@ -13,30 +13,28 @@
 
 #import "RCTVibrationPlugins.h"
 
-@interface RCTVibration() <NativeVibrationSpec>
+@interface RCTVibration () <NativeVibrationSpec>
 @end
 
 @implementation RCTVibration
 
 RCT_EXPORT_MODULE()
 
-- (void)vibrate
-{
+- (void)vibrate {
   AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
-RCT_EXPORT_METHOD(vibrate:(double)pattern)
+RCT_EXPORT_METHOD(vibrate : (double)pattern)
 {
   [self vibrate];
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeVibrationSpecJSI>(params);
 }
 
-RCT_EXPORT_METHOD(vibrateByPattern:(NSArray *)pattern
-                  repeat:(double)repeat)
+RCT_EXPORT_METHOD(vibrateByPattern : (NSArray *)pattern repeat : (double)repeat)
 {
   RCTLogError(@"Vibration.vibrateByPattern does not have an iOS implementation");
 }

@@ -56,8 +56,7 @@ using namespace facebook::react;
   BOOL _comingFromJS;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<TextInputProps const>();
     _props = defaultProps;
@@ -75,13 +74,11 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<TextInputComponentDescriptor>();
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   auto const &oldTextInputProps = *std::static_pointer_cast<TextInputProps const>(_props);
   auto const &newTextInputProps = *std::static_pointer_cast<TextInputProps const>(props);
 
@@ -185,8 +182,7 @@ using namespace facebook::react;
   [super updateProps:props oldProps:oldProps];
 }
 
-- (void)updateState:(State::Shared const &)state oldState:(State::Shared const &)oldState
-{
+- (void)updateState:(State::Shared const &)state oldState:(State::Shared const &)oldState {
   _state = std::static_pointer_cast<TextInputShadowNode::ConcreteState const>(state);
 
   if (!_state) {
@@ -204,8 +200,7 @@ using namespace facebook::react;
 }
 
 - (void)updateLayoutMetrics:(LayoutMetrics const &)layoutMetrics
-           oldLayoutMetrics:(LayoutMetrics const &)oldLayoutMetrics
-{
+           oldLayoutMetrics:(LayoutMetrics const &)oldLayoutMetrics {
   [super updateLayoutMetrics:layoutMetrics oldLayoutMetrics:oldLayoutMetrics];
 
   _backedTextInputView.frame =
@@ -214,8 +209,7 @@ using namespace facebook::react;
       RCTUIEdgeInsetsFromEdgeInsets(layoutMetrics.contentInsets - layoutMetrics.borderWidth);
 }
 
-- (void)_setAttributedString:(NSAttributedString *)attributedString
-{
+- (void)_setAttributedString:(NSAttributedString *)attributedString {
   UITextRange *selectedRange = [_backedTextInputView selectedTextRange];
   _backedTextInputView.attributedText = attributedString;
   if (_lastStringStateWasUpdatedWith.length == attributedString.length) {
@@ -228,8 +222,7 @@ using namespace facebook::react;
   _lastStringStateWasUpdatedWith = attributedString;
 }
 
-- (void)prepareForRecycle
-{
+- (void)prepareForRecycle {
   [super prepareForRecycle];
   _backedTextInputView.attributedText = nil;
   _mostRecentEventCount = 0;
@@ -241,8 +234,7 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-- (void)_setMultiline:(BOOL)multiline
-{
+- (void)_setMultiline:(BOOL)multiline {
   [_backedTextInputView removeFromSuperview];
   UIView<RCTBackedTextInputViewProtocol> *backedTextInputView =
       multiline ? [[RCTUITextView alloc] init] : [[RCTUITextField alloc] init];
@@ -254,13 +246,11 @@ using namespace facebook::react;
 
 #pragma mark - RCTBackedTextInputDelegate
 
-- (BOOL)textInputShouldBeginEditing
-{
+- (BOOL)textInputShouldBeginEditing {
   return YES;
 }
 
-- (void)textInputDidBeginEditing
-{
+- (void)textInputDidBeginEditing {
   auto const &props = *std::static_pointer_cast<TextInputProps const>(_props);
 
   if (props.traits.clearTextOnFocus) {
@@ -278,21 +268,18 @@ using namespace facebook::react;
   }
 }
 
-- (BOOL)textInputShouldEndEditing
-{
+- (BOOL)textInputShouldEndEditing {
   return YES;
 }
 
-- (void)textInputDidEndEditing
-{
+- (void)textInputDidEndEditing {
   if (_eventEmitter) {
     std::static_pointer_cast<TextInputEventEmitter const>(_eventEmitter)->onEndEditing([self _textInputMetrics]);
     std::static_pointer_cast<TextInputEventEmitter const>(_eventEmitter)->onBlur([self _textInputMetrics]);
   }
 }
 
-- (BOOL)textInputShouldReturn
-{
+- (BOOL)textInputShouldReturn {
   // We send `submit` event here, in `textInputShouldReturn`
   // (not in `textInputDidReturn)`, because of semantic of the event:
   // `onSubmitEditing` is called when "Submit" button
@@ -307,13 +294,11 @@ using namespace facebook::react;
   return props.traits.blurOnSubmit;
 }
 
-- (void)textInputDidReturn
-{
+- (void)textInputDidReturn {
   // Does nothing.
 }
 
-- (NSString *)textInputShouldChangeText:(NSString *)text inRange:(NSRange)range
-{
+- (NSString *)textInputShouldChangeText:(NSString *)text inRange:(NSRange)range {
   if (!_backedTextInputView.textWasPasted) {
     if (_eventEmitter) {
       KeyPressMetrics keyPressMetrics;
@@ -337,13 +322,11 @@ using namespace facebook::react;
   return text;
 }
 
-- (BOOL)textInputShouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
+- (BOOL)textInputShouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
   return YES;
 }
 
-- (void)textInputDidChange
-{
+- (void)textInputDidChange {
   if (_comingFromJS) {
     return;
   }
@@ -360,8 +343,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)textInputDidChangeSelection
-{
+- (void)textInputDidChangeSelection {
   if (_comingFromJS) {
     return;
   }
@@ -378,8 +360,7 @@ using namespace facebook::react;
 
 #pragma mark - Other
 
-- (TextInputMetrics)_textInputMetrics
-{
+- (TextInputMetrics)_textInputMetrics {
   TextInputMetrics metrics;
   metrics.text = RCTStringFromNSString(_backedTextInputView.attributedText.string);
   metrics.selectionRange = [self _selectionRange];
@@ -387,8 +368,7 @@ using namespace facebook::react;
   return metrics;
 }
 
-- (void)_updateState
-{
+- (void)_updateState {
   if (!_state) {
     return;
   }
@@ -401,8 +381,7 @@ using namespace facebook::react;
   _state->updateState(std::move(data));
 }
 
-- (AttributedString::Range)_selectionRange
-{
+- (AttributedString::Range)_selectionRange {
   UITextRange *selectedTextRange = _backedTextInputView.selectedTextRange;
   NSInteger start = [_backedTextInputView offsetFromPosition:_backedTextInputView.beginningOfDocument
                                                   toPosition:selectedTextRange.start];
@@ -413,26 +392,22 @@ using namespace facebook::react;
 
 #pragma mark - Native Commands
 
-- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args
-{
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
   RCTTextInputHandleCommand(self, commandName, args);
 }
 
-- (void)focus
-{
+- (void)focus {
   [_backedTextInputView becomeFirstResponder];
 }
 
-- (void)blur
-{
+- (void)blur {
   [_backedTextInputView resignFirstResponder];
 }
 
 - (void)setTextAndSelection:(NSInteger)eventCount
                       value:(NSString *__nullable)value
                       start:(NSInteger)start
-                        end:(NSInteger)end
-{
+                        end:(NSInteger)end {
   if (_mostRecentEventCount != eventCount) {
     return;
   }

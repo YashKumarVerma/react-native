@@ -17,8 +17,7 @@ using namespace facebook::react;
   UILabel *_label;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const UnimplementedNativeViewProps>();
     _props = defaultProps;
@@ -40,13 +39,11 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<UnimplementedNativeViewComponentDescriptor>();
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   const auto &oldViewProps = *std::static_pointer_cast<const UnimplementedNativeViewProps>(_props);
   const auto &newViewProps = *std::static_pointer_cast<const UnimplementedNativeViewProps>(props);
 

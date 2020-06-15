@@ -11,8 +11,7 @@
 
 @implementation RCTMaskedView
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   // RCTMaskedView expects that the first subview rendered is the mask.
   UIView *maskView = [self.reactSubviews firstObject];
   self.maskView = maskView;
@@ -24,8 +23,7 @@
   }
 }
 
-- (void)displayLayer:(__unused CALayer *)layer
-{
+- (void)displayLayer:(__unused CALayer *)layer {
   // RCTView uses displayLayer to do border rendering.
   // We don't need to do that in RCTMaskedView, so we
   // stub this method and override the default implementation.

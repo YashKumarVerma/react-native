@@ -9,8 +9,7 @@
 
 @implementation UIImage (Diff)
 
-- (UIImage *)diffWithImage:(UIImage *)image
-{
+- (UIImage *)diffWithImage:(UIImage *)image {
   if (!image) {
     return nil;
   }
@@ -22,7 +21,7 @@
   CGContextBeginTransparencyLayer(context, NULL);
   [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
   CGContextSetBlendMode(context, kCGBlendModeDifference);
-  CGContextSetFillColorWithColor(context,[UIColor whiteColor].CGColor);
+  CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
   CGContextFillRect(context, CGRectMake(0, 0, self.size.width, self.size.height));
   CGContextEndTransparencyLayer(context);
   UIImage *returnImage = UIGraphicsGetImageFromCurrentImageContext();

@@ -158,8 +158,7 @@ struct PointerHasher {
   IdentifierPool<11> _identifierPool;
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super initWithTarget:nil action:nil]) {
     // `cancelsTouchesInView` and `delaysTouches*` are needed in order
     // to be used as a top level event delegated recognizer.
@@ -177,16 +176,14 @@ struct PointerHasher {
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)action)
 
-- (void)attachToView:(UIView *)view
-{
+- (void)attachToView:(UIView *)view {
   RCTAssert(self.view == nil, @"RCTTouchHandler already has attached view.");
 
   [view addGestureRecognizer:self];
   _rootComponentView = view;
 }
 
-- (void)detachFromView:(UIView *)view
-{
+- (void)detachFromView:(UIView *)view {
   RCTAssertParam(view);
   RCTAssert(self.view == view, @"RCTTouchHandler attached to another view.");
 
@@ -194,8 +191,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   _rootComponentView = nil;
 }
 
-- (void)_registerTouches:(NSSet<UITouch *> *)touches
-{
+- (void)_registerTouches:(NSSet<UITouch *> *)touches {
   for (UITouch *touch in touches) {
     auto activeTouch = CreateTouchWithUITouch(touch, _rootComponentView);
     activeTouch.touch.identifier = _identifierPool.dequeue();
@@ -203,8 +199,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (void)_updateTouches:(NSSet<UITouch *> *)touches
-{
+- (void)_updateTouches:(NSSet<UITouch *> *)touches {
   for (UITouch *touch in touches) {
     auto iterator = _activeTouches.find(touch);
     assert(iterator != _activeTouches.end() && "Inconsistency between local and UIKit touch registries");
@@ -216,8 +211,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (void)_unregisterTouches:(NSSet<UITouch *> *)touches
-{
+- (void)_unregisterTouches:(NSSet<UITouch *> *)touches {
   for (UITouch *touch in touches) {
     auto iterator = _activeTouches.find(touch);
     assert(iterator != _activeTouches.end() && "Inconsistency between local and UIKit touch registries");
@@ -230,8 +224,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (std::vector<ActiveTouch>)_activeTouchesFromTouches:(NSSet<UITouch *> *)touches
-{
+- (std::vector<ActiveTouch>)_activeTouchesFromTouches:(NSSet<UITouch *> *)touches {
   std::vector<ActiveTouch> activeTouches;
   activeTouches.reserve(touches.count);
 
@@ -247,8 +240,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   return activeTouches;
 }
 
-- (void)_dispatchActiveTouches:(std::vector<ActiveTouch>)activeTouches eventType:(RCTTouchEventType)eventType
-{
+- (void)_dispatchActiveTouches:(std::vector<ActiveTouch>)activeTouches eventType:(RCTTouchEventType)eventType {
   TouchEvent event = {};
   std::unordered_set<ActiveTouch, ActiveTouch::Hasher, ActiveTouch::Comparator> changedActiveTouches = {};
   std::unordered_set<SharedTouchEventEmitter> uniqueEventEmitters = {};
@@ -304,8 +296,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 
 #pragma mark - `UIResponder`-ish touch-delivery methods
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesBegan:touches withEvent:event];
 
   [self _registerTouches:touches];
@@ -318,8 +309,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesMoved:touches withEvent:event];
 
   [self _updateTouches:touches];
@@ -328,8 +318,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   self.state = UIGestureRecognizerStateChanged;
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesEnded:touches withEvent:event];
 
   [self _updateTouches:touches];
@@ -343,8 +332,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
   [super touchesCancelled:touches withEvent:event];
 
   [self _updateTouches:touches];
@@ -358,8 +346,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (void)reset
-{
+- (void)reset {
   [super reset];
 
   if (!_activeTouches.empty()) {
@@ -378,13 +365,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   }
 }
 
-- (BOOL)canPreventGestureRecognizer:(__unused UIGestureRecognizer *)preventedGestureRecognizer
-{
+- (BOOL)canPreventGestureRecognizer:(__unused UIGestureRecognizer *)preventedGestureRecognizer {
   return NO;
 }
 
-- (BOOL)canBePreventedByGestureRecognizer:(UIGestureRecognizer *)preventingGestureRecognizer
-{
+- (BOOL)canBePreventedByGestureRecognizer:(UIGestureRecognizer *)preventingGestureRecognizer {
   // We fail in favour of other external gesture recognizers.
   // iOS will ask `delegate`'s opinion about this gesture recognizer little bit later.
   return ![preventingGestureRecognizer.view isDescendantOfView:self.view];
@@ -393,8 +378,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(__unused UIGestureRecognizer *)gestureRecognizer
-    shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
+    shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
   // Same condition for `failure of` as for `be prevented by`.
   return [self canBePreventedByGestureRecognizer:otherGestureRecognizer];
 }

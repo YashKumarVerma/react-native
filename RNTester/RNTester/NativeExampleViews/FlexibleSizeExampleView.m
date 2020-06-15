@@ -22,28 +22,23 @@
 
 RCT_EXPORT_MODULE();
 
-- (UIView *)view
-{
+- (UIView *)view {
   return [FlexibleSizeExampleView new];
 }
 
 @end
 
-
 @interface FlexibleSizeExampleView () <RCTRootViewDelegate>
 
 @end
 
-
-@implementation FlexibleSizeExampleView
-{
+@implementation FlexibleSizeExampleView {
   RCTRootView *_resizableRootView;
   UITextView *_currentSizeTextView;
   BOOL _sizeUpdated;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if ((self = [super initWithFrame:frame])) {
     _sizeUpdated = NO;
 
@@ -72,39 +67,39 @@ RCT_EXPORT_MODULE();
   return self;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   float textViewHeight = 60;
   float spacingHeight = 10;
-  [_resizableRootView setFrame:CGRectMake(0, textViewHeight + spacingHeight, self.frame.size.width, _resizableRootView.frame.size.height)];
+  [_resizableRootView
+      setFrame:CGRectMake(
+                   0, textViewHeight + spacingHeight, self.frame.size.width, _resizableRootView.frame.size.height)];
   [_currentSizeTextView setFrame:CGRectMake(0, 0, self.frame.size.width, textViewHeight)];
 }
 
-
-- (NSArray<UIView<RCTComponent> *> *)reactSubviews
-{
+- (NSArray<UIView<RCTComponent> *> *)reactSubviews {
   // this is to avoid unregistering our RCTRootView when the component is removed from RN hierarchy
   (void)[super reactSubviews];
   return @[];
 }
 
-
 #pragma mark - RCTRootViewDelegate
 
-- (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView
-{
+- (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
   CGRect newFrame = rootView.frame;
   newFrame.size = rootView.intrinsicContentSize;
 
   if (!_sizeUpdated) {
     _sizeUpdated = TRUE;
-    _currentSizeTextView.text = [NSString stringWithFormat:@"RCTRootViewDelegate: content with initially unknown size has appeared, updating root view's size so the content fits."];
+    _currentSizeTextView.text = [NSString
+        stringWithFormat:
+            @"RCTRootViewDelegate: content with initially unknown size has appeared, updating root view's size so the content fits."];
 
   } else {
-    _currentSizeTextView.text = [NSString stringWithFormat:@"RCTRootViewDelegate: content size has been changed to (%ld, %ld), updating root view's size.",
-                                 (long)newFrame.size.width,
-                                 (long)newFrame.size.height];
-
+    _currentSizeTextView.text =
+        [NSString stringWithFormat:
+                      @"RCTRootViewDelegate: content size has been changed to (%ld, %ld), updating root view's size.",
+                      (long)newFrame.size.width,
+                      (long)newFrame.size.height];
   }
 
   rootView.frame = newFrame;

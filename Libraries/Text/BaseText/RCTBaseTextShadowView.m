@@ -12,7 +12,8 @@
 #import <React/RCTRawTextShadowView.h>
 #import <React/RCTVirtualTextShadowView.h>
 
-NSString *const RCTBaseTextShadowViewEmbeddedShadowViewAttributeName = @"RCTBaseTextShadowViewEmbeddedShadowViewAttributeName";
+NSString *const RCTBaseTextShadowViewEmbeddedShadowViewAttributeName =
+    @"RCTBaseTextShadowViewEmbeddedShadowViewAttributeName";
 
 static void RCTInlineViewYogaNodeDirtied(YGNodeRef node)
 {
@@ -22,16 +23,14 @@ static void RCTInlineViewYogaNodeDirtied(YGNodeRef node)
   // the outermost text node which has a Yoga node and then Yoga will take over
   // the dirty signal propagation.
   RCTShadowView *inlineView = (__bridge RCTShadowView *)YGNodeGetContext(node);
-  RCTBaseTextShadowView *baseTextShadowView =
-    (RCTBaseTextShadowView *)inlineView.reactSuperview;
-  
+  RCTBaseTextShadowView *baseTextShadowView = (RCTBaseTextShadowView *)inlineView.reactSuperview;
+
   [baseTextShadowView dirtyLayout];
 }
 
 @implementation RCTBaseTextShadowView
 
-- (instancetype)init
-{
+- (instancetype)init {
   if (self = [super init]) {
     _textAttributes = [RCTTextAttributes new];
   }
@@ -39,40 +38,36 @@ static void RCTInlineViewYogaNodeDirtied(YGNodeRef node)
   return self;
 }
 
-- (void)setReactTag:(NSNumber *)reactTag
-{
+- (void)setReactTag:(NSNumber *)reactTag {
   [super setReactTag:reactTag];
   _textAttributes.tag = reactTag;
 }
 
 #pragma mark - Life Cycle
 
-- (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)index
-{
+- (void)insertReactSubview:(RCTShadowView *)subview atIndex:(NSInteger)index {
   [super insertReactSubview:subview atIndex:index];
-  
+
   [self dirtyLayout];
-  
+
   if (![subview isKindOfClass:[RCTVirtualTextShadowView class]]) {
     YGNodeSetDirtiedFunc(subview.yogaNode, RCTInlineViewYogaNodeDirtied);
   }
 }
 
-- (void)removeReactSubview:(RCTShadowView *)subview
-{
+- (void)removeReactSubview:(RCTShadowView *)subview {
   if (![subview isKindOfClass:[RCTVirtualTextShadowView class]]) {
     YGNodeSetDirtiedFunc(subview.yogaNode, NULL);
   }
-  
+
   [self dirtyLayout];
-  
+
   [super removeReactSubview:subview];
 }
 
 #pragma mark - attributedString
 
-- (NSAttributedString *)attributedTextWithBaseTextAttributes:(nullable RCTTextAttributes *)baseTextAttributes
-{
+- (NSAttributedString *)attributedTextWithBaseTextAttributes:(nullable RCTTextAttributes *)baseTextAttributes {
   RCTTextAttributes *textAttributes;
 
   if (baseTextAttributes) {
@@ -97,8 +92,8 @@ static void RCTInlineViewYogaNodeDirtied(YGNodeRef node)
       NSString *text = rawTextShadowView.text;
       if (text) {
         NSAttributedString *rawTextAttributedString =
-          [[NSAttributedString alloc] initWithString:[textAttributes applyTextAttributesToText:text]
-                                          attributes:textAttributes.effectiveTextAttributes];
+            [[NSAttributedString alloc] initWithString:[textAttributes applyTextAttributesToText:text]
+                                            attributes:textAttributes.effectiveTextAttributes];
         [attributedText appendAttributedString:rawTextAttributedString];
       }
       continue;
@@ -108,7 +103,7 @@ static void RCTInlineViewYogaNodeDirtied(YGNodeRef node)
     if ([shadowView isKindOfClass:[RCTBaseTextShadowView class]]) {
       RCTBaseTextShadowView *baseTextShadowView = (RCTBaseTextShadowView *)shadowView;
       NSAttributedString *baseTextAttributedString =
-        [baseTextShadowView attributedTextWithBaseTextAttributes:textAttributes];
+          [baseTextShadowView attributedTextWithBaseTextAttributes:textAttributes];
       [attributedText appendAttributedString:baseTextAttributedString];
       continue;
     }
@@ -117,7 +112,8 @@ static void RCTInlineViewYogaNodeDirtied(YGNodeRef node)
     NSTextAttachment *attachment = [NSTextAttachment new];
     NSMutableAttributedString *embeddedShadowViewAttributedString = [NSMutableAttributedString new];
     [embeddedShadowViewAttributedString beginEditing];
-    [embeddedShadowViewAttributedString appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
+    [embeddedShadowViewAttributedString
+        appendAttributedString:[NSAttributedString attributedStringWithAttachment:attachment]];
     [embeddedShadowViewAttributedString addAttribute:RCTBaseTextShadowViewEmbeddedShadowViewAttributeName
                                                value:shadowView
                                                range:(NSRange){0, embeddedShadowViewAttributedString.length}];
@@ -135,21 +131,18 @@ static void RCTInlineViewYogaNodeDirtied(YGNodeRef node)
   return cachedAttributedText;
 }
 
-- (void)dirtyLayout
-{
+- (void)dirtyLayout {
   [super dirtyLayout];
   cachedAttributedText = nil;
   cachedTextAttributes = nil;
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   [super didUpdateReactSubviews];
   [self dirtyLayout];
 }
 
-- (void)didSetProps:(NSArray<NSString *> *)changedProps
-{
+- (void)didSetProps:(NSArray<NSString *> *)changedProps {
   [super didSetProps:changedProps];
   [self dirtyLayout];
 }

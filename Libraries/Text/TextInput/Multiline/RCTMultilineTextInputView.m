@@ -11,13 +11,11 @@
 
 #import <React/RCTUITextView.h>
 
-@implementation RCTMultilineTextInputView
-{
+@implementation RCTMultilineTextInputView {
   RCTUITextView *_backedTextInputView;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if (self = [super initWithBridge:bridge]) {
     // `blurOnSubmit` defaults to `false` for <TextInput multiline={true}> by design.
     self.blurOnSubmit = NO;
@@ -32,15 +30,13 @@
   return self;
 }
 
-- (id<RCTBackedTextInputViewProtocol>)backedTextInputView
-{
+- (id<RCTBackedTextInputViewProtocol>)backedTextInputView {
   return _backedTextInputView;
 }
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
   RCTDirectEventBlock onScroll = self.onScroll;
 
   if (onScroll) {
@@ -50,25 +46,16 @@
     UIEdgeInsets contentInset = scrollView.contentInset;
 
     onScroll(@{
-      @"contentOffset": @{
-        @"x": @(contentOffset.x),
-        @"y": @(contentOffset.y)
+      @"contentOffset" : @{@"x" : @(contentOffset.x), @"y" : @(contentOffset.y)},
+      @"contentInset" : @{
+        @"top" : @(contentInset.top),
+        @"left" : @(contentInset.left),
+        @"bottom" : @(contentInset.bottom),
+        @"right" : @(contentInset.right)
       },
-      @"contentInset": @{
-        @"top": @(contentInset.top),
-        @"left": @(contentInset.left),
-        @"bottom": @(contentInset.bottom),
-        @"right": @(contentInset.right)
-      },
-      @"contentSize": @{
-        @"width": @(contentSize.width),
-        @"height": @(contentSize.height)
-      },
-      @"layoutMeasurement": @{
-        @"width": @(size.width),
-        @"height": @(size.height)
-      },
-      @"zoomScale": @(scrollView.zoomScale ?: 1),
+      @"contentSize" : @{@"width" : @(contentSize.width), @"height" : @(contentSize.height)},
+      @"layoutMeasurement" : @{@"width" : @(size.width), @"height" : @(size.height)},
+      @"zoomScale" : @(scrollView.zoomScale ?: 1),
     });
   }
 }

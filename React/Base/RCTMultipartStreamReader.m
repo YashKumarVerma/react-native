@@ -17,8 +17,7 @@
   CFTimeInterval _lastDownloadProgress;
 }
 
-- (instancetype)initWithInputStream:(NSInputStream *)stream boundary:(NSString *)boundary
-{
+- (instancetype)initWithInputStream:(NSInputStream *)stream boundary:(NSString *)boundary {
   if (self = [super init]) {
     _stream = stream;
     _boundary = boundary;
@@ -27,8 +26,7 @@
   return self;
 }
 
-- (NSDictionary *)parseHeaders:(NSData *)data
-{
+- (NSDictionary *)parseHeaders:(NSData *)data {
   NSMutableDictionary *headers = [NSMutableDictionary new];
   NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   NSArray<NSString *> *lines = [text componentsSeparatedByString:CRLF];
@@ -45,8 +43,10 @@
   return headers;
 }
 
-- (void)emitChunk:(NSData *)data headers:(NSDictionary *)headers callback:(RCTMultipartCallback)callback done:(BOOL)done
-{
+- (void)emitChunk:(NSData *)data
+          headers:(NSDictionary *)headers
+         callback:(RCTMultipartCallback)callback
+             done:(BOOL)done {
   NSData *marker = [CRLF CRLF dataUsingEncoding:NSUTF8StringEncoding];
   NSRange range = [data rangeOfData:marker options:0 range:NSMakeRange(0, data.length)];
   if (range.location == NSNotFound) {
@@ -67,8 +67,7 @@
 - (void)emitProgress:(NSDictionary *)headers
        contentLength:(NSUInteger)contentLength
                final:(BOOL)final
-            callback:(RCTMultipartProgressCallback)callback
-{
+            callback:(RCTMultipartProgressCallback)callback {
   if (headers == nil) {
     return;
   }
@@ -83,8 +82,7 @@
 }
 
 - (BOOL)readAllPartsWithCompletionCallback:(RCTMultipartCallback)callback
-                          progressCallback:(RCTMultipartProgressCallback)progressCallback
-{
+                          progressCallback:(RCTMultipartProgressCallback)progressCallback {
   NSInteger chunkStart = 0;
   NSInteger bytesSeen = 0;
 

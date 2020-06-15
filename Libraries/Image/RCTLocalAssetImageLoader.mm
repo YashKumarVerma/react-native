@@ -15,40 +15,36 @@
 
 #import "RCTImagePlugins.h"
 
-@interface RCTLocalAssetImageLoader() <RCTTurboModule>
+@interface RCTLocalAssetImageLoader () <RCTTurboModule>
 @end
 
 @implementation RCTLocalAssetImageLoader
 
 RCT_EXPORT_MODULE()
 
-- (BOOL)canLoadImageURL:(NSURL *)requestURL
-{
+- (BOOL)canLoadImageURL:(NSURL *)requestURL {
   return RCTIsLocalAssetURL(requestURL);
 }
 
-- (BOOL)requiresScheduling
-{
+- (BOOL)requiresScheduling {
   // Don't schedule this loader on the URL queue so we can load the
   // local assets synchronously to avoid flickers.
   return NO;
 }
 
-- (BOOL)shouldCacheLoadedImages
-{
+- (BOOL)shouldCacheLoadedImages {
   // UIImage imageNamed handles the caching automatically so we don't want
   // to add it to the image cache.
   return NO;
 }
 
- - (RCTImageLoaderCancellationBlock)loadImageForURL:(NSURL *)imageURL
-                                               size:(CGSize)size
-                                              scale:(CGFloat)scale
-                                         resizeMode:(RCTResizeMode)resizeMode
-                                    progressHandler:(RCTImageLoaderProgressBlock)progressHandler
-                                 partialLoadHandler:(RCTImageLoaderPartialLoadBlock)partialLoadHandler
-                                  completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
-{
+- (RCTImageLoaderCancellationBlock)loadImageForURL:(NSURL *)imageURL
+                                              size:(CGSize)size
+                                             scale:(CGFloat)scale
+                                        resizeMode:(RCTResizeMode)resizeMode
+                                   progressHandler:(RCTImageLoaderProgressBlock)progressHandler
+                                partialLoadHandler:(RCTImageLoaderPartialLoadBlock)partialLoadHandler
+                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler {
   UIImage *image = RCTImageFromLocalAssetURL(imageURL);
   if (image) {
     if (progressHandler) {
@@ -60,12 +56,13 @@ RCT_EXPORT_MODULE()
     RCTLogWarn(@"%@", message);
     completionHandler(RCTErrorWithMessage(message), nil);
   }
-  
+
   return nil;
 }
 
 @end
 
-Class RCTLocalAssetImageLoaderCls(void) {
+Class RCTLocalAssetImageLoaderCls(void)
+{
   return RCTLocalAssetImageLoader.class;
 }

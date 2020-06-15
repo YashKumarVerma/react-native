@@ -8,20 +8,18 @@
 #import "RCTWrapperShadowView.h"
 
 #import <React/RCTBridge.h>
-#import <React/RCTUIManager.h>
 #import <React/RCTShadowView+Layout.h>
+#import <React/RCTUIManager.h>
 
 #import "RCTWrapperView.h"
 
-@implementation RCTWrapperShadowView
-{
+@implementation RCTWrapperShadowView {
   __weak RCTBridge *_bridge;
   RCTWrapperMeasureBlock _measureBlock;
   CGSize _intrinsicContentSize;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if (self = [super init]) {
     _bridge = bridge;
     YGNodeSetMeasureFunc(self.yogaNode, RCTWrapperShadowViewMeasure);
@@ -30,7 +28,12 @@
   return self;
 }
 
-static YGSize RCTWrapperShadowViewMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode)
+static YGSize RCTWrapperShadowViewMeasure(
+    YGNodeRef node,
+    float width,
+    YGMeasureMode widthMode,
+    float height,
+    YGMeasureMode heightMode)
 {
   CGSize minimumSize = CGSizeMake(0, 0);
   CGSize maximumSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
@@ -62,14 +65,10 @@ static YGSize RCTWrapperShadowViewMeasure(YGNodeRef node, float width, YGMeasure
   RCTWrapperShadowView *shadowView = (__bridge RCTWrapperShadowView *)YGNodeGetContext(node);
   CGSize size = [shadowView measureWithMinimumSize:minimumSize maximumSize:maximumSize];
 
-  return (YGSize){
-    RCTYogaFloatFromCoreGraphicsFloat(size.width),
-    RCTYogaFloatFromCoreGraphicsFloat(size.height)
-  };
+  return (YGSize){RCTYogaFloatFromCoreGraphicsFloat(size.width), RCTYogaFloatFromCoreGraphicsFloat(size.height)};
 }
 
-- (CGSize)measureWithMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (CGSize)measureWithMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC);
 
   if (!_measureBlock) {
@@ -114,18 +113,15 @@ static YGSize RCTWrapperShadowViewMeasure(YGNodeRef node, float width, YGMeasure
   return size;
 }
 
-- (BOOL)isYogaLeafNode
-{
+- (BOOL)isYogaLeafNode {
   return YES;
 }
 
-- (CGSize)intrinsicContentSize
-{
+- (CGSize)intrinsicContentSize {
   return _intrinsicContentSize;
 }
 
-- (void)setIntrinsicContentSize:(CGSize)size
-{
+- (void)setIntrinsicContentSize:(CGSize)size {
   _intrinsicContentSize = size;
   YGNodeMarkDirty(self.yogaNode);
 }

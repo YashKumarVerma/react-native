@@ -21,8 +21,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)init)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 
-- (instancetype)initWithSurface:(RCTSurface *)surface
-{
+- (instancetype)initWithSurface:(RCTSurface *)surface {
   if (self = [super initWithFrame:CGRectZero]) {
     _stage = surface.stage;
     _surface = surface;
@@ -33,8 +32,7 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 
 #pragma mark - Internal Interface
 
-- (void)setRootView:(RCTSurfaceRootView *)rootView
-{
+- (void)setRootView:(RCTSurfaceRootView *)rootView {
   if (_rootView == rootView) {
     return;
   }
@@ -44,15 +42,13 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   [self _updateStage];
 }
 
-- (RCTSurfaceRootView *)rootView
-{
+- (RCTSurfaceRootView *)rootView {
   return _rootView;
 }
 
 #pragma mark - stage
 
-- (void)setStage:(RCTSurfaceStage)stage
-{
+- (void)setStage:(RCTSurfaceStage)stage {
   if (stage == _stage) {
     return;
   }
@@ -62,15 +58,13 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
   [self _updateStage];
 }
 
-- (RCTSurfaceStage)stage
-{
+- (RCTSurfaceStage)stage {
   return _stage;
 }
 
 #pragma mark - Private
 
-- (void)_updateStage
-{
+- (void)_updateStage {
   if (RCTSurfaceStageIsRunning(_stage)) {
     if (_rootView.superview != self) {
       [self addSubview:_rootView];

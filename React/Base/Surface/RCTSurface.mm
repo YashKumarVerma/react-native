@@ -60,8 +60,7 @@
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
                     moduleName:(NSString *)moduleName
-             initialProperties:(NSDictionary *)initialProperties
-{
+             initialProperties:(NSDictionary *)initialProperties {
   RCTAssert(bridge.valid, @"Valid bridge is required to instantiate `RCTSurface`.");
 
   if (self = [super init]) {
@@ -103,45 +102,38 @@
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [self _stop];
 }
 
 #pragma mark - Immutable Properties (no need to enforce synchronization)
 
-- (RCTBridge *)bridge
-{
+- (RCTBridge *)bridge {
   return _bridge;
 }
 
-- (NSString *)moduleName
-{
+- (NSString *)moduleName {
   return _moduleName;
 }
 
-- (NSNumber *)rootViewTag
-{
+- (NSNumber *)rootViewTag {
   return _rootViewTag;
 }
 
 #pragma mark - Convenience Internal Thread-Safe Properties
 
-- (RCTBridge *)_batchedBridge
-{
+- (RCTBridge *)_batchedBridge {
   std::lock_guard<std::mutex> lock(_mutex);
   return _batchedBridge;
 }
 
-- (RCTUIManager *)_uiManager
-{
+- (RCTUIManager *)_uiManager {
   return self._batchedBridge.uiManager;
 }
 
 #pragma mark - Main-Threaded Routines
 
-- (RCTSurfaceView *)view
-{
+- (RCTSurfaceView *)view {
   RCTAssertMainQueue();
 
   if (!_view) {
@@ -156,8 +148,7 @@
   return _view;
 }
 
-- (void)_mountRootViewIfNeeded
-{
+- (void)_mountRootViewIfNeeded {
   RCTAssertMainQueue();
 
   RCTSurfaceView *view = self->_view;
@@ -181,8 +172,7 @@
 
 #pragma mark - Bridge Events
 
-- (void)handleBridgeWillLoadJavaScriptNotification:(__unused NSNotification *)notification
-{
+- (void)handleBridgeWillLoadJavaScriptNotification:(__unused NSNotification *)notification {
   RCTAssertMainQueue();
 
   // Reset states because the bridge is reloading. This is similar to initialization phase.
@@ -192,8 +182,7 @@
   [self _setStage:RCTSurfaceStageBridgeDidLoad];
 }
 
-- (void)handleBridgeDidLoadJavaScriptNotification:(NSNotification *)notification
-{
+- (void)handleBridgeDidLoadJavaScriptNotification:(NSNotification *)notification {
   RCTAssertMainQueue();
 
   [self _setStage:RCTSurfaceStageModuleDidLoad];
@@ -219,14 +208,12 @@
 
 #pragma mark - Stage management
 
-- (RCTSurfaceStage)stage
-{
+- (RCTSurfaceStage)stage {
   std::lock_guard<std::mutex> lock(_mutex);
   return _stage;
 }
 
-- (void)_setStage:(RCTSurfaceStage)stage
-{
+- (void)_setStage:(RCTSurfaceStage)stage {
   RCTSurfaceStage updatedStage;
   {
     std::lock_guard<std::mutex> lock(_mutex);
@@ -242,8 +229,7 @@
   [self _propagateStageChange:updatedStage];
 }
 
-- (void)_propagateStageChange:(RCTSurfaceStage)stage
-{
+- (void)_propagateStageChange:(RCTSurfaceStage)stage {
   // Updating the `view`
   RCTExecuteOnMainQueue(^{
     self->_view.stage = stage;
@@ -258,14 +244,12 @@
 
 #pragma mark - Properties Management
 
-- (NSDictionary *)properties
-{
+- (NSDictionary *)properties {
   std::lock_guard<std::mutex> lock(_mutex);
   return _properties;
 }
 
-- (void)setProperties:(NSDictionary *)properties
-{
+- (void)setProperties:(NSDictionary *)properties {
   {
     std::lock_guard<std::mutex> lock(_mutex);
 
@@ -281,8 +265,7 @@
 
 #pragma mark - Running
 
-- (void)_run
-{
+- (void)_run {
   RCTBridge *batchedBridge;
   NSDictionary *properties;
 
@@ -309,13 +292,11 @@
   [self _setStage:RCTSurfaceStageSurfaceDidRun];
 }
 
-- (void)_stop
-{
+- (void)_stop {
   [self unmountReactComponentWithBridge:self._batchedBridge rootViewTag:self->_rootViewTag];
 }
 
-- (void)_registerRootView
-{
+- (void)_registerRootView {
   RCTBridge *batchedBridge;
   CGSize minimumSize;
   CGSize maximumSize;
@@ -347,8 +328,7 @@
 
 #pragma mark - Layout
 
-- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   RCTUIManager *uiManager = self._uiManager;
   __block CGSize fittingSize;
 
@@ -368,13 +348,11 @@
 
 #pragma mark - Size Constraints
 
-- (void)setSize:(CGSize)size
-{
+- (void)setSize:(CGSize)size {
   [self setMinimumSize:size maximumSize:size];
 }
 
-- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (void)setMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   {
     std::lock_guard<std::mutex> lock(_mutex);
     if (CGSizeEqualToSize(minimumSize, _minimumSize) && CGSizeEqualToSize(maximumSize, _maximumSize)) {
@@ -399,22 +377,19 @@
   });
 }
 
-- (CGSize)minimumSize
-{
+- (CGSize)minimumSize {
   std::lock_guard<std::mutex> lock(_mutex);
   return _minimumSize;
 }
 
-- (CGSize)maximumSize
-{
+- (CGSize)maximumSize {
   std::lock_guard<std::mutex> lock(_mutex);
   return _maximumSize;
 }
 
 #pragma mark - intrinsicSize
 
-- (void)setIntrinsicSize:(CGSize)intrinsicSize
-{
+- (void)setIntrinsicSize:(CGSize)intrinsicSize {
   {
     std::lock_guard<std::mutex> lock(_mutex);
     if (CGSizeEqualToSize(intrinsicSize, _intrinsicSize)) {
@@ -431,16 +406,14 @@
   }
 }
 
-- (CGSize)intrinsicSize
-{
+- (CGSize)intrinsicSize {
   std::lock_guard<std::mutex> lock(_mutex);
   return _intrinsicSize;
 }
 
 #pragma mark - Synchronous Waiting
 
-- (BOOL)synchronouslyWaitForStage:(RCTSurfaceStage)stage timeout:(NSTimeInterval)timeout
-{
+- (BOOL)synchronouslyWaitForStage:(RCTSurfaceStage)stage timeout:(NSTimeInterval)timeout {
   if (RCTIsUIManagerQueue()) {
     RCTLogInfo(@"Synchronous waiting is not supported on UIManager queue.");
     return NO;
@@ -503,20 +476,17 @@
 
 #pragma mark - RCTSurfaceRootShadowViewDelegate
 
-- (void)rootShadowView:(__unused RCTRootShadowView *)rootShadowView didChangeIntrinsicSize:(CGSize)intrinsicSize
-{
+- (void)rootShadowView:(__unused RCTRootShadowView *)rootShadowView didChangeIntrinsicSize:(CGSize)intrinsicSize {
   self.intrinsicSize = intrinsicSize;
 }
 
-- (void)rootShadowViewDidStartRendering:(__unused RCTSurfaceRootShadowView *)rootShadowView
-{
+- (void)rootShadowViewDidStartRendering:(__unused RCTSurfaceRootShadowView *)rootShadowView {
   [self _setStage:RCTSurfaceStageSurfaceDidInitialRendering];
 
   dispatch_semaphore_signal(_rootShadowViewDidStartRenderingSemaphore);
 }
 
-- (void)rootShadowViewDidStartLayingOut:(__unused RCTSurfaceRootShadowView *)rootShadowView
-{
+- (void)rootShadowViewDidStartLayingOut:(__unused RCTSurfaceRootShadowView *)rootShadowView {
   [self _setStage:RCTSurfaceStageSurfaceDidInitialLayout];
 
   dispatch_semaphore_signal(_rootShadowViewDidStartLayingOutSemaphore);
@@ -529,8 +499,7 @@
 
 #pragma mark - RCTUIManagerObserver
 
-- (BOOL)uiManager:(__unused RCTUIManager *)manager performMountingWithBlock:(RCTUIManagerMountingBlock)block
-{
+- (BOOL)uiManager:(__unused RCTUIManager *)manager performMountingWithBlock:(RCTUIManagerMountingBlock)block {
   if (atomic_load(&_waitingForMountingStageOnMainQueue) && (self.stage & RCTSurfaceStageSurfaceDidInitialLayout)) {
     // Atomic equivalent of `_waitingForMountingStageOnMainQueue = NO;`.
     atomic_fetch_and(&_waitingForMountingStageOnMainQueue, 0);
@@ -545,8 +514,7 @@
   return NO;
 }
 
-- (void)uiManagerDidPerformMounting:(__unused RCTUIManager *)manager
-{
+- (void)uiManagerDidPerformMounting:(__unused RCTUIManager *)manager {
   if (self.stage & RCTSurfaceStageSurfaceDidInitialLayout) {
     [self _setStage:RCTSurfaceStageSurfaceDidInitialMounting];
     dispatch_semaphore_signal(_uiManagerDidPerformMountingSemaphore);
@@ -558,15 +526,13 @@
   }
 }
 
-- (BOOL)start
-{
+- (BOOL)start {
   // Does nothing.
   // The Start&Stop feature is not implemented for regular Surface yet.
   return YES;
 }
 
-- (BOOL)stop
-{
+- (BOOL)stop {
   // Does nothing.
   // The Start&Stop feature is not implemented for regular Surface yet.
   return YES;
@@ -576,13 +542,11 @@
 
 - (void)mountReactComponentWithBridge:(RCTBridge *)bridge
                            moduleName:(NSString *)moduleName
-                               params:(NSDictionary *)params
-{
+                               params:(NSDictionary *)params {
   [bridge enqueueJSCall:@"AppRegistry" method:@"runApplication" args:@[ moduleName, params ] completion:NULL];
 }
 
-- (void)unmountReactComponentWithBridge:(RCTBridge *)bridge rootViewTag:(NSNumber *)rootViewTag
-{
+- (void)unmountReactComponentWithBridge:(RCTBridge *)bridge rootViewTag:(NSNumber *)rootViewTag {
   [bridge enqueueJSCall:@"AppRegistry"
                  method:@"unmountApplicationComponentAtRootTag"
                    args:@[ rootViewTag ]

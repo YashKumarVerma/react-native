@@ -14,13 +14,11 @@
 
 RCT_EXPORT_MODULE()
 
-- (RCTScrollContentView *)view
-{
+- (RCTScrollContentView *)view {
   return [RCTScrollContentView new];
 }
 
-- (RCTShadowView *)shadowView
-{
+- (RCTShadowView *)shadowView {
   return [RCTScrollContentShadowView new];
 }
 

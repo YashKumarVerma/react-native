@@ -28,8 +28,7 @@
 
 RCT_EXPORT_MODULE()
 
-- (instancetype)initWithDelegate:(id<RCTExceptionsManagerDelegate>)delegate
-{
+- (instancetype)initWithDelegate:(id<RCTExceptionsManagerDelegate>)delegate {
   if ((self = [self init])) {
     _delegate = delegate;
   }
@@ -39,8 +38,7 @@ RCT_EXPORT_MODULE()
 - (void)reportSoft:(NSString *)message
              stack:(NSArray<NSDictionary *> *)stack
        exceptionId:(double)exceptionId
-    suppressRedBox:(BOOL)suppressRedBox
-{
+    suppressRedBox:(BOOL)suppressRedBox {
   if (!suppressRedBox) {
     // TODO T5287269 - Delete _bridge case when TM ships.
     if (_bridge) {
@@ -61,8 +59,7 @@ RCT_EXPORT_MODULE()
 - (void)reportFatal:(NSString *)message
               stack:(NSArray<NSDictionary *> *)stack
         exceptionId:(double)exceptionId
-     suppressRedBox:(BOOL)suppressRedBox
-{
+     suppressRedBox:(BOOL)suppressRedBox {
   if (!suppressRedBox) {
     // TODO T5287269 - Delete _bridge case when TM ships.
     if (_bridge) {
@@ -168,8 +165,7 @@ RCT_EXPORT_METHOD(reportException : (JS::NativeExceptionsManager::ExceptionData 
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeExceptionsManagerSpecJSI>(params);
 }
 

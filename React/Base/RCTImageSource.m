@@ -16,8 +16,7 @@
 
 @implementation RCTImageSource
 
-- (instancetype)initWithURLRequest:(NSURLRequest *)request size:(CGSize)size scale:(CGFloat)scale
-{
+- (instancetype)initWithURLRequest:(NSURLRequest *)request size:(CGSize)size scale:(CGFloat)scale {
   if ((self = [super init])) {
     _request = [request copy];
     _size = size;
@@ -26,15 +25,13 @@
   return self;
 }
 
-- (instancetype)imageSourceWithSize:(CGSize)size scale:(CGFloat)scale
-{
+- (instancetype)imageSourceWithSize:(CGSize)size scale:(CGFloat)scale {
   RCTImageSource *imageSource = [[RCTImageSource alloc] initWithURLRequest:_request size:size scale:scale];
   imageSource.packagerAsset = _packagerAsset;
   return imageSource;
 }
 
-- (BOOL)isEqual:(RCTImageSource *)object
-{
+- (BOOL)isEqual:(RCTImageSource *)object {
   if (![object isKindOfClass:[RCTImageSource class]]) {
     return NO;
   }
@@ -42,8 +39,7 @@
       (CGSizeEqualToSize(_size, object.size) || CGSizeEqualToSize(object.size, CGSizeZero));
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString stringWithFormat:@"<RCTImageSource: %p URL=%@, size=%@, scale=%0.f>",
                                     self,
                                     _request.URL,
@@ -55,8 +51,7 @@
 
 @implementation RCTConvert (ImageSource)
 
-+ (RCTImageSource *)RCTImageSource:(id)json
-{
++ (RCTImageSource *)RCTImageSource:(id)json {
   if (!json) {
     return nil;
   }

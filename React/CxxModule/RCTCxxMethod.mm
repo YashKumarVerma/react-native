@@ -24,21 +24,18 @@ using namespace facebook::react;
   std::unique_ptr<CxxModule::Method> _method;
 }
 
-- (instancetype)initWithCxxMethod:(const CxxModule::Method &)method
-{
+- (instancetype)initWithCxxMethod:(const CxxModule::Method &)method {
   if ((self = [super init])) {
     _method = std::make_unique<CxxModule::Method>(method);
   }
   return self;
 }
 
-- (const char *)JSMethodName
-{
+- (const char *)JSMethodName {
   return _method->name.c_str();
 }
 
-- (RCTFunctionType)functionType
-{
+- (RCTFunctionType)functionType {
   std::string type(_method->getType());
   if (type == "sync") {
     return RCTFunctionTypeSync;
@@ -49,8 +46,7 @@ using namespace facebook::react;
   }
 }
 
-- (id)invokeWithBridge:(RCTBridge *)bridge module:(id)module arguments:(NSArray *)arguments
-{
+- (id)invokeWithBridge:(RCTBridge *)bridge module:(id)module arguments:(NSArray *)arguments {
   // module is unused except for printing errors. The C++ object it represents
   // is also baked into _method.
 
@@ -131,8 +127,7 @@ using namespace facebook::react;
   }
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   return [NSString stringWithFormat:@"<%@: %p; name = %s>", [self class], self, self.JSMethodName];
 }
 

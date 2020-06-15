@@ -40,8 +40,7 @@ static const NSTimeInterval kIdleCallbackFrameDeadline = 0.001;
 - (instancetype)initWithCallbackID:(NSNumber *)callbackID
                           interval:(NSTimeInterval)interval
                         targetTime:(NSTimeInterval)targetTime
-                           repeats:(BOOL)repeats
-{
+                           repeats:(BOOL)repeats {
   if ((self = [super init])) {
     _interval = interval;
     _repeats = repeats;
@@ -54,16 +53,14 @@ static const NSTimeInterval kIdleCallbackFrameDeadline = 0.001;
 /**
  * Returns `YES` if we should invoke the JS callback.
  */
-- (BOOL)shouldFire:(NSDate *)now
-{
+- (BOOL)shouldFire:(NSDate *)now {
   if (_target && [_target timeIntervalSinceDate:now] <= 0) {
     return YES;
   }
   return NO;
 }
 
-- (void)reschedule
-{
+- (void)reschedule {
   // The JS Timers will do fine grained calculating of expired timeouts.
   _target = [NSDate dateWithTimeIntervalSinceNow:_interval];
 }
@@ -79,8 +76,7 @@ static const NSTimeInterval kIdleCallbackFrameDeadline = 0.001;
   __weak id _target;
 }
 
-+ (instancetype)proxyWithTarget:(id)target
-{
++ (instancetype)proxyWithTarget:(id)target {
   _RCTTimingProxy *proxy = [self new];
   if (proxy) {
     proxy->_target = target;
@@ -88,8 +84,7 @@ static const NSTimeInterval kIdleCallbackFrameDeadline = 0.001;
   return proxy;
 }
 
-- (void)timerDidFire
-{
+- (void)timerDidFire {
   [_target timerDidFire];
 }
 
@@ -109,8 +104,7 @@ static const NSTimeInterval kIdleCallbackFrameDeadline = 0.001;
 
 RCT_EXPORT_MODULE()
 
-- (instancetype)initWithDelegate:(id<RCTTimingDelegate>)delegate
-{
+- (instancetype)initWithDelegate:(id<RCTTimingDelegate>)delegate {
   if (self = [super init]) {
     [self setup];
     _timingDelegate = delegate;
@@ -118,15 +112,13 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
-- (void)setBridge:(RCTBridge *)bridge
-{
+- (void)setBridge:(RCTBridge *)bridge {
   RCTAssert(!_bridge, @"Should never be initialized twice!");
   [self setup];
   _bridge = bridge;
 }
 
-- (void)setup
-{
+- (void)setup {
   _paused = YES;
   _timers = [NSMutableDictionary new];
   _inBackground = NO;
@@ -150,25 +142,21 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [_sleepTimer invalidate];
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return RCTJSThread;
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   [self stopTimers];
   _bridge = nil;
   _timingDelegate = nil;
 }
 
-- (void)appDidMoveToBackground
-{
+- (void)appDidMoveToBackground {
   // Deactivate the CADisplayLink while in the background.
   [self stopTimers];
   _inBackground = YES;
@@ -178,14 +166,12 @@ RCT_EXPORT_MODULE()
   [self didUpdateFrame:nil];
 }
 
-- (void)appDidMoveToForeground
-{
+- (void)appDidMoveToForeground {
   _inBackground = NO;
   [self startTimers];
 }
 
-- (void)stopTimers
-{
+- (void)stopTimers {
   if (_inBackground) {
     return;
   }
@@ -198,8 +184,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)startTimers
-{
+- (void)startTimers {
   if ((!_bridge && !_timingDelegate) || _inBackground || ![self hasPendingTimers]) {
     return;
   }
@@ -212,15 +197,13 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (BOOL)hasPendingTimers
-{
+- (BOOL)hasPendingTimers {
   @synchronized(_timers) {
     return _sendIdleEvents || _timers.count > 0;
   }
 }
 
-- (void)didUpdateFrame:(RCTFrameUpdate *)update
-{
+- (void)didUpdateFrame:(RCTFrameUpdate *)update {
   NSDate *nextScheduledTarget = [NSDate distantFuture];
   NSMutableArray<_RCTTimer *> *timersToCall = [NSMutableArray new];
   NSDate *now = [NSDate date]; // compare all the timers to the same base time
@@ -295,8 +278,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)scheduleSleepTimer:(NSDate *)sleepTarget
-{
+- (void)scheduleSleepTimer:(NSDate *)sleepTarget {
   @synchronized(self) {
     if (!_sleepTimer || !_sleepTimer.valid) {
       _sleepTimer = [[NSTimer alloc] initWithFireDate:sleepTarget
@@ -312,8 +294,7 @@ RCT_EXPORT_MODULE()
   }
 }
 
-- (void)timerDidFire
-{
+- (void)timerDidFire {
   _sleepTimer = nil;
   if (_paused) {
     [self startTimers];
@@ -361,8 +342,7 @@ RCT_EXPORT_METHOD(createTimer
 - (void)createTimerForNextFrame:(nonnull NSNumber *)callbackID
                        duration:(NSTimeInterval)jsDuration
                jsSchedulingTime:(NSDate *)jsSchedulingTime
-                        repeats:(BOOL)repeats
-{
+                        repeats:(BOOL)repeats {
   NSTimeInterval jsSchedulingOverhead = MAX(-jsSchedulingTime.timeIntervalSinceNow, 0);
 
   NSTimeInterval targetTime = jsDuration - jsSchedulingOverhead;

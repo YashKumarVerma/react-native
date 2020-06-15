@@ -21,8 +21,7 @@ static NSDictionary *RCTParseKeyboardNotification(NSNotification *notification);
 
 RCT_EXPORT_MODULE()
 
-- (void)startObserving
-{
+- (void)startObserving {
 #if !TARGET_OS_TV
 
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -41,8 +40,7 @@ RCT_EXPORT_MODULE()
 #endif
 }
 
-- (NSArray<NSString *> *)supportedEvents
-{
+- (NSArray<NSString *> *)supportedEvents {
   return @[
     @"keyboardWillShow",
     @"keyboardDidShow",
@@ -53,8 +51,7 @@ RCT_EXPORT_MODULE()
   ];
 }
 
-- (void)stopObserving
-{
+- (void)stopObserving {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -78,8 +75,7 @@ IMPLEMENT_KEYBOARD_HANDLER(keyboardWillChangeFrame)
 IMPLEMENT_KEYBOARD_HANDLER(keyboardDidChangeFrame)
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<facebook::react::NativeKeyboardObserverSpecJSI>(params);
 }
 

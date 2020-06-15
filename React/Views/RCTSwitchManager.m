@@ -17,15 +17,13 @@
 
 RCT_EXPORT_MODULE()
 
-- (UIView *)view
-{
+- (UIView *)view {
   RCTSwitch *switcher = [RCTSwitch new];
   [switcher addTarget:self action:@selector(onChange:) forControlEvents:UIControlEventValueChanged];
   return switcher;
 }
 
-- (void)onChange:(RCTSwitch *)sender
-{
+- (void)onChange:(RCTSwitch *)sender {
   if (sender.wasOn != sender.on) {
     if (sender.onChange) {
       sender.onChange(@{@"value" : @(sender.on)});

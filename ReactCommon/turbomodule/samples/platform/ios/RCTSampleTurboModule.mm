@@ -21,31 +21,26 @@ RCT_EXPORT_MODULE()
 @synthesize turboModuleLookupDelegate = _turboModuleLookupDelegate;
 
 // Backward-compatible queue configuration
-+ (BOOL)requiresMainQueueSetup
-{
++ (BOOL)requiresMainQueueSetup {
   return YES;
 }
 
-- (dispatch_queue_t)methodQueue
-{
+- (dispatch_queue_t)methodQueue {
   return dispatch_get_main_queue();
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
-    (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+    (const facebook::react::ObjCTurboModule::InitParams &)params {
   return std::make_shared<NativeSampleTurboModuleSpecJSI>(params);
 }
 
 // Backward compatible invalidation
-- (void)invalidate
-{
+- (void)invalidate {
   // Actually do nothing here.
   NSLog(@"Invalidating RCTSampleTurboModule...");
 }
 
-- (NSDictionary *)getConstants
-{
+- (NSDictionary *)getConstants {
   __block NSDictionary *constants;
   RCTUnsafeExecuteOnMainQueueSync(^{
     UIScreen *mainScreen = UIScreen.mainScreen;
@@ -62,8 +57,7 @@ RCT_EXPORT_MODULE()
 }
 
 // TODO: Remove once fully migrated to TurboModule.
-- (NSDictionary *)constantsToExport
-{
+- (NSDictionary *)constantsToExport {
   return [self getConstants];
 }
 

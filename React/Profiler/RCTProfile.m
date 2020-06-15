@@ -371,18 +371,15 @@ void RCTProfileUnhookModules(RCTBridge *bridge)
 
 @implementation RCTProfile
 
-+ (void)vsync:(CADisplayLink *)displayLink
-{
++ (void)vsync:(CADisplayLink *)displayLink {
   RCTProfileImmediateEvent(RCTProfileTagAlways, @"VSYNC", displayLink.timestamp, 'g');
 }
 
-+ (void)reload
-{
++ (void)reload {
   [RCTProfilingBridge() reloadWithReason:@"Profiling controls"];
 }
 
-+ (void)toggle:(UIButton *)target
-{
++ (void)toggle:(UIButton *)target {
   BOOL isProfiling = RCTProfileIsProfiling();
 
   // Start and Stop are switched here, since we're going to toggle isProfiling
@@ -416,8 +413,7 @@ void RCTProfileUnhookModules(RCTBridge *bridge)
   }
 }
 
-+ (void)drag:(UIPanGestureRecognizer *)gestureRecognizer
-{
++ (void)drag:(UIPanGestureRecognizer *)gestureRecognizer {
   CGPoint translation = [gestureRecognizer translationInView:RCTProfileControlsWindow];
   RCTProfileControlsWindow.center =
       CGPointMake(RCTProfileControlsWindow.center.x + translation.x, RCTProfileControlsWindow.center.y + translation.y);

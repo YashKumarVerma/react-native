@@ -25,13 +25,12 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - RCTImageLoader
 
-- (BOOL)canLoadImageURL:(NSURL *)requestURL
-{
+- (BOOL)canLoadImageURL:(NSURL *)requestURL {
   if (![PHAsset class]) {
     return NO;
   }
   return [requestURL.scheme caseInsensitiveCompare:@"assets-library"] == NSOrderedSame ||
-    [requestURL.scheme caseInsensitiveCompare:@"ph"] == NSOrderedSame;
+      [requestURL.scheme caseInsensitiveCompare:@"ph"] == NSOrderedSame;
 }
 
 - (RCTImageLoaderCancellationBlock)loadImageForURL:(NSURL *)imageURL
@@ -40,8 +39,7 @@ RCT_EXPORT_MODULE()
                                         resizeMode:(RCTResizeMode)resizeMode
                                    progressHandler:(RCTImageLoaderProgressBlock)progressHandler
                                 partialLoadHandler:(RCTImageLoaderPartialLoadBlock)partialLoadHandler
-                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler
-{
+                                 completionHandler:(RCTImageLoaderCompletionBlock)completionHandler {
   // Using PhotoKit for iOS 8+
   // The 'ph://' prefix is used by FBMediaKit to differentiate between
   // assets-library. It is prepended to the local ID so that it is in the
@@ -50,18 +48,21 @@ RCT_EXPORT_MODULE()
   PHFetchResult *results;
   if (!imageURL) {
     completionHandler(RCTErrorWithMessage(@"Cannot load a photo library asset with no URL"), nil);
-    return ^{};
+    return ^{
+    };
   } else if ([imageURL.scheme caseInsensitiveCompare:@"assets-library"] == NSOrderedSame) {
     assetID = [imageURL absoluteString];
-    results = [PHAsset fetchAssetsWithALAssetURLs:@[imageURL] options:nil];
+    results = [PHAsset fetchAssetsWithALAssetURLs:@[ imageURL ] options:nil];
   } else {
     assetID = [imageURL.absoluteString substringFromIndex:@"ph://".length];
-    results = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetID] options:nil];
+    results = [PHAsset fetchAssetsWithLocalIdentifiers:@[ assetID ] options:nil];
   }
   if (results.count == 0) {
-    NSString *errorText = [NSString stringWithFormat:@"Failed to fetch PHAsset with local identifier %@ with no error message.", assetID];
+    NSString *errorText =
+        [NSString stringWithFormat:@"Failed to fetch PHAsset with local identifier %@ with no error message.", assetID];
     completionHandler(RCTErrorWithMessage(errorText), nil);
-    return ^{};
+    return ^{
+    };
   }
 
   PHAsset *asset = [results firstObject];
@@ -97,17 +98,17 @@ RCT_EXPORT_MODULE()
   }
 
   PHImageRequestID requestID =
-  [[PHImageManager defaultManager] requestImageForAsset:asset
-                                             targetSize:targetSize
-                                            contentMode:contentMode
-                                                options:imageOptions
-                                          resultHandler:^(UIImage *result, NSDictionary<NSString *, id> *info) {
-    if (result) {
-      completionHandler(nil, result);
-    } else {
-      completionHandler(info[PHImageErrorKey], nil);
-    }
-  }];
+      [[PHImageManager defaultManager] requestImageForAsset:asset
+                                                 targetSize:targetSize
+                                                contentMode:contentMode
+                                                    options:imageOptions
+                                              resultHandler:^(UIImage *result, NSDictionary<NSString *, id> *info) {
+                                                if (result) {
+                                                  completionHandler(nil, result);
+                                                } else {
+                                                  completionHandler(info[PHImageErrorKey], nil);
+                                                }
+                                              }];
 
   return ^{
     [[PHImageManager defaultManager] cancelImageRequest:requestID];
@@ -116,6 +117,7 @@ RCT_EXPORT_MODULE()
 
 @end
 
-Class RCTPhotoLibraryImageLoaderCls(void) {
+Class RCTPhotoLibraryImageLoaderCls(void)
+{
   return RCTPhotoLibraryImageLoader.class;
 }

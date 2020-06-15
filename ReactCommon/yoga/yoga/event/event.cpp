@@ -13,7 +13,7 @@
 namespace facebook {
 namespace yoga {
 
-const char* LayoutPassReasonToString(const LayoutPassReason value) {
+const char *LayoutPassReasonToString(const LayoutPassReason value) {
   switch (value) {
     case LayoutPassReason::kInitial:
       return "initial";
@@ -40,16 +40,16 @@ namespace {
 
 struct Node {
   std::function<Event::Subscriber> subscriber = nullptr;
-  Node* next = nullptr;
+  Node *next = nullptr;
 
-  Node(std::function<Event::Subscriber>&& subscriber)
+  Node(std::function<Event::Subscriber> &&subscriber)
       : subscriber{std::move(subscriber)} {}
 };
 
-std::atomic<Node*> subscribers{nullptr};
+std::atomic<Node *> subscribers{nullptr};
 
-Node* push(Node* newHead) {
-  Node* oldHead;
+Node *push(Node *newHead) {
+  Node *oldHead;
   do {
     oldHead = subscribers.load(std::memory_order_relaxed);
     if (newHead != nullptr) {
@@ -71,11 +71,11 @@ void Event::reset() {
   }
 }
 
-void Event::subscribe(std::function<Subscriber>&& subscriber) {
+void Event::subscribe(std::function<Subscriber> &&subscriber) {
   push(new Node{std::move(subscriber)});
 }
 
-void Event::publish(const YGNode& node, Type eventType, const Data& eventData) {
+void Event::publish(const YGNode &node, Type eventType, const Data &eventData) {
   for (auto subscriber = subscribers.load(std::memory_order_relaxed);
        subscriber != nullptr;
        subscriber = subscriber->next) {

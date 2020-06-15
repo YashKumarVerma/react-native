@@ -12,11 +12,10 @@
 #import <React/RCTUIManager.h>
 #import <yoga/Yoga.h>
 
-#import "NSTextStorage+FontScaling.h"
 #import <React/RCTBaseTextInputView.h>
+#import "NSTextStorage+FontScaling.h"
 
-@implementation RCTBaseTextInputShadowView
-{
+@implementation RCTBaseTextInputShadowView {
   __weak RCTBridge *_bridge;
   NSAttributedString *_Nullable _previousAttributedText;
   BOOL _needsUpdateView;
@@ -29,8 +28,7 @@
   NSLayoutManager *_layoutManager;
 }
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if (self = [super init]) {
     _bridge = bridge;
     _needsUpdateView = YES;
@@ -42,13 +40,11 @@
   return self;
 }
 
-- (BOOL)isYogaLeafNode
-{
+- (BOOL)isYogaLeafNode {
   return YES;
 }
 
-- (void)didSetProps:(NSArray<NSString *> *)changedProps
-{
+- (void)didSetProps:(NSArray<NSString *> *)changedProps {
   [super didSetProps:changedProps];
 
   // `backgroundColor` and `opacity` are being applied directly to a UIView,
@@ -57,13 +53,11 @@
   self.textAttributes.opacity = NAN;
 }
 
-- (void)layoutSubviewsWithContext:(RCTLayoutContext)layoutContext
-{
+- (void)layoutSubviewsWithContext:(RCTLayoutContext)layoutContext {
   // Do nothing.
 }
 
-- (void)setLocalData:(NSObject *)localData
-{
+- (void)setLocalData:(NSObject *)localData {
   NSAttributedString *attributedText = (NSAttributedString *)localData;
 
   if ([attributedText isEqualToAttributedString:_localAttributedText]) {
@@ -74,16 +68,14 @@
   [self dirtyLayout];
 }
 
-- (void)dirtyLayout
-{
+- (void)dirtyLayout {
   [super dirtyLayout];
   _needsUpdateView = YES;
   YGNodeMarkDirty(self.yogaNode);
   [self invalidateContentSize];
 }
 
-- (void)invalidateContentSize
-{
+- (void)invalidateContentSize {
   if (!_onContentSizeChange) {
     return;
   }
@@ -104,21 +96,19 @@
   _previousContentSize = contentSize;
 
   _onContentSizeChange(@{
-    @"contentSize": @{
-      @"height": @(contentSize.height),
-      @"width": @(contentSize.width),
+    @"contentSize" : @{
+      @"height" : @(contentSize.height),
+      @"width" : @(contentSize.width),
     },
-    @"target": self.reactTag,
+    @"target" : self.reactTag,
   });
 }
 
-- (NSString *)text
-{
+- (NSString *)text {
   return _text;
 }
 
-- (void)setText:(NSString *)text
-{
+- (void)setText:(NSString *)text {
   _text = text;
   // Clear `_previousAttributedText` to notify the view about the change
   // when `text` native prop is set.
@@ -128,8 +118,7 @@
 
 #pragma mark - RCTUIManagerObserver
 
-- (void)uiManagerWillPerformMounting
-{
+- (void)uiManagerWillPerformMounting {
   if (YGNodeIsDirty(self.yogaNode)) {
     return;
   }
@@ -145,20 +134,18 @@
   RCTTextAttributes *textAttributes = [self.textAttributes copy];
 
   NSMutableAttributedString *attributedText =
-    [[NSMutableAttributedString alloc] initWithAttributedString:[self attributedTextWithBaseTextAttributes:nil]];
+      [[NSMutableAttributedString alloc] initWithAttributedString:[self attributedTextWithBaseTextAttributes:nil]];
 
   // Removing all references to Shadow Views and tags to avoid unnecessary retaining
   // and problems with comparing the strings.
   [attributedText removeAttribute:RCTBaseTextShadowViewEmbeddedShadowViewAttributeName
                             range:NSMakeRange(0, attributedText.length)];
 
-  [attributedText removeAttribute:RCTTextAttributesTagAttributeName
-                            range:NSMakeRange(0, attributedText.length)];
+  [attributedText removeAttribute:RCTTextAttributesTagAttributeName range:NSMakeRange(0, attributedText.length)];
 
   if (self.text.length) {
     NSAttributedString *propertyAttributedText =
-      [[NSAttributedString alloc] initWithString:self.text
-                                      attributes:self.textAttributes.effectiveTextAttributes];
+        [[NSAttributedString alloc] initWithString:self.text attributes:self.textAttributes.effectiveTextAttributes];
     [attributedText insertAttributedString:propertyAttributedText atIndex:0];
   }
 
@@ -184,7 +171,8 @@
     baseTextInputView.reactPaddingInsets = paddingInsets;
 
     if (isAttributedTextChanged) {
-      // Don't set `attributedText` if length equal to zero, otherwise it would shrink when attributes contain like `lineHeight`.
+      // Don't set `attributedText` if length equal to zero, otherwise it would shrink when attributes contain like
+      // `lineHeight`.
       if (attributedText.length != 0) {
         baseTextInputView.attributedText = attributedText;
       } else {
@@ -196,12 +184,10 @@
 
 #pragma mark -
 
-- (NSAttributedString *)measurableAttributedText
-{
+- (NSAttributedString *)measurableAttributedText {
   // Only for the very first render when we don't have `_localAttributedText`,
   // we use value directly from the property and/or nested content.
-  NSAttributedString *attributedText =
-    _localAttributedText ?: [self attributedTextWithBaseTextAttributes:nil];
+  NSAttributedString *attributedText = _localAttributedText ?: [self attributedTextWithBaseTextAttributes:nil];
 
   if (attributedText.length == 0) {
     // It's impossible to measure empty attributed string because all attributes are
@@ -213,14 +199,14 @@
       // Note: `zero-width space` is insufficient in some cases.
       text = @"I";
     }
-    attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.textAttributes.effectiveTextAttributes];
+    attributedText = [[NSAttributedString alloc] initWithString:text
+                                                     attributes:self.textAttributes.effectiveTextAttributes];
   }
 
   return attributedText;
 }
 
-- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize
-{
+- (CGSize)sizeThatFitsMinimumSize:(CGSize)minimumSize maximumSize:(CGSize)maximumSize {
   NSAttributedString *attributedText = [self measurableAttributedText];
 
   if (!_textStorage) {
@@ -234,19 +220,15 @@
 
   _textContainer.size = maximumSize;
   _textContainer.maximumNumberOfLines = _maximumNumberOfLines;
-  [_textStorage replaceCharactersInRange:(NSRange){0, _textStorage.length}
-                    withAttributedString:attributedText];
+  [_textStorage replaceCharactersInRange:(NSRange){0, _textStorage.length} withAttributedString:attributedText];
   [_layoutManager ensureLayoutForTextContainer:_textContainer];
   CGSize size = [_layoutManager usedRectForTextContainer:_textContainer].size;
 
-  return (CGSize){
-    MAX(minimumSize.width, MIN(RCTCeilPixelValue(size.width), maximumSize.width)),
-    MAX(minimumSize.height, MIN(RCTCeilPixelValue(size.height), maximumSize.height))
-  };
+  return (CGSize){MAX(minimumSize.width, MIN(RCTCeilPixelValue(size.width), maximumSize.width)),
+                  MAX(minimumSize.height, MIN(RCTCeilPixelValue(size.height), maximumSize.height))};
 }
 
-- (CGFloat)lastBaselineForSize:(CGSize)size
-{
+- (CGFloat)lastBaselineForSize:(CGSize)size {
   NSAttributedString *attributedText = [self measurableAttributedText];
 
   __block CGFloat maximumDescender = 0.0;
@@ -254,28 +236,28 @@
   [attributedText enumerateAttribute:NSFontAttributeName
                              inRange:NSMakeRange(0, attributedText.length)
                              options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
-                          usingBlock:
-    ^(UIFont *font, NSRange range, __unused BOOL *stop) {
-      if (maximumDescender > font.descender) {
-        maximumDescender = font.descender;
-      }
-    }
-  ];
+                          usingBlock:^(UIFont *font, NSRange range, __unused BOOL *stop) {
+                            if (maximumDescender > font.descender) {
+                              maximumDescender = font.descender;
+                            }
+                          }];
 
   return size.height + maximumDescender;
 }
 
-static YGSize RCTBaseTextInputShadowViewMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode)
+static YGSize RCTBaseTextInputShadowViewMeasure(
+    YGNodeRef node,
+    float width,
+    YGMeasureMode widthMode,
+    float height,
+    YGMeasureMode heightMode)
 {
   RCTShadowView *shadowView = (__bridge RCTShadowView *)YGNodeGetContext(node);
 
   CGSize minimumSize = CGSizeMake(0, 0);
   CGSize maximumSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
 
-  CGSize size = {
-    RCTCoreGraphicsFloatFromYogaFloat(width),
-    RCTCoreGraphicsFloatFromYogaFloat(height)
-  };
+  CGSize size = {RCTCoreGraphicsFloatFromYogaFloat(width), RCTCoreGraphicsFloatFromYogaFloat(height)};
 
   switch (widthMode) {
     case YGMeasureModeUndefined:
@@ -303,20 +285,15 @@ static YGSize RCTBaseTextInputShadowViewMeasure(YGNodeRef node, float width, YGM
 
   CGSize measuredSize = [shadowView sizeThatFitsMinimumSize:minimumSize maximumSize:maximumSize];
 
-  return (YGSize){
-    RCTYogaFloatFromCoreGraphicsFloat(measuredSize.width),
-    RCTYogaFloatFromCoreGraphicsFloat(measuredSize.height)
-  };
+  return (YGSize){RCTYogaFloatFromCoreGraphicsFloat(measuredSize.width),
+                  RCTYogaFloatFromCoreGraphicsFloat(measuredSize.height)};
 }
 
 static float RCTTextInputShadowViewBaseline(YGNodeRef node, const float width, const float height)
 {
   RCTBaseTextInputShadowView *shadowTextView = (__bridge RCTBaseTextInputShadowView *)YGNodeGetContext(node);
 
-  CGSize size = (CGSize){
-    RCTCoreGraphicsFloatFromYogaFloat(width),
-    RCTCoreGraphicsFloatFromYogaFloat(height)
-  };
+  CGSize size = (CGSize){RCTCoreGraphicsFloatFromYogaFloat(width), RCTCoreGraphicsFloatFromYogaFloat(height)};
 
   CGFloat lastBaseline = [shadowTextView lastBaselineForSize:size];
 

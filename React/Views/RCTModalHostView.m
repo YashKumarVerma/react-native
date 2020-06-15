@@ -36,8 +36,7 @@
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 
-- (instancetype)initWithBridge:(RCTBridge *)bridge
-{
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
   if ((self = [super initWithFrame:CGRectZero])) {
     _bridge = bridge;
     _modalViewController = [RCTModalHostViewController new];
@@ -63,15 +62,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 }
 
 #if TARGET_OS_TV
-- (void)menuButtonPressed:(__unused UIGestureRecognizer *)gestureRecognizer
-{
+- (void)menuButtonPressed:(__unused UIGestureRecognizer *)gestureRecognizer {
   if (_onRequestClose) {
     _onRequestClose(nil);
   }
 }
 
-- (void)setOnRequestClose:(RCTDirectEventBlock)onRequestClose
-{
+- (void)setOnRequestClose:(RCTDirectEventBlock)onRequestClose {
   _onRequestClose = onRequestClose;
   if (_reactSubview) {
     if (_onRequestClose && _menuButtonGestureRecognizer) {
@@ -83,16 +80,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 }
 #endif
 
-- (void)notifyForBoundsChange:(CGRect)newBounds
-{
+- (void)notifyForBoundsChange:(CGRect)newBounds {
   if (_reactSubview && _isPresented) {
     [_bridge.uiManager setSize:newBounds.size forView:_reactSubview];
     [self notifyForOrientationChange];
   }
 }
 
-- (void)notifyForOrientationChange
-{
+- (void)notifyForOrientationChange {
 #if !TARGET_OS_TV
   if (!_onOrientationChange) {
     return;
@@ -113,8 +108,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 #endif
 }
 
-- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex
-{
+- (void)insertReactSubview:(UIView *)subview atIndex:(NSInteger)atIndex {
   RCTAssert(_reactSubview == nil, @"Modal view can only have one subview");
   [super insertReactSubview:subview atIndex:atIndex];
   [_touchHandler attachToView:subview];
@@ -133,8 +127,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   _reactSubview = subview;
 }
 
-- (void)removeReactSubview:(UIView *)subview
-{
+- (void)removeReactSubview:(UIView *)subview {
   RCTAssert(subview == _reactSubview, @"Cannot remove view other than modal view");
   // Superclass (category) removes the `subview` from actual `superview`.
   [super removeReactSubview:subview];
@@ -150,21 +143,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   _reactSubview = nil;
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   // Do nothing, as subview (singular) is managed by `insertReactSubview:atIndex:`
 }
 
-- (void)dismissModalViewController
-{
+- (void)dismissModalViewController {
   if (_isPresented) {
     [_delegate dismissModalHostView:self withViewController:_modalViewController animated:[self hasAnimationType]];
     _isPresented = NO;
   }
 }
 
-- (void)didMoveToWindow
-{
+- (void)didMoveToWindow {
   [super didMoveToWindow];
 
   // In the case where there is a LayoutAnimation, we will be reinserted into the view hierarchy but only for aesthetic
@@ -192,8 +182,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   }
 }
 
-- (void)didMoveToSuperview
-{
+- (void)didMoveToSuperview {
   [super didMoveToSuperview];
 
   if (_isPresented && !self.superview) {
@@ -201,25 +190,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   }
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   dispatch_async(dispatch_get_main_queue(), ^{
     [self dismissModalViewController];
   });
 }
 
-- (BOOL)isTransparent
-{
+- (BOOL)isTransparent {
   return _modalViewController.modalPresentationStyle == UIModalPresentationOverFullScreen;
 }
 
-- (BOOL)hasAnimationType
-{
+- (BOOL)hasAnimationType {
   return ![self.animationType isEqualToString:@"none"];
 }
 
-- (void)setTransparent:(BOOL)transparent
-{
+- (void)setTransparent:(BOOL)transparent {
   if (self.isTransparent != transparent) {
     return;
   }
@@ -229,8 +214,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 }
 
 #if !TARGET_OS_TV
-- (UIInterfaceOrientationMask)supportedOrientationsMask
-{
+- (UIInterfaceOrientationMask)supportedOrientationsMask {
   if (_supportedOrientations.count == 0) {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
       return UIInterfaceOrientationMaskAll;

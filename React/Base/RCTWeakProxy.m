@@ -9,21 +9,18 @@
 
 @implementation RCTWeakProxy
 
-- (instancetype)initWithTarget:(id)target
-{
+- (instancetype)initWithTarget:(id)target {
   if (self = [super init]) {
     _target = target;
   }
   return self;
 }
 
-+ (instancetype)weakProxyWithTarget:(id)target
-{
++ (instancetype)weakProxyWithTarget:(id)target {
   return [[RCTWeakProxy alloc] initWithTarget:target];
 }
 
-- (id)forwardingTargetForSelector:(SEL)aSelector
-{
+- (id)forwardingTargetForSelector:(SEL)aSelector {
   return _target;
 }
 

@@ -62,8 +62,7 @@ RCT_JSON_CONVERTER(NSNumber)
 RCT_CUSTOM_CONVERTER(NSSet *, NSSet, [NSSet setWithArray:json])
 RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncoding])
 
-+ (NSIndexSet *)NSIndexSet:(id)json
-{
++ (NSIndexSet *)NSIndexSet:(id)json {
   json = [self NSNumberArray:json];
   NSMutableIndexSet *indexSet = [NSMutableIndexSet new];
   for (NSNumber *number in json) {
@@ -76,8 +75,7 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
   return indexSet;
 }
 
-+ (NSURL *)NSURL:(id)json
-{
++ (NSURL *)NSURL:(id)json {
   NSString *path = [self NSString:RCTNilIfNull(json)];
   if (!path) {
     return nil;
@@ -136,8 +134,7 @@ RCT_ENUM_CONVERTER(
     NSURLRequestUseProtocolCachePolicy,
     integerValue)
 
-+ (NSURLRequest *)NSURLRequest:(id)json
-{
++ (NSURLRequest *)NSURLRequest:(id)json {
   if ([json isKindOfClass:[NSString class]]) {
     NSURL *URL = [self NSURL:json];
     return URL ? [NSURLRequest requestWithURL:URL] : nil;
@@ -196,8 +193,7 @@ RCT_ENUM_CONVERTER(
   return nil;
 }
 
-+ (RCTFileURL *)RCTFileURL:(id)json
-{
++ (RCTFileURL *)RCTFileURL:(id)json {
   NSURL *fileURL = [self NSURL:json];
   if (!fileURL.fileURL) {
     RCTLogError(@"URI must be a local file, '%@' isn't.", fileURL);
@@ -210,8 +206,7 @@ RCT_ENUM_CONVERTER(
   return fileURL;
 }
 
-+ (NSDate *)NSDate:(id)json
-{
++ (NSDate *)NSDate:(id)json {
   if ([json isKindOfClass:[NSNumber class]]) {
     return [NSDate dateWithTimeIntervalSince1970:[self NSTimeInterval:json]];
   } else if ([json isKindOfClass:[NSString class]]) {
@@ -237,8 +232,7 @@ RCT_ENUM_CONVERTER(
   return nil;
 }
 
-+ (NSLocale *)NSLocale:(id)json
-{
++ (NSLocale *)NSLocale:(id)json {
   if ([json isKindOfClass:[NSString class]]) {
     NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:json];
     if (!locale) {
@@ -388,8 +382,7 @@ RCT_ENUM_CONVERTER(
     UITextFieldViewModeNever,
     integerValue)
 
-+ (UIKeyboardType)UIKeyboardType:(id)json RCT_DYNAMIC
-{
++ (UIKeyboardType)UIKeyboardType:(id)json RCT_DYNAMIC {
   static NSDictionary<NSString *, NSNumber *> *mapping;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -827,8 +820,7 @@ static NSString *RCTSemanticColorNames()
   return names;
 }
 
-+ (UIColor *)UIColor:(id)json
-{
++ (UIColor *)UIColor:(id)json {
   if (!json) {
     return nil;
   }
@@ -909,13 +901,11 @@ static NSString *RCTSemanticColorNames()
   }
 }
 
-+ (CGColorRef)CGColor:(id)json
-{
++ (CGColorRef)CGColor:(id)json {
   return [self UIColor:json].CGColor;
 }
 
-+ (YGValue)YGValue:(id)json
-{
++ (YGValue)YGValue:(id)json {
   if (!json) {
     return YGValueUndefined;
   } else if ([json isKindOfClass:[NSNumber class]]) {
@@ -986,8 +976,7 @@ RCT_JSON_ARRAY_CONVERTER(NSDictionary)
 RCT_JSON_ARRAY_CONVERTER(NSNumber)
 
 // Can't use RCT_ARRAY_CONVERTER due to bridged cast
-+ (NSArray *)CGColorArray:(id)json
-{
++ (NSArray *)CGColorArray:(id)json {
   NSMutableArray *colors = [NSMutableArray new];
   for (id value in [self NSArray:json]) {
     [colors addObject:(__bridge id)[self CGColor:value]];
@@ -1042,8 +1031,7 @@ static id RCTConvertPropertyListValue(id json)
   return json;
 }
 
-+ (NSPropertyList)NSPropertyList:(id)json
-{
++ (NSPropertyList)NSPropertyList:(id)json {
   return RCTConvertPropertyListValue(json);
 }
 
@@ -1164,8 +1152,7 @@ RCT_ENUM_CONVERTER(
 @implementation RCTConvert (Deprecated)
 
 /* This method is only used when loading images synchronously, e.g. for tabbar icons */
-+ (UIImage *)UIImage:(id)json
-{
++ (UIImage *)UIImage:(id)json {
   if (!json) {
     return nil;
   }
@@ -1234,8 +1221,7 @@ RCT_ENUM_CONVERTER(
   return image;
 }
 
-+ (CGImageRef)CGImage:(id)json
-{
++ (CGImageRef)CGImage:(id)json {
   return [self UIImage:json].CGImage;
 }
 

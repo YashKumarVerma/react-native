@@ -14,8 +14,7 @@
 
 @implementation RCTSafeAreaShadowView
 
-- (void)setLocalData:(RCTSafeAreaViewLocalData *)localData
-{
+- (void)setLocalData:(RCTSafeAreaViewLocalData *)localData {
   RCTAssert(
       [localData isKindOfClass:[RCTSafeAreaViewLocalData class]],
       @"Local data object for `RCTSafeAreaShadowView` must be `RCTSafeAreaViewLocalData` instance.");
@@ -34,20 +33,15 @@
  * Removing support for setting padding from any outside code
  * to prevent interferring this with local data.
  */
-- (void)setPadding:(__unused YGValue)value
-{
+- (void)setPadding:(__unused YGValue)value {
 }
-- (void)setPaddingLeft:(__unused YGValue)value
-{
+- (void)setPaddingLeft:(__unused YGValue)value {
 }
-- (void)setPaddingRight:(__unused YGValue)value
-{
+- (void)setPaddingRight:(__unused YGValue)value {
 }
-- (void)setPaddingTop:(__unused YGValue)value
-{
+- (void)setPaddingTop:(__unused YGValue)value {
 }
-- (void)setPaddingBottom:(__unused YGValue)value
-{
+- (void)setPaddingBottom:(__unused YGValue)value {
 }
 
 @end

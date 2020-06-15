@@ -19,8 +19,7 @@ UIAccessibilityTraits const SwitchAccessibilityTrait = 0x20000000000001;
 
 @implementation UIView (RCTViewUnmounting)
 
-- (void)react_remountAllSubviews
-{
+- (void)react_remountAllSubviews {
   // Normal views don't support unmounting, so all
   // this does is forward message to our subviews,
   // in case any of those do support it
@@ -30,8 +29,7 @@ UIAccessibilityTraits const SwitchAccessibilityTrait = 0x20000000000001;
   }
 }
 
-- (void)react_updateClippedSubviewsWithClipRect:(CGRect)clipRect relativeToView:(UIView *)clipView
-{
+- (void)react_updateClippedSubviewsWithClipRect:(CGRect)clipRect relativeToView:(UIView *)clipView {
   // Even though we don't support subview unmounting
   // we do support clipsToBounds, so if that's enabled
   // we'll update the clipping
@@ -51,8 +49,7 @@ UIAccessibilityTraits const SwitchAccessibilityTrait = 0x20000000000001;
   }
 }
 
-- (UIView *)react_findClipView
-{
+- (UIView *)react_findClipView {
   UIView *testView = self;
   UIView *clipView = nil;
   CGRect clipRect = self.bounds;
@@ -104,8 +101,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   NSMutableDictionary<NSString *, NSDictionary *> *accessibilityActionsLabelMap;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if ((self = [super initWithFrame:frame])) {
     _borderWidth = -1;
     _borderTopWidth = -1;
@@ -133,8 +129,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
-- (void)setReactLayoutDirection:(UIUserInterfaceLayoutDirection)layoutDirection
-{
+- (void)setReactLayoutDirection:(UIUserInterfaceLayoutDirection)layoutDirection {
   if (_reactLayoutDirection != layoutDirection) {
     _reactLayoutDirection = layoutDirection;
     [self.layer setNeedsDisplay];
@@ -149,8 +144,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 #pragma mark - Hit Testing
 
-- (void)setPointerEvents:(RCTPointerEvents)pointerEvents
-{
+- (void)setPointerEvents:(RCTPointerEvents)pointerEvents {
   _pointerEvents = pointerEvents;
   self.userInteractionEnabled = (pointerEvents != RCTPointerEventsNone);
   if (pointerEvents == RCTPointerEventsBoxNone) {
@@ -158,8 +152,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
   BOOL canReceiveTouchEvents = ([self isUserInteractionEnabled] && ![self isHidden]);
   if (!canReceiveTouchEvents) {
     return nil;
@@ -206,8 +199,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
   if (UIEdgeInsetsEqualToEdgeInsets(self.hitTestEdgeInsets, UIEdgeInsetsZero)) {
     return [super pointInside:point withEvent:event];
   }
@@ -217,8 +209,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 #pragma mark - Accessibility
 
-- (NSString *)accessibilityLabel
-{
+- (NSString *)accessibilityLabel {
   NSString *label = super.accessibilityLabel;
   if (label) {
     return label;
@@ -226,8 +217,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return RCTRecursiveAccessibilityLabel(self);
 }
 
-- (NSArray<UIAccessibilityCustomAction *> *)accessibilityCustomActions
-{
+- (NSArray<UIAccessibilityCustomAction *> *)accessibilityCustomActions {
   if (!self.accessibilityActions.count) {
     return nil;
   }
@@ -251,8 +241,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return [actions copy];
 }
 
-- (BOOL)didActivateAccessibilityCustomAction:(UIAccessibilityCustomAction *)action
-{
+- (BOOL)didActivateAccessibilityCustomAction:(UIAccessibilityCustomAction *)action {
   if (!_onAccessibilityAction || !accessibilityActionsLabelMap) {
     return NO;
   }
@@ -265,8 +254,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return YES;
 }
 
-- (NSString *)accessibilityValue
-{
+- (NSString *)accessibilityValue {
   static dispatch_once_t onceToken;
   static NSDictionary<NSString *, NSString *> *rolesAndStatesDescription = nil;
 
@@ -375,13 +363,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return nil;
 }
 
-- (UIView *)reactAccessibilityElement
-{
+- (UIView *)reactAccessibilityElement {
   return self;
 }
 
-- (BOOL)isAccessibilityElement
-{
+- (BOOL)isAccessibilityElement {
   if (self.reactAccessibilityElement == self) {
     return [super isAccessibilityElement];
   }
@@ -389,8 +375,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return NO;
 }
 
-- (BOOL)performAccessibilityAction:(NSString *)name
-{
+- (BOOL)performAccessibilityAction:(NSString *)name {
   if (_onAccessibilityAction && accessibilityActionsNameMap[name]) {
     _onAccessibilityAction(@{@"actionName" : name, @"actionTarget" : self.reactTag});
     return YES;
@@ -398,8 +383,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return NO;
 }
 
-- (BOOL)accessibilityActivate
-{
+- (BOOL)accessibilityActivate {
   if ([self performAccessibilityAction:@"activate"]) {
     return YES;
   } else if (_onAccessibilityTap) {
@@ -410,8 +394,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (BOOL)accessibilityPerformMagicTap
-{
+- (BOOL)accessibilityPerformMagicTap {
   if ([self performAccessibilityAction:@"magicTap"]) {
     return YES;
   } else if (_onMagicTap) {
@@ -422,8 +405,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (BOOL)accessibilityPerformEscape
-{
+- (BOOL)accessibilityPerformEscape {
   if ([self performAccessibilityAction:@"escape"]) {
     return YES;
   } else if (_onAccessibilityEscape) {
@@ -434,18 +416,15 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)accessibilityIncrement
-{
+- (void)accessibilityIncrement {
   [self performAccessibilityAction:@"increment"];
 }
 
-- (void)accessibilityDecrement
-{
+- (void)accessibilityDecrement {
   [self performAccessibilityAction:@"decrement"];
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
   NSString *superDescription = super.description;
   NSRange semicolonRange = [superDescription rangeOfString:@";"];
   NSString *replacement = [NSString stringWithFormat:@"; reactTag: %@;", self.reactTag];
@@ -456,8 +435,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 + (void)autoAdjustInsetsForView:(UIView<RCTAutoInsetsProtocol> *)parentView
                  withScrollView:(UIScrollView *)scrollView
-                   updateOffset:(BOOL)updateOffset
-{
+                   updateOffset:(BOOL)updateOffset {
   UIEdgeInsets baseInset = parentView.contentInset;
   CGFloat previousInsetTop = scrollView.contentInset.top;
   CGPoint contentOffset = scrollView.contentOffset;
@@ -485,8 +463,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-+ (UIEdgeInsets)contentInsetsForView:(UIView *)view
-{
++ (UIEdgeInsets)contentInsetsForView:(UIView *)view {
   while (view) {
     UIViewController *controller = view.reactViewController;
     if (controller) {
@@ -499,8 +476,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 #pragma mark - View Unmounting
 
-- (void)react_remountAllSubviews
-{
+- (void)react_remountAllSubviews {
   if (_removeClippedSubviews) {
     for (UIView *view in self.reactSubviews) {
       if (view.superview != self) {
@@ -514,8 +490,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)react_updateClippedSubviewsWithClipRect:(CGRect)clipRect relativeToView:(UIView *)clipView
-{
+- (void)react_updateClippedSubviewsWithClipRect:(CGRect)clipRect relativeToView:(UIView *)clipView {
   // TODO (#5906496): for scrollviews (the primary use-case) we could
   // optimize this by only doing a range check along the scroll axis,
   // instead of comparing the whole frame
@@ -562,16 +537,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)setRemoveClippedSubviews:(BOOL)removeClippedSubviews
-{
+- (void)setRemoveClippedSubviews:(BOOL)removeClippedSubviews {
   if (!removeClippedSubviews && _removeClippedSubviews) {
     [self react_remountAllSubviews];
   }
   _removeClippedSubviews = removeClippedSubviews;
 }
 
-- (void)didUpdateReactSubviews
-{
+- (void)didUpdateReactSubviews {
   if (_removeClippedSubviews) {
     [self updateClippedSubviews];
   } else {
@@ -579,8 +552,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)updateClippedSubviews
-{
+- (void)updateClippedSubviews {
   // Find a suitable view to use for clipping
   UIView *clipView = [self react_findClipView];
   if (clipView) {
@@ -588,8 +560,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   // TODO (#5906496): this a nasty performance drain, but necessary
   // to prevent gaps appearing when the loading spinner disappears.
   // We might be able to fix this another way by triggering a call
@@ -602,8 +573,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
   [super traitCollectionDidChange:previousTraitCollection];
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
   if (@available(iOS 13.0, *)) {
@@ -616,13 +586,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 #pragma mark - Borders
 
-- (UIColor *)backgroundColor
-{
+- (UIColor *)backgroundColor {
   return _backgroundColor;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
   if ([_backgroundColor isEqual:backgroundColor]) {
     return;
   }
@@ -636,8 +604,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x)
   return x >= 0 ? x : defaultValue;
 };
 
-- (UIEdgeInsets)bordersAsInsets
-{
+- (UIEdgeInsets)bordersAsInsets {
   const CGFloat borderWidth = MAX(0, _borderWidth);
   const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
 
@@ -667,8 +634,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x)
   };
 }
 
-- (RCTCornerRadii)cornerRadii
-{
+- (RCTCornerRadii)cornerRadii {
   const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
   const CGFloat radius = MAX(0, _borderRadius);
 
@@ -724,8 +690,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x)
   };
 }
 
-- (RCTBorderColors)borderColors
-{
+- (RCTBorderColors)borderColors {
   const BOOL isRTL = _reactLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
 
   if ([[RCTI18nUtil sharedInstance] doLeftAndRightSwapInRTL]) {
@@ -754,8 +719,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x)
   };
 }
 
-- (void)reactSetFrame:(CGRect)frame
-{
+- (void)reactSetFrame:(CGRect)frame {
   // If frame is zero, or below the threshold where the border radii can
   // be rendered as a stretchable image, we'll need to re-render.
   // TODO: detect up-front if re-rendering is necessary
@@ -766,8 +730,7 @@ static CGFloat RCTDefaultIfNegativeTo(CGFloat defaultValue, CGFloat x)
   }
 }
 
-- (void)displayLayer:(CALayer *)layer
-{
+- (void)displayLayer:(CALayer *)layer {
   if (CGSizeEqualToSize(layer.bounds.size, CGSizeZero)) {
     return;
   }
@@ -876,8 +839,7 @@ static void RCTUpdateShadowPathForView(RCTView *view)
   }
 }
 
-- (void)updateClippingForLayer:(CALayer *)layer
-{
+- (void)updateClippingForLayer:(CALayer *)layer {
   CALayer *mask = nil;
   CGFloat cornerRadius = 0;
 

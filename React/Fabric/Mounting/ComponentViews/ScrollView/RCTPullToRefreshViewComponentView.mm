@@ -28,8 +28,7 @@ using namespace facebook::react;
   RCTScrollViewComponentView *_scrollViewComponentView;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     // This view is not designed to be visible, it only serves UIViewController-like purpose managing
     // attaching and detaching of a pull-to-refresh view to a scroll view.
@@ -50,13 +49,11 @@ using namespace facebook::react;
 
 #pragma mark - RCTComponentViewProtocol
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider
-{
++ (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<PullToRefreshViewComponentDescriptor>();
 }
 
-- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
-{
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps {
   auto const &oldConcreteProps = *std::static_pointer_cast<PullToRefreshViewProps const>(_props);
   auto const &newConcreteProps = *std::static_pointer_cast<PullToRefreshViewProps const>(props);
 
@@ -87,13 +84,11 @@ using namespace facebook::react;
 
 #pragma mark -
 
-- (void)handleUIControlEventValueChanged
-{
+- (void)handleUIControlEventValueChanged {
   std::static_pointer_cast<PullToRefreshViewEventEmitter const>(_eventEmitter)->onRefresh({});
 }
 
-- (void)_updateTitle
-{
+- (void)_updateTitle {
   auto const &concreteProps = *std::static_pointer_cast<PullToRefreshViewProps const>(_props);
 
   if (concreteProps.title.empty()) {
@@ -112,8 +107,7 @@ using namespace facebook::react;
 
 #pragma mark - Attaching & Detaching
 
-- (void)didMoveToWindow
-{
+- (void)didMoveToWindow {
   if (self.window) {
     [self _attach];
   } else {
@@ -121,8 +115,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)_attach
-{
+- (void)_attach {
   if (_scrollViewComponentView) {
     [self _detach];
   }
@@ -137,8 +130,7 @@ using namespace facebook::react;
   }
 }
 
-- (void)_detach
-{
+- (void)_detach {
   if (!_scrollViewComponentView) {
     return;
   }
@@ -154,13 +146,11 @@ using namespace facebook::react;
 
 #pragma mark - Native commands
 
-- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args
-{
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
   RCTPullToRefreshViewHandleCommand(self, commandName, args);
 }
 
-- (void)setNativeRefreshing:(BOOL)refreshing
-{
+- (void)setNativeRefreshing:(BOOL)refreshing {
   if (refreshing) {
     [_refreshControl beginRefreshing];
   } else {
@@ -170,15 +160,13 @@ using namespace facebook::react;
 
 #pragma mark - RCTRefreshableProtocol
 
-- (void)setRefreshing:(BOOL)refreshing
-{
+- (void)setRefreshing:(BOOL)refreshing {
   [self setNativeRefreshing:refreshing];
 }
 
 #pragma mark -
 
-- (NSString *)componentViewName_DO_NOT_USE_THIS_IS_BROKEN
-{
+- (NSString *)componentViewName_DO_NOT_USE_THIS_IS_BROKEN {
   return @"RefreshControl";
 }
 

@@ -174,8 +174,7 @@ static Class getFallbackClassFromName(const char *name)
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
                       delegate:(id<RCTTurboModuleManagerDelegate>)delegate
-                     jsInvoker:(std::shared_ptr<CallInvoker>)jsInvoker
-{
+                     jsInvoker:(std::shared_ptr<CallInvoker>)jsInvoker {
   if (self = [super init]) {
     _jsInvoker = jsInvoker;
     _delegate = delegate;
@@ -197,8 +196,7 @@ static Class getFallbackClassFromName(const char *name)
   return self;
 }
 
-- (void)notifyAboutTurboModuleSetup:(const char *)name
-{
+- (void)notifyAboutTurboModuleSetup:(const char *)name {
   NSString *moduleName = [[NSString alloc] initWithUTF8String:name];
   if (moduleName) {
     int64_t setupTime = [self->_bridge.performanceLogger durationForTag:RCTPLTurboModuleSetup];
@@ -220,8 +218,7 @@ static Class getFallbackClassFromName(const char *name)
  * (for now).
  */
 
-- (std::shared_ptr<TurboModule>)provideTurboModule:(const char *)moduleName
-{
+- (std::shared_ptr<TurboModule>)provideTurboModule:(const char *)moduleName {
   auto turboModuleLookup = _turboModuleCache.find(moduleName);
   if (turboModuleLookup != _turboModuleCache.end()) {
     TurboModulePerfLogger::moduleJSRequireBeginningCacheHit(moduleName);
@@ -325,8 +322,7 @@ static Class getFallbackClassFromName(const char *name)
  * Note: All TurboModule instances are cached, which means they're all long-lived
  * (for now).
  */
-- (id<RCTTurboModule>)provideRCTTurboModule:(const char *)moduleName
-{
+- (id<RCTTurboModule>)provideRCTTurboModule:(const char *)moduleName {
   TurboModuleHolder *moduleHolder;
 
   {
@@ -352,8 +348,7 @@ static Class getFallbackClassFromName(const char *name)
 
 - (id<RCTTurboModule>)_provideRCTTurboModule:(const char *)moduleName
                                 moduleHolder:(TurboModuleHolder *)moduleHolder
-                               shouldPerfLog:(BOOL)shouldPerfLog
-{
+                               shouldPerfLog:(BOOL)shouldPerfLog {
   bool shouldCreateModule = false;
 
   {
@@ -443,8 +438,7 @@ static Class getFallbackClassFromName(const char *name)
  */
 - (id<RCTTurboModule>)_createAndSetUpRCTTurboModule:(Class)moduleClass
                                          moduleName:(const char *)moduleName
-                                           moduleId:(int32_t)moduleId
-{
+                                           moduleId:(int32_t)moduleId {
   id<RCTTurboModule> module = nil;
 
   /**
@@ -589,8 +583,7 @@ static Class getFallbackClassFromName(const char *name)
  * For TurboModule ObjC classes that implement requiresMainQueueInit, return the result of this method.
  * For TurboModule ObjC classes that don't. Return true if they have a custom init or constantsToExport method.
  */
-- (BOOL)_requiresMainQueueSetup:(Class)moduleClass
-{
+- (BOOL)_requiresMainQueueSetup:(Class)moduleClass {
   const BOOL implementsRequireMainQueueSetup = [moduleClass respondsToSelector:@selector(requiresMainQueueSetup)];
   if (implementsRequireMainQueueSetup) {
     return [moduleClass requiresMainQueueSetup];
@@ -640,8 +633,7 @@ static Class getFallbackClassFromName(const char *name)
   return requiresMainQueueSetup;
 }
 
-- (void)installJSBindingWithRuntimeExecutor:(facebook::react::RuntimeExecutor)runtimeExecutor
-{
+- (void)installJSBindingWithRuntimeExecutor:(facebook::react::RuntimeExecutor)runtimeExecutor {
   if (!runtimeExecutor) {
     // jsi::Runtime doesn't exist when attached to Chrome debugger.
     return;
@@ -692,13 +684,11 @@ static Class getFallbackClassFromName(const char *name)
 
 #pragma mark RCTTurboModuleLookupDelegate
 
-- (id)moduleForName:(const char *)moduleName
-{
+- (id)moduleForName:(const char *)moduleName {
   return [self moduleForName:moduleName warnOnLookupFailure:YES];
 }
 
-- (id)moduleForName:(const char *)moduleName warnOnLookupFailure:(BOOL)warnOnLookupFailure
-{
+- (id)moduleForName:(const char *)moduleName warnOnLookupFailure:(BOOL)warnOnLookupFailure {
   id<RCTTurboModule> module = [self provideRCTTurboModule:moduleName];
 
   if (warnOnLookupFailure && !module) {
@@ -708,16 +698,14 @@ static Class getFallbackClassFromName(const char *name)
   return module;
 }
 
-- (BOOL)moduleIsInitialized:(const char *)moduleName
-{
+- (BOOL)moduleIsInitialized:(const char *)moduleName {
   std::unique_lock<std::mutex> guard(_turboModuleHoldersMutex);
   return _turboModuleHolders.find(moduleName) != _turboModuleHolders.end();
 }
 
 #pragma mark Invalidation logic
 
-- (void)bridgeWillInvalidateModules:(NSNotification *)notification
-{
+- (void)bridgeWillInvalidateModules:(NSNotification *)notification {
   RCTBridge *bridge = notification.userInfo[@"bridge"];
   if (bridge != _bridge) {
     return;
@@ -729,8 +717,7 @@ static Class getFallbackClassFromName(const char *name)
   _invalidating = true;
 }
 
-- (void)bridgeDidInvalidateModules:(NSNotification *)notification
-{
+- (void)bridgeDidInvalidateModules:(NSNotification *)notification {
   RCTBridge *bridge = notification.userInfo[@"bridge"];
   if (bridge != _bridge) {
     return;
@@ -778,8 +765,7 @@ static Class getFallbackClassFromName(const char *name)
   _turboModuleCache.clear();
 }
 
-- (void)invalidate
-{
+- (void)invalidate {
   {
     std::lock_guard<std::mutex> guard(_turboModuleHoldersMutex);
     _invalidating = true;

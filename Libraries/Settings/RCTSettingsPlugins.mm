@@ -16,9 +16,10 @@
 #import <string>
 #import <unordered_map>
 
-Class RCTSettingsClassProvider(const char *name) {
+Class RCTSettingsClassProvider(const char *name)
+{
   static std::unordered_map<std::string, Class (*)(void)> sCoreModuleClassMap = {
-    {"SettingsManager", RCTSettingsManagerCls},
+      {"SettingsManager", RCTSettingsManagerCls},
   };
 
   auto p = sCoreModuleClassMap.find(name);

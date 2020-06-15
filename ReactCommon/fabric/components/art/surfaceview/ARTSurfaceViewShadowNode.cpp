@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/components/art/ARTSurfaceViewShadowNode.h>
 #include <react/components/art/ARTBaseShadowNode.h>
 #include <react/components/art/ARTGroupShadowNode.h>
+#include <react/components/art/ARTSurfaceViewShadowNode.h>
 #include <react/components/art/ARTSurfaceViewState.h>
 
 namespace facebook {

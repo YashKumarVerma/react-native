@@ -13,8 +13,7 @@
   NSInteger _tag;
 }
 
-- (instancetype)initWithCoordinator:(RCTLegacyViewManagerInteropCoordinator *)coordinator reactTag:(NSInteger)tag
-{
+- (instancetype)initWithCoordinator:(RCTLegacyViewManagerInteropCoordinator *)coordinator reactTag:(NSInteger)tag {
   if (self = [super init]) {
     _coordinator = coordinator;
     _tag = tag;
@@ -22,14 +21,12 @@
   return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
   [_paperView removeFromSuperview];
   [_coordinator removeObserveForTag:_tag];
 }
 
-- (UIView *)paperView
-{
+- (UIView *)paperView {
   if (!_paperView) {
     _paperView = _coordinator.paperView;
     _paperView.reactTag = [NSNumber numberWithInteger:_tag];
@@ -45,13 +42,11 @@
   return _paperView;
 }
 
-- (void)setProps:(const folly::dynamic &)props
-{
+- (void)setProps:(const folly::dynamic &)props {
   [_coordinator setProps:props forView:self.paperView];
 }
 
-- (void)handleCommand:(NSString *)commandName args:(NSArray *)args
-{
+- (void)handleCommand:(NSString *)commandName args:(NSArray *)args {
   [_coordinator handleCommand:commandName args:args reactTag:_tag];
 }
 
