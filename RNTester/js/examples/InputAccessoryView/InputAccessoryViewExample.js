@@ -48,6 +48,7 @@ class TextInputBar extends React.PureComponent<TextInputProps, TextInputState> {
           }}
           value={this.state.text}
           placeholder={'Type a message...'}
+          testID="input-accessory-text-input"
         />
         <Button
           onPress={() => {

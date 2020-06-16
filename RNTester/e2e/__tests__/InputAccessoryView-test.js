@@ -20,8 +20,23 @@ describe('InputAccessoryView', () => {
     );
   });
 
-  it('Send button should show alert on press', async () => {
+  it('should be visiible on load', async () => {
+    await expect(
+      element(by.text('Simple view with sticky input')),
+    ).toBeVisible();
+  });
+  it('should be visible after keyboard opens', async () => {
+    const textInputID = 'input-accessory-text-input';
+    await element(by.id(textInputID)).typeText('Test');
+    await expect(
+      element(by.text('Simple view with sticky input')),
+    ).toBeVisible();
+  });
+  it('should be visible after send button press', async () => {
     await element(by.id('input-accessory-send-button')).tap();
-    await expect(element(by.text('You tapped the button!'))).toBeVisible();
+    await element(by.text('OK')).tap();
+    await expect(
+      element(by.text('Simple view with sticky input')),
+    ).toBeVisible();
   });
 });
