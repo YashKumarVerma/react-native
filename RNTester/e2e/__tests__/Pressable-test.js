@@ -23,7 +23,7 @@ describe('Pressable', () => {
     );
   });
 
-  it('Console content should change on Press', async () => {
+  it('should change console content should on press', async () => {
     await openExampleWithTitle('Change content based on Press');
 
     const consoleID = 'pressable_press_console';
@@ -38,7 +38,7 @@ describe('Pressable', () => {
     await expect(element(by.id(consoleID))).toHaveText('3x onPress');
   });
 
-  it('Highlighted text should be pressable', async () => {
+  it('should show different text on highlight button press', async () => {
     await openExampleWithTitle('<Text onPress={fn}> with highlight');
 
     const buttonID = 'tappable_text';
@@ -51,7 +51,7 @@ describe('Pressable', () => {
     await expect(element(by.id(consoleID))).toHaveText('2x text onPress');
   });
 
-  it('Components with hitSlop prop extends touch area', async () => {
+  it('should change text when hitSlop prop extends touch area', async () => {
     await openExampleWithTitle('Pressable Hit Slop');
 
     const buttonID = 'pressable_hit_slop_extended_touch';
