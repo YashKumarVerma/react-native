@@ -20,7 +20,7 @@ describe('Alert', () => {
     await element(by.label('Back')).tap();
   });
 
-  it('Alert with message and default button', async () => {
+  it('should show alert dialog with message and default button', async () => {
     const alertMessage =
       'Credibly reintermediate next-generation potentialities after goal-oriented ' +
       'catalysts for change. Dynamically revolutionize.';
@@ -31,7 +31,7 @@ describe('Alert', () => {
     await element(by.text('OK')).tap();
   });
 
-  it('Alert with three buttons', async () => {
+  it('should show alert dialog with three buttons', async () => {
     await openExampleWithTitle('Alerts');
     await element(by.id('alert-with-three-buttons')).tap();
     await expect(element(by.text('Alert Title'))).toBeVisible();
