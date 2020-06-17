@@ -23,7 +23,7 @@ describe('Pressable', () => {
     );
   });
 
-  it('should change console content should on press', async () => {
+  it('should change console content on press', async () => {
     await openExampleWithTitle('Change content based on Press');
 
     const consoleID = 'pressable_press_console';
