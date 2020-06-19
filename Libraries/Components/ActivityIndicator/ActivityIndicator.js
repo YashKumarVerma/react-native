@@ -29,9 +29,11 @@ type IndicatorSize = number | 'small' | 'large';
 
 type IOSProps = $ReadOnly<{|
   /**
-   * Whether the indicator should hide when not animating (true by default).
-   *
-   * See https://reactnative.dev/docs/activityindicator.html#hideswhenstopped
+    Whether the indicator should hide when not animating.
+
+    https://reactnative.dev/docs/activityindicator.html#hideswhenstopped
+
+    @default {@platform ios} true
    */
   hidesWhenStopped?: ?boolean,
 |}>;
@@ -40,33 +42,104 @@ type Props = $ReadOnly<{|
   ...IOSProps,
 
   /**
-   * Whether to show the indicator (true, the default) or hide it (false).
-   *
-   * See https://reactnative.dev/docs/activityindicator.html#animating
+   Whether to show the indicator (`true`) or hide it (`false`).
+
+   https://reactnative.dev/docs/activityindicator.html#animating
+
+   @default true
    */
   animating?: ?boolean,
 
   /**
-   * The foreground color of the spinner (default is gray).
-   *
-   * See https://reactnative.dev/docs/activityindicator.html#color
+   The foreground color of the spinner.
+
+   https://reactnative.dev/docs/activityindicator.html#color
+
+   @default {@platform ios} '#999999'
+   @default {@platform android} null
    */
   color?: ?ColorValue,
 
   /**
-   * Size of the indicator (default is 'small').
-   * Passing a number to the size prop is only supported on Android.
-   *
-   * See https://reactnative.dev/docs/activityindicator.html#size
+   Size of the indicator.
+
+   https://reactnative.dev/docs/activityindicator.html#size
+
+   @default small
+
+   @type enum(‘small’, ‘large’)
+   @type {@platform android} number
    */
   size?: ?IndicatorSize,
 |}>;
 
 /**
- * Displays a circular loading indicator.
- *
- * See https://reactnative.dev/docs/activityindicator.html
- */
+	Displays a circular loading indicator.
+
+  @example ```SnackPlayer name=ActivityIndicator%20Function%20Component%20Example
+  import React from "react";
+  import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+
+  const App = () => (
+    <View style={[styles.container, styles.horizontal]}>
+      <ActivityIndicator />
+      <ActivityIndicator size="large" />
+      <ActivityIndicator size="small" color="#0000ff" />
+      <ActivityIndicator size="large" color="#00ff00" />
+    </View>
+  );
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center"
+    },
+    horizontal: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      padding: 10
+    }
+  });
+
+  export default App;
+  ```
+
+  @example ```SnackPlayer name=ActivityIndicator%20Class%20Component%20Example
+  import React, { Component } from "react";
+  import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+
+  class App extends Component {
+    render() {
+      return (
+        <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator />
+        <ActivityIndicator size="large" />
+        <ActivityIndicator size="small" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00ff00" />
+        </View>
+      );
+    }
+  }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center"
+    },
+    horizontal: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      padding: 10
+    }
+  });
+
+  export default App;
+  ```
+
+  https://reactnative.dev/docs/activityindicator.html
+
+  @inherits [View Props](https://reactnative.dev/docs/view.html#props)
+  */
 const ActivityIndicator = (props: Props, forwardedRef?: any) => {
   const {onLayout, style, size, ...restProps} = props;
   let sizeStyle;
