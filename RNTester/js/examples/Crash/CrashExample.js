@@ -10,7 +10,7 @@
 
 'use strict';
 import type {Node} from 'React';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Switch} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -171,9 +171,15 @@ const Settings = ({renderErrorBoundary, toggleErrorBoundary}) => (
   <View>
     <SectionHeader title="Settings" />
     <View style={styles.itemContainer}>
-      <Text style={styles.itemTitle} onPress={toggleErrorBoundary}>
-        Toggle Error Boundary: {renderErrorBoundary ? 'ON' : 'OFF'}
-      </Text>
+      <View style={styles.errorBoundarySwitch}>
+        <Text style={styles.itemTitle} onPress={toggleErrorBoundary}>
+          Error Boundary
+        </Text>
+        <Switch
+          onValueChange={toggleErrorBoundary}
+          value={renderErrorBoundary}
+        />
+      </View>
     </View>
   </View>
 );
@@ -238,5 +244,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     backgroundColor: '#fff',
     marginBottom: 8,
+  },
+  errorBoundarySwitch: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
