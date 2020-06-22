@@ -11,7 +11,8 @@
 'use strict';
 import type {Node} from 'React';
 import {View, Text, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
+import ErrorBoundary from './ErrorBoundary';
 
 const SECTIONS = [
   {
@@ -48,11 +49,7 @@ const SECTIONS = [
         },
       },
       {
-        title: 'React Warning',
-        render: () => <ReactWarningExample key="react-warning-example" />,
-        onPressHandler: () => {
-          console.error('Errror!!');
-        },
+        customRender: () => <ReactWarningExample key="react-warning-example" />,
       },
     ],
   },
@@ -89,8 +86,13 @@ const SECTIONS = [
       {
         title: 'Unhandled JavaScript Error',
         onPressHandler: () => {
-          throw new Error('Unhandled JavaScript Error Example');
+          throw new Error('Unhandled JavaScript Error');
         },
+      },
+      {
+        customRender: () => (
+          <ReactErrorBoundaryExample key="react-error-boundary-example" />
+        ),
       },
     ],
   },
@@ -129,6 +131,21 @@ const ReactWarningExample = () => {
   );
 };
 
+const ReactErrorBoundaryExample = () => {
+  const [throwError, setThrowError] = useState(false);
+
+  if (throwError) {
+    throw new Error('App crashed in render!');
+  }
+  return (
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemTitle} onPress={() => setThrowError(true)}>
+        Throw JS Error In Render
+      </Text>
+    </View>
+  );
+};
+
 const SectionHeader = ({title}) => (
   <View>
     <Text style={styles.sectionHeader}>{title}</Text>
@@ -136,8 +153,8 @@ const SectionHeader = ({title}) => (
 );
 
 const Item = ({item}) => {
-  if (item.render) {
-    return item.render();
+  if (item.customRender) {
+    return item.customRender();
   }
   return (
     <View style={styles.itemContainer}>
@@ -148,22 +165,49 @@ const Item = ({item}) => {
   );
 };
 
-const CrashExampleScreen = () => {
-  return (
-    <View>
-      {SECTIONS.map(section => {
-        return (
-          <View key={section.title}>
-            <SectionHeader title={section.title} />
-            <View>
-              {section.examples.map(item => (
-                <Item key={item.title} item={item} />
-              ))}
-            </View>
-          </View>
-        );
-      })}
+const Settings = ({renderErrorBoundary, toggleErrorBoundary}) => (
+  <View>
+    <SectionHeader title="Settings" />
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemTitle} onPress={toggleErrorBoundary}>
+        Toggle Error Boundary: {renderErrorBoundary ? 'ON' : 'OFF'}
+      </Text>
     </View>
+  </View>
+);
+
+const ItemsList = () =>
+  SECTIONS.map(section => {
+    return (
+      <View key={section.title}>
+        <SectionHeader title={section.title} />
+
+        <View>
+          {section.examples.map(item => (
+            <Item key={item.title} item={item} />
+          ))}
+        </View>
+      </View>
+    );
+  });
+
+const CrashExampleScreen = () => {
+  const [renderErrorBoundary, setRenderErrorBoundary] = useState(true);
+
+  const toggleErrorBoundary = useCallback(() => {
+    setRenderErrorBoundary(!renderErrorBoundary);
+  }, [renderErrorBoundary]);
+
+  const Container = renderErrorBoundary ? ErrorBoundary : View;
+
+  return (
+    <Container>
+      <Settings
+        renderErrorBoundary={renderErrorBoundary}
+        toggleErrorBoundary={toggleErrorBoundary}
+      />
+      <ItemsList />
+    </Container>
   );
 };
 
