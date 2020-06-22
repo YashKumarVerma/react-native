@@ -10,43 +10,122 @@
 
 'use strict';
 import type {Node} from 'React';
-import {NativeModules, Button} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
 
-const {CrashyCrash} = NativeModules;
+const SECTIONS = [
+  {
+    title: 'Logging',
+    examples: [
+      {
+        title: 'Console Warning',
+        onPressHandler: () => {
+          console.warn('Warning!!');
+        },
+      },
+      {
+        title: 'Console Error',
+        onPressHandler: () => {
+          console.error('Error!!');
+        },
+      },
+      {
+        title: 'React Warning',
+        render: () => <ReactWarningExample key="react-warning-example" />,
+        onPressHandler: () => {
+          console.error('Errror!!');
+        },
+      },
+    ],
+  },
+];
 
-exports.displayName = (undefined: ?string);
+const ReactWarningExample = () => {
+  const [showFruitList, setShowFruitList] = useState(false);
+
+  const FruitListWithMissingKeys = () => (
+    <View style={{display: 'none'}}>
+      {['Apple', 'Banana'].map(fruit => (
+        <Text>{fruit}</Text>
+      ))}
+    </View>
+  );
+
+  return (
+    <View style={styles.itemContainer}>
+      {showFruitList && <FruitListWithMissingKeys />}
+      <Text
+        style={styles.itemTitle}
+        onPress={() => setShowFruitList(!showFruitList)}>
+        React Warning
+      </Text>
+    </View>
+  );
+};
+
+const SectionHeader = ({title}) => (
+  <View>
+    <Text style={styles.sectionHeader}>{title}</Text>
+  </View>
+);
+
+const Item = ({item}) => {
+  if (item.render) {
+    return item.render();
+  }
+  return (
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemTitle} onPress={item.onPressHandler}>
+        {item.title}
+      </Text>
+    </View>
+  );
+};
+
+const CrashExampleScreen = () => {
+  return (
+    <View>
+      {SECTIONS.map(section => {
+        return (
+          <View key={section.title}>
+            <SectionHeader title={section.title} />
+
+            <View>
+              {section.examples.map(item => (
+                <Item key={item.title} item={item} />
+              ))}
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
 exports.framework = 'React';
 exports.title = 'Crash';
 exports.description = 'Crash examples.';
-
 exports.examples = [
   {
-    title: 'JS crash',
+    title: 'Crash Examples',
     render(): Node {
-      return (
-        <Button
-          title="JS crash"
-          onPress={() => {
-            const a = {};
-            const b = a.w.q; // js crash here
-            console.log(b);
-          }}
-        />
-      );
-    },
-  },
-  {
-    title: 'Native crash',
-    render(): Node {
-      return (
-        <Button
-          title="Native crash"
-          onPress={() => {
-            CrashyCrash.letsCrash();
-          }}
-        />
-      );
+      return <CrashExampleScreen />;
     },
   },
 ];
+
+const styles = StyleSheet.create({
+  itemContainer: {
+    padding: 8,
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+  },
+  itemTitle: {
+    fontSize: 18,
+  },
+  sectionHeader: {
+    fontSize: 24,
+    backgroundColor: '#fff',
+    marginBottom: 8,
+  },
+});
