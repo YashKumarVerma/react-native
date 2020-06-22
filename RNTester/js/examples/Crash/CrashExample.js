@@ -49,6 +49,7 @@ const SECTIONS = [
         },
       },
       {
+        title: 'React Warning',
         customRender: () => <ReactWarningExample key="react-warning-example" />,
       },
     ],
@@ -90,6 +91,7 @@ const SECTIONS = [
         },
       },
       {
+        title: 'Throw JS Errror In Render',
         customRender: () => (
           <ReactErrorBoundaryExample key="react-error-boundary-example" />
         ),
