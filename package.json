@@ -163,7 +163,7 @@
         "build": "./gradlew RNTester:android:app:assembleRelease RNTester:android:app:assembleAndroidTest -DtestBuildType=release",
         "type": "android.emulator",
         "device": {
-          "avdName": "Nexus_6_API_29"
+          "avdName": "Pixel_API_28_AOSP"
         }
       },
       "android.emu.debug": {
@@ -172,7 +172,7 @@
         "build": "./gradlew RNTester:android:app:assembleDebug RNTester:android:app:assembleAndroidTest -DtestBuildType=debug",
         "type": "android.emulator",
         "device": {
-          "avdName": "Nexus_6_API_29"
+          "avdName": "Pixel_API_28_AOSP"
         }
       },
       "ios.sim.release": {

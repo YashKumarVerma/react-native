@@ -10,7 +10,7 @@
 
 'use strict';
 import type {Node} from 'React';
-import {NativeModules, Button} from 'react-native';
+import {NativeModules, Button, View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import React from 'react';
 
 const {CrashyCrash} = NativeModules;
@@ -20,7 +20,40 @@ exports.framework = 'React';
 exports.title = 'Crash';
 exports.description = 'Crash examples.';
 
+const logs = [
+  { 
+    title: "Native Log Warnings",
+    onPress : () => { 
+      console.log("Call Native Warning");
+    }
+  },
+  { 
+    title: "Native Log Errors",
+    onPress: () => { 
+      console.log("Call Native Errors");
+    }
+  }
+]
+
+const Item = ({data}) => (
+  <View>
+    {/* <Button onPress={() => data.onPress} title={data.title}/> */}
+    <Text onPress={data.onPress}>{data.title}</Text>
+  </View>
+);
+
 exports.examples = [
+  {
+    title:'Logging',
+    render(): Node { 
+      return (
+        logs.map(data => {
+          return <Item key={data.title} data={data} />
+        }
+        )
+      );
+    }
+  },
   {
     title: 'JS crash',
     render(): Node {
@@ -50,3 +83,23 @@ exports.examples = [
     },
   },
 ];
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 20,
+    marginHorizontal: 16
+  },
+  item: {
+    backgroundColor: "#f9c2ff",
+    padding: 20,
+    marginVertical: 8
+  },
+  header: {
+    fontSize: 32,
+    backgroundColor: "#fff"
+  },
+  title: {
+    fontSize: 24
+  }
+});

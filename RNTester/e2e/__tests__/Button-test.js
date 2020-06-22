@@ -19,7 +19,7 @@ describe('Button', () => {
     await device.reloadReactNative();
     await openComponentWithLabel(
       '<Button>',
-      '<Button> Simple React Native button component.',
+      'Simple React Native button component.',
     );
   });
 

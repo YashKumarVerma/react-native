@@ -15,7 +15,7 @@ const {
   openExampleWithTitle,
 } = require('../e2e-helpers');
 
-describe('DatePickerIOS', () => {
+describe('DatePicker:ios', () => {
   beforeAll(async () => {
     await device.reloadReactNative();
     await openComponentWithLabel(
