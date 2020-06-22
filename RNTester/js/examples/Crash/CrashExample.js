@@ -56,14 +56,14 @@ const SECTIONS = [
       },
     ],
   },
-  { 
+  {
     title: 'Syntax Errors',
     examples: [
-      { 
+      {
         title: 'LogBox Syntax Error',
-        onPressHandler: () => { 
+        onPressHandler: () => {
           const message = `TransformError SyntaxError: /path/to/RKJSModules/Apps/CrashReact/CrashReactApp.js: '${'im' +
-          'port'} and 'export' may only appear at the top level (199:0)
+            'port'} and 'export' may only appear at the top level (199:0)
       
         197 | });
         198 |
@@ -73,39 +73,37 @@ const SECTIONS = [
           const syntaxError: ExtendedError = new Error(message);
           syntaxError.preventSymbolication = true;
           throw syntaxError;
-        }
-      }, 
-      { 
+        },
+      },
+      {
         title: 'Native Syntax Error',
         onPressHandler: () => {
-            //RedBox Native Module 
-        }
-      }
-    ]
+          //RedBox Native Module
+        },
+      },
+    ],
   },
-  { 
+  {
     title: 'JavaScript Errors',
     examples: [
       {
         title: 'Unhandled JavaScript Error',
-        onPressHandler: () => { 
-          throw new Error('Unhandled JavaScript Error Example')
-        }
-      }, 
-    ] 
-  }, 
-  { 
+        onPressHandler: () => {
+          throw new Error('Unhandled JavaScript Error Example');
+        },
+      },
+    ],
+  },
+  {
     title: 'Native Crashes',
-    examples: [ 
-      //Todo: Add various examples 
-      { 
+    examples: [
+      //Todo: Add various examples
+      {
         title: 'Native Module Error',
-        onPressHandler: () => { 
-
-        }
-      }
-    ]
-  }
+        onPressHandler: () => {},
+      },
+    ],
+  },
 ];
 
 const ReactWarningExample = () => {
@@ -153,7 +151,6 @@ const Item = ({item}) => {
 const CrashExampleScreen = () => {
   return (
     <View>
-
       {SECTIONS.map(section => {
         return (
           <View key={section.title}>
