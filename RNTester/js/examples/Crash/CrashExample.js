@@ -13,6 +13,7 @@ import type {Node} from 'React';
 import {View, Text, StyleSheet, Switch} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import ErrorBoundary from './ErrorBoundary';
+import NativeLogModule from './NativeLogModule'; 
 
 const SECTIONS = [
   {
@@ -27,7 +28,6 @@ const SECTIONS = [
       {
         title: 'Native Log Error',
         onPressHandler: () => {
-          //native module
         },
       },
       {
@@ -90,6 +90,7 @@ const SECTIONS = [
           throw new Error('Unhandled JavaScript Error');
         },
       },
+
       {
         title: 'Throw JS Errror In Render',
         customRender: () => (
@@ -238,10 +239,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   itemTitle: {
-    fontSize: 16,
+    fontSize: 14,
   },
   sectionHeader: {
-    fontSize: 20,
+    fontSize: 18,
     backgroundColor: '#fff',
     marginBottom: 8,
   },

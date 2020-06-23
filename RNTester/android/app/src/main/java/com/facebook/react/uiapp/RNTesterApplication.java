@@ -16,6 +16,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.react.views.text.ReactFontManager;
+import com.facebook.react.uiapp.NativeLogPackage; 
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -41,7 +42,14 @@ public class RNTesterApplication extends Application implements ReactApplication
 
         @Override
         public List<ReactPackage> getPackages() {
-          return Arrays.<ReactPackage>asList(new MainReactPackage());
+          @SuppressWarnings("UnnecessaryLocalVariable")
+          // List<ReactPackage> packages = Arrays.<ReactPackage>asList(new MainReactPackage());
+            List<ReactPackage> packages = new PackageList(this).getPackages();
+          // Packages that cannot be autolinked yet can be added manually here, for example:
+          // packages.add(new MyReactNativePackage());
+          packages.add(new NativeLogPackage()); // <-- Add this line with your package name.
+          return packages;
+          // return Arrays.<ReactPackage>asList(new MainReactPackage());
         }
       };
 
