@@ -28,8 +28,8 @@ public class NativeLogModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod 
-    public void showWarning(){ 
-        RNLog.w("Unable to launch logbox because react was unable to create the root view");
+    public void showWarning(){
+        RNLog.w(reactContext, "Warning text");
     }
 
 }
