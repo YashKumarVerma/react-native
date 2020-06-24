@@ -9,7 +9,10 @@
  */
 
 'use strict';
+
 import type {Node} from 'React';
+import type {ExtendedError} from 'react-native/Libraries/Core/Devtools/parseErrorStack';
+import type {PressEvent} from '../../../../Libraries/Types/CoreEventTypes';
 import {View, Text, TouchableOpacity, StyleSheet, Switch} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import ErrorBoundary from './ErrorBoundary';
@@ -21,19 +24,19 @@ const SECTIONS = [
       {
         title: 'Native Log Warning',
         onPressHandler: () => {
-          //native module
+          // TODO:
         },
       },
       {
         title: 'Native Log Error',
         onPressHandler: () => {
-          //native module
+          // TODO:
         },
       },
       {
         title: 'Native Log Fatal',
         onPressHandler: () => {
-          //native module
+          // TODO:
         },
       },
       {
@@ -76,7 +79,7 @@ const SECTIONS = [
       {
         title: 'Native Syntax Error',
         onPressHandler: () => {
-          //RedBox Native Module
+          // TODO:
         },
       },
     ],
@@ -148,13 +151,25 @@ const ReactErrorBoundaryExample = () => {
   );
 };
 
-const SectionHeader = ({title}) => (
+type SectionHeaderProps = $ReadOnly<{|
+  title: string,
+|}>;
+
+const SectionHeader = ({title}: SectionHeaderProps) => (
   <View>
     <Text style={styles.sectionHeader}>{title}</Text>
   </View>
 );
 
-const Item = ({item}) => {
+type ListItemProps = $ReadOnly<{|
+  item: {
+    customRender?: () => Node,
+    title: string,
+    onPressHandler?: (event?: PressEvent) => mixed,
+  },
+|}>;
+
+const ListItem = ({item}: ListItemProps) => {
   if (item.customRender) {
     return item.customRender();
   }
@@ -167,7 +182,15 @@ const Item = ({item}) => {
   );
 };
 
-const Settings = ({renderErrorBoundary, toggleErrorBoundary}) => (
+type SettingsProps = $ReadOnly<{|
+  renderErrorBoundary: boolean,
+  toggleErrorBoundary: () => void,
+|}>;
+
+const Settings = ({
+  renderErrorBoundary,
+  toggleErrorBoundary,
+}: SettingsProps) => (
   <View>
     <SectionHeader title="Settings" />
     <View style={styles.itemContainer}>
@@ -192,7 +215,7 @@ const ItemsList = () =>
 
         <View>
           {section.examples.map(item => (
-            <Item key={item.title} item={item} />
+            <ListItem key={item.title} item={item} />
           ))}
         </View>
       </View>
