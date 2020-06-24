@@ -10,7 +10,7 @@
 
 'use strict';
 import type {Node} from 'React';
-import {View, Text, StyleSheet, Switch} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Switch} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -159,11 +159,11 @@ const Item = ({item}) => {
     return item.customRender();
   }
   return (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemTitle} onPress={item.onPressHandler}>
-        {item.title}
-      </Text>
-    </View>
+    <TouchableOpacity onPress={item.onPressHandler}>
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemTitle}>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -173,7 +173,7 @@ const Settings = ({renderErrorBoundary, toggleErrorBoundary}) => (
     <View style={styles.itemContainer}>
       <View style={styles.errorBoundarySwitch}>
         <Text style={styles.itemTitle} onPress={toggleErrorBoundary}>
-          Error Boundary
+          Use Error Boundary
         </Text>
         <Switch
           onValueChange={toggleErrorBoundary}
@@ -233,7 +233,7 @@ exports.examples = [
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 8,
+    paddingVertical: 10,
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
   },
@@ -241,13 +241,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   sectionHeader: {
-    fontSize: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingTop: 5,
     backgroundColor: '#fff',
-    marginBottom: 8,
   },
   errorBoundarySwitch: {
     display: 'flex',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
