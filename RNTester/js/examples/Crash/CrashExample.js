@@ -9,8 +9,11 @@
  */
 
 'use strict';
+
 import type {Node} from 'React';
-import {View, Text, StyleSheet, Switch} from 'react-native';
+import type {ExtendedError} from 'react-native/Libraries/Core/Devtools/parseErrorStack';
+import type {PressEvent} from '../../../../Libraries/Types/CoreEventTypes';
+import {View, Text, TouchableOpacity, StyleSheet, Switch} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import NativeLogModule from './NativeLogModule';
@@ -23,7 +26,7 @@ const SECTIONS = [
       {
         title: 'Native Log Warning',
         onPressHandler: () => {
-          NativeLogModule.showWarning(); 
+          NativeLogModule.showWarning();
         },
       },
       {
@@ -35,7 +38,7 @@ const SECTIONS = [
       {
         title: 'Native Log Fatal',
         onPressHandler: () => {
-          //todo: fatal? No such level found in RNLog, is the app supposed to crash? 
+          //todo: fatal? No such level found in RNLog, is the app supposed to crash?
         },
       },
       {
@@ -152,32 +155,52 @@ const ReactErrorBoundaryExample = () => {
   );
 };
 
-const SectionHeader = ({title}) => (
+type SectionHeaderProps = $ReadOnly<{|
+  title: string,
+|}>;
+
+const SectionHeader = ({title}: SectionHeaderProps) => (
   <View>
     <Text style={styles.sectionHeader}>{title}</Text>
   </View>
 );
 
-const Item = ({item}) => {
+type ListItemProps = $ReadOnly<{|
+  item: {
+    customRender?: () => Node,
+    title: string,
+    onPressHandler?: (event?: PressEvent) => mixed,
+  },
+|}>;
+
+const ListItem = ({item}: ListItemProps) => {
   if (item.customRender) {
     return item.customRender();
   }
   return (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemTitle} onPress={item.onPressHandler}>
-        {item.title}
-      </Text>
-    </View>
+    <TouchableOpacity onPress={item.onPressHandler}>
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemTitle}>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
-const Settings = ({renderErrorBoundary, toggleErrorBoundary}) => (
+type SettingsProps = $ReadOnly<{|
+  renderErrorBoundary: boolean,
+  toggleErrorBoundary: () => void,
+|}>;
+
+const Settings = ({
+  renderErrorBoundary,
+  toggleErrorBoundary,
+}: SettingsProps) => (
   <View>
     <SectionHeader title="Settings" />
     <View style={styles.itemContainer}>
       <View style={styles.errorBoundarySwitch}>
         <Text style={styles.itemTitle} onPress={toggleErrorBoundary}>
-          Error Boundary
+          Use Error Boundary
         </Text>
         <Switch
           onValueChange={toggleErrorBoundary}
@@ -196,7 +219,7 @@ const ItemsList = () =>
 
         <View>
           {section.examples.map(item => (
-            <Item key={item.title} item={item} />
+            <ListItem key={item.title} item={item} />
           ))}
         </View>
       </View>
@@ -237,21 +260,22 @@ exports.examples = [
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 8,
+    paddingVertical: 10,
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
   },
   itemTitle: {
-    fontSize: 14,
+    fontSize: 16,
   },
   sectionHeader: {
     fontSize: 18,
+    fontWeight: 'bold',
+    paddingTop: 5,
     backgroundColor: '#fff',
-    marginBottom: 8,
   },
   errorBoundarySwitch: {
     display: 'flex',
-    flexDirection: 'row-reverse',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
