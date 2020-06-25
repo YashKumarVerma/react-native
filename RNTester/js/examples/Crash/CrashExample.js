@@ -13,7 +13,8 @@ import type {Node} from 'React';
 import {View, Text, StyleSheet, Switch} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import ErrorBoundary from './ErrorBoundary';
-import NativeLogModule from './NativeLogModule'; 
+import NativeLogModule from './NativeLogModule';
+
 
 const SECTIONS = [
   {
@@ -22,18 +23,19 @@ const SECTIONS = [
       {
         title: 'Native Log Warning',
         onPressHandler: () => {
-          //native module
+          NativeLogModule.showWarning(); 
         },
       },
       {
         title: 'Native Log Error',
         onPressHandler: () => {
+          NativeLogModule.showError();
         },
       },
       {
         title: 'Native Log Fatal',
         onPressHandler: () => {
-          //native module
+          //todo: fatal? No such level found in RNLog, is the app supposed to crash? 
         },
       },
       {
@@ -76,8 +78,9 @@ const SECTIONS = [
       {
         title: 'Native Syntax Error',
         onPressHandler: () => {
-          //RedBox Native Module
-        },
+            //RedBoxDialog is not a public class, can't wrap in a module too..
+            //Maybe create a new child class to access RedBox
+        }
       },
     ],
   },

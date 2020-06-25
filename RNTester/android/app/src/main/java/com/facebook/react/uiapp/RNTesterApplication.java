@@ -42,14 +42,10 @@ public class RNTesterApplication extends Application implements ReactApplication
 
         @Override
         public List<ReactPackage> getPackages() {
-          @SuppressWarnings("UnnecessaryLocalVariable")
-          // List<ReactPackage> packages = Arrays.<ReactPackage>asList(new MainReactPackage());
-            List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-          packages.add(new NativeLogPackage()); // <-- Add this line with your package name.
-          return packages;
-          // return Arrays.<ReactPackage>asList(new MainReactPackage());
+          return Arrays.<ReactPackage>asList(
+            new MainReactPackage(), 
+            new NativeLogPackage()
+          );
         }
       };
 
