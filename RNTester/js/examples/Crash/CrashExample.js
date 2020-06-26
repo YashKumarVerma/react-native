@@ -13,11 +13,25 @@
 import type {Node} from 'React';
 import type {ExtendedError} from 'react-native/Libraries/Core/Devtools/parseErrorStack';
 import type {PressEvent} from '../../../../Libraries/Types/CoreEventTypes';
-import {View, Text, TouchableOpacity, StyleSheet, Switch} from 'react-native';
+import {
+  Alert,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Switch,
+  Platform,
+} from 'react-native';
 import React, {useState, useCallback} from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import NativeLogModule from './NativeLogModule';
 
+const showNotImplmentedAlert = ({exampleName}) => {
+  Alert.alert(
+    'Not Implemented!',
+    `${exampleName} has not been implemented on ${Platform.OS}.`,
+  );
+};
 
 const SECTIONS = [
   {
@@ -38,7 +52,9 @@ const SECTIONS = [
       {
         title: 'Native Log Fatal',
         onPressHandler: () => {
-          //todo: fatal? No such level found in RNLog, is the app supposed to crash?
+          //TODO:
+          // Implement it on iOS and show alert only on android
+          showNotImplmentedAlert({exampleName: 'Native Log Fatal'});
         },
       },
       {
@@ -81,9 +97,11 @@ const SECTIONS = [
       {
         title: 'Native Syntax Error',
         onPressHandler: () => {
-            //RedBoxDialog is not a public class, can't wrap in a module too..
-            //Maybe create a new child class to access RedBox
-        }
+          // TODO: Implement it on both android and iOS
+          //RedBoxDialog is not a public class, can't wrap in a module too..
+          //Maybe create a new child class to access RedBox
+          showNotImplmentedAlert({exampleName: 'Native Syntax Error'});
+        },
       },
     ],
   },
@@ -111,7 +129,10 @@ const SECTIONS = [
       //Todo: Add various examples
       {
         title: 'Native Module Error',
-        onPressHandler: () => {},
+        onPressHandler: () => {
+          // TODO: Implement native crashes
+          showNotImplmentedAlert({exampleName: 'Native Crashes'});
+        },
       },
     ],
   },
