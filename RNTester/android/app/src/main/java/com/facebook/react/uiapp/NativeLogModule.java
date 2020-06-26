@@ -54,4 +54,10 @@ public class NativeLogModule extends ReactContextBaseJavaModule {
 
     }
 
+    @ReactMethod
+    public void crashScreen(){
+      int num[] = {0,1,2,3,4};
+      System.out.println(num[6]);
+    }
+
 }

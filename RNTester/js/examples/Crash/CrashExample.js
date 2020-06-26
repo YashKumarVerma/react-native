@@ -128,12 +128,21 @@ const SECTIONS = [
     examples: [
       //Todo: Add various examples
       {
-        title: 'Native Module Error',
+        title: 'Example 1',
         onPressHandler: () => {
           // TODO: Implement native crashes
-          showNotImplmentedAlert({exampleName: 'Native Crashes'});
+//          showNotImplmentedAlert({exampleName: 'Native Crashes'});
+            NativeLogModule.crashScreen();
         },
       },
+     {
+            title: 'Example 2',
+            onPressHandler: () => {
+              // TODO: Implement native crashes
+    //          showNotImplmentedAlert({exampleName: 'Native Crashes'});
+                NativeLogModule.crashScreen("alert");
+            },
+       },
     ],
   },
 ];
