@@ -98,9 +98,11 @@ const SECTIONS = [
         title: 'Native Syntax Error',
         onPressHandler: () => {
           // TODO: Implement it on both android and iOS
+          NativeLogModule.showSyntaxError();
           //RedBoxDialog is not a public class, can't wrap in a module too..
           //Maybe create a new child class to access RedBox
-          showNotImplmentedAlert({exampleName: 'Native Syntax Error'});
+//          showNotImplmentedAlert({exampleName: 'Native Syntax Error'});
+
         },
       },
     ],

@@ -1,20 +1,27 @@
 package com.facebook.react.uiapp;
 
+import android.content.Context;
+
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.devsupport.ReactInstanceManagerDevHelper;
 import com.facebook.react.util.RNLog;
+import com.facebook.react.devsupport.DevSupportManagerImpl;
 
 public class NativeLogModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext;
+    private static ReactInstanceManagerDevHelper reactInstanceManagerHelper;
+    private static Context applicationContext;
+
 
     public static final String NAME = "NativeLogModule";
 
     NativeLogModule(ReactApplicationContext context){ 
         super(context); 
-        reactContext = context; 
+        reactContext = context;
     }
 
     @Override
@@ -50,8 +57,9 @@ public class NativeLogModule extends ReactContextBaseJavaModule {
         "        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)\n" +
         "        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)\n" +
         "        at java.lang.Thread.run(Thread.java:764)";
-
-
+      DevSupportManagerImpl dev = new DevSupportManagerImpl(applicationContext,reactInstanceManagerHelper,null, true,2);
+      Throwable e = new Throwable("Syntax Error");
+      dev.showNewJavaError(message,e);
     }
 
     @ReactMethod
