@@ -1,27 +1,33 @@
 package com.facebook.react.uiapp;
 
-import android.content.Context;
+import android.app.Activity;
+import android.view.View;
 
-import com.facebook.react.bridge.NativeModule;
+import androidx.annotation.Nullable;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.JavaJSExecutor;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.devsupport.ReactInstanceManagerDevHelper;
 import com.facebook.react.util.RNLog;
 import com.facebook.react.devsupport.DevSupportManagerImpl;
 
 public class NativeLogModule extends ReactContextBaseJavaModule {
     private static ReactApplicationContext reactContext;
-    private static ReactInstanceManagerDevHelper reactInstanceManagerHelper;
-    private static Context applicationContext;
-
+    private static  DevSupportManagerImpl mDevSupportManager;
 
     public static final String NAME = "NativeLogModule";
+
+    private ReactInstanceManagerDevHelper reactInstanceManagerHelper; 
 
     NativeLogModule(ReactApplicationContext context){ 
         super(context); 
         reactContext = context;
+        mDevSupportManager = new DevSupportManagerImpl(reactContext,reactInstanceManagerHelper,null, true,2);
     }
 
     @Override
@@ -40,26 +46,9 @@ public class NativeLogModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod 
-    public void showSyntaxError(){
-      String message = "Exception in native call\n" +
-        "    com.facebook.react.common.DebugServerException: Error while reading multipart response.\n" +
-        "    \n" +
-        "    Response code: 200\n" +
-        "    \n" +
-        "    URL: http://10.0.2.2:8081/RNTester/js/RNTesterApp.android.bundle?platform=android&dev=true&minify=false&app=com.facebook.react.uiapp&modulesOnly=false&runModule=true\n" +
-        "    \n" +
-        "    \n" +
-        "        at com.facebook.react.devsupport.BundleDownloader.processMultipartResponse(BundleDownloader.java:234)\n" +
-        "        at com.facebook.react.devsupport.BundleDownloader.access$100(BundleDownloader.java:34)\n" +
-        "        at com.facebook.react.devsupport.BundleDownloader$1.onResponse(BundleDownloader.java:147)\n" +
-        "        at okhttp3.RealCall$AsyncCall.execute(RealCall.java:174)\n" +
-        "        at okhttp3.internal.NamedRunnable.run(NamedRunnable.java:32)\n" +
-        "        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)\n" +
-        "        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)\n" +
-        "        at java.lang.Thread.run(Thread.java:764)";
-      DevSupportManagerImpl dev = new DevSupportManagerImpl(applicationContext,reactInstanceManagerHelper,null, true,2);
-      Throwable e = new Throwable("Syntax Error");
-      dev.showNewJavaError(message,e);
+    public void showSyntaxError(String message){
+      ReadableArray details = Arguments.createArray();
+      mDevSupportManager.showNewJSError(message,details, 404);
     }
 
     @ReactMethod

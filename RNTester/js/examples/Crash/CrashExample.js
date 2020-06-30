@@ -98,7 +98,23 @@ const SECTIONS = [
         title: 'Native Syntax Error',
         onPressHandler: () => {
           // TODO: Implement it on both android and iOS
-          NativeLogModule.showSyntaxError();
+          const message = "Exception in native call\n" +
+                                  "    com.facebook.react.common.DebugServerException: Error while reading multipart response.\n" +
+                                  "    \n" +
+                                  "    Response code: 200\n" +
+                                  "    \n" +
+                                  "    URL: http://10.0.2.2:8081/RNTester/js/RNTesterApp.android.bundle?platform=android&dev=true&minify=false&app=com.facebook.react.uiapp&modulesOnly=false&runModule=true\n" +
+                                  "    \n" +
+                                  "    \n" +
+                                  "        at com.facebook.react.devsupport.BundleDownloader.processMultipartResponse(BundleDownloader.java:234)\n" +
+                                  "        at com.facebook.react.devsupport.BundleDownloader.access$100(BundleDownloader.java:34)\n" +
+                                  "        at com.facebook.react.devsupport.BundleDownloader$1.onResponse(BundleDownloader.java:147)\n" +
+                                  "        at okhttp3.RealCall$AsyncCall.execute(RealCall.java:174)\n" +
+                                  "        at okhttp3.internal.NamedRunnable.run(NamedRunnable.java:32)\n" +
+                                  "        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1167)\n" +
+                                  "        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:641)\n" +
+                                  "        at java.lang.Thread.run(Thread.java:764)";
+          NativeLogModule.showSyntaxError(message);
           //RedBoxDialog is not a public class, can't wrap in a module too..
           //Maybe create a new child class to access RedBox
 //          showNotImplmentedAlert({exampleName: 'Native Syntax Error'});
