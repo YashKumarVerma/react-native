@@ -24,10 +24,17 @@ export default function UseCase(props: Props): React.Node {
     child => child !== ' ',
   );
   return (
-    <View>
+    <View style={styles.container}>
       <Text>{props.title}</Text>
       <Text>{props.note}</Text>
       {children}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

@@ -52,10 +52,6 @@ export default function ExamplePage(props: Props): React.Node {
 
   const docsImage = <Image source={imagePaths.docs} />;
 
-  const children = React.Children.map(props.children, child => (
-    <UseCase {...child.props}> {child} </UseCase>
-  ));
-
   return (
     <View>
       <View style={styles.titleView}>
@@ -72,7 +68,7 @@ export default function ExamplePage(props: Props): React.Node {
       <Background height={ScreenHeight} width={ScreenWidth}>
         <ScrollView style={styles.scrollView}>
           <Text> {description} </Text>
-          {children}
+          {props.children}
         </ScrollView>
       </Background>
     </View>

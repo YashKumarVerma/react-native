@@ -13,7 +13,9 @@
 const React = require('react');
 const {PanResponder, StyleSheet, View} = require('react-native');
 const RNTesterPage = require('../../components/RNTesterPage');
+
 import ExamplePage from '../../components/ExamplePage.js';
+import UseCase from '../../components/UseCase.js';
 
 import type {
   PanResponderInstance,
@@ -105,8 +107,7 @@ class PanResponderExample extends React.Component<Props, State> {
         title="Basic gesture handling"
         ios={true}
         android={true}>
-        <View
-          style={styles.container}
+        <UseCase
           title="Use Case Title"
           note="A basic Note"
           ios={true}
@@ -125,7 +126,7 @@ class PanResponderExample extends React.Component<Props, State> {
             ]}
             {...this._panResponder.panHandlers}
           />
-        </View>
+        </UseCase>
       </ExamplePage>
     );
   }
