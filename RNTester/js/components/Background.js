@@ -12,6 +12,7 @@ import React from 'react';
 import {View, ImageBackground} from 'react-native';
 
 type Props = $ReadOnly<{|
+  children?: React.Node,
   height: number,
   width: number,
 |}>;
