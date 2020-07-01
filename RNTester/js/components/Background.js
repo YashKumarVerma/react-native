@@ -8,7 +8,7 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import {View, ImageBackground} from 'react-native';
 
 type Props = $ReadOnly<{|
@@ -17,7 +17,7 @@ type Props = $ReadOnly<{|
   width: number,
 |}>;
 
-export default function Background(props: Props) {
+export default function Background(props: Props): React.Node {
   const BACKGROUND_URL = require('../assets/BackgroundScreen.png');
 
   return (

@@ -10,14 +10,14 @@
 
 'use strict';
 
-import React from 'react';
+import * as React from 'react';
 import {StyleSheet, Text} from 'react-native';
 
 type Props = $ReadOnly<{|
   text?: ?string,
 |}>;
 
-export default function HeadingText(props: Props) {
+export default function HeadingText(props: Props): React.Node {
   return <Text style={[styles.text]}>{props.text}</Text>;
 }
 

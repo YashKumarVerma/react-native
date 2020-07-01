@@ -8,19 +8,21 @@
  * @flow
  */
 
-import React from 'react';
+import * as React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
 type Props = $ReadOnly<{|
   children?: React.Node,
   title?: ?string,
-  description?: ?string,
+  note?: ?string,
   ios?: ?boolean,
   android?: ?boolean,
 |}>;
 
-export default function UseCase(props: Props) {
-  const children = props.children.filter(child => child !== ' ');
+export default function UseCase(props: Props): React.Node {
+  const children = React.Children.toArray(props.children).filter(
+    child => child !== ' ',
+  );
   return (
     <View>
       <Text>{props.title}</Text>

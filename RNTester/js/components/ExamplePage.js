@@ -10,7 +10,7 @@
 
 'use strict';
 
-import React from 'react';
+import * as React from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -35,7 +35,7 @@ type Props = $ReadOnly<{|
 const ScreenHeight = Dimensions.get('window').height;
 const ScreenWidth = Dimensions.get('window').width;
 
-export default function ExamplePage(props: Props) {
+export default function ExamplePage(props: Props): React.Node {
   const title = props.title ? <HeadingText text={props.title} /> : null;
 
   const description = props.description ?? '';
