@@ -1,3 +1,4 @@
+  
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -13,6 +14,9 @@
 const React = require('react');
 const {PanResponder, StyleSheet, View} = require('react-native');
 const RNTesterPage = require('../../components/RNTesterPage');
+
+import ExamplePage from '../../components/ExamplePage.js';
+import UseCase from '../../components/UseCase.js';
 
 import type {
   PanResponderInstance,
@@ -99,11 +103,16 @@ class PanResponderExample extends React.Component<Props, State> {
 
   render(): React.Node {
     return (
-      <RNTesterPage
-        noSpacer={true}
-        noScroll={true}
-        title="Basic gesture handling">
-        <View style={styles.container}>
+      <ExamplePage
+        description="Some Basic Description"
+        title="Basic gesture handling"
+        ios={true}
+        android={true}>
+        <UseCase
+          title="Use Case Title"
+          note="A basic Note"
+          ios={true}
+          android={true}>
           <View
             ref={circle => {
               this.circle = circle;
@@ -118,8 +127,8 @@ class PanResponderExample extends React.Component<Props, State> {
             ]}
             {...this._panResponder.panHandlers}
           />
-        </View>
-      </RNTesterPage>
+        </UseCase>
+      </ExamplePage>
     );
   }
 }
