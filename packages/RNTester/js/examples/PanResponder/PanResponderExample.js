@@ -107,7 +107,7 @@ class PanResponderExample extends React.Component<Props, State> {
         title="Basic gesture handling"
         ios={true}
         android={true}>
-        <UseCase
+        <View
           title="Use Case Title"
           note="A basic Note"
           ios={true}
@@ -126,7 +126,7 @@ class PanResponderExample extends React.Component<Props, State> {
             ]}
             {...this._panResponder.panHandlers}
           />
-        </UseCase>
+        </View>
       </ExamplePage>
     );
   }
